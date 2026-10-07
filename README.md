@@ -173,6 +173,49 @@ Bloch-sphere analogy is iconographic, never a physical claim.
 Especificação completa: `docs/BRAND_IDENTITY.md`. Z é estado de decisão
 epistêmico; a analogia com a esfera de Bloch é iconográfica, nunca alegação física.
 
+## Fase 3 — Compiler Core: decisão → certificado → verificação independente
+
+Pipeline completo e verificável (detalhes técnicos: `docs/PHASE_3.md`):
+
+    ZEPHIRUM → parser → IR → escada de eliminação → decisão trivalente
+      → Decision Kernel de primeira classe → certificado (CERT_HASH SHA-256)
+      → verificador INDEPENDENTE → resultado
+
+- **Decision Kernel**: {id, verdict 0/1/Z, rung, method, justification,
+  scope, residual} — cidadão de primeira classe.
+- **CERT_HASH**: SHA-256 canônico do certificado inteiro — integridade;
+  adulteração de um dígito quebra o hash.
+- **Princípio de não-confiança**: o verificador re-deriva a decisão da
+  FONTE (método diferente do motor), com schema estrito de evidência por
+  kernel; certificado malformado é rejeitado explicitamente, nunca aceito.
+- **Erros estruturais explícitos** (nunca UNKNOWN silencioso): modelo
+  desconhecido, intervalo invertido, inf/nan, estado-zero.
+- **Família EMARANHADO** (2 qubits puros): perguntas sobre concurrence e
+  emaranhamento decididas pelo critério fechado de Schmidt — exato por
+  frações, sem simular o vetor de estado. Quantum é a família do
+  problema; o mecanismo decisório é clássico e exato.
+
+CLI:
+
+```bash
+python3 prototype/zephirum.py check prog.zeph      # RESULT/STATUS/CERTIFICATE/EXECUTION
+python3 prototype/zephirum.py explain prog.zeph    # pergunta, escada, decisão
+python3 prototype/zephirum.py compile prog.zeph     # grava prog.zeph.cert.json
+python3 prototype/zephirum.py verify cert.json prog.zeph   # verificação completa
+python3 prototype/zephirum.py benchmark 500000     # benchmark completo
+```
+
+Baterias da Fase 3 (todas PASS): adulteração de certificados (RAW 107/107,
+REHASH 83/83 obrigatórios), property tests (987+10), equivalência tripla
+motor/verificador/transpilado (10.000/10.000), emaranhado (35, forja
+rejeitada 3/3), falsificação 200 (0 certificados falsos), stress 500.000
+(0 erradas, certificate_valid_rate 1.0, eliminação 76,51%).
+
+Formulação científica: "ZEPHIRUM implementa uma infraestrutura verificável
+para provar, em famílias de problemas formalmente suportadas, quando uma
+resposta pode ser determinada sem executar a computação completa, e para
+declarar UNKNOWN quando essa prova não está disponível."
+
 ## The four pillars / Os quatro pilares
 
 ```

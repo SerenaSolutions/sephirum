@@ -1,0 +1,12 @@
+ASK:
+    question: sum > 100
+CONTRACT:
+    absolute_error: 0
+MODEL:
+    type: threshold_sum
+    terms: 60, 30, 20, 5, 4, 3, 2, 1
+    assumption: terms_nonnegative
+BUDGET:
+    minimize: computation
+REQUIRE:
+    certified_answer

@@ -19,7 +19,41 @@ from nexa_core import (
 
 
 def verify(blocks, cert):
-    """Return (ok: bool, reason: str)."""
+    """Return (ok: bool, reason: str).
+
+    §12: um certificado malformado/adulterado é REJEITADO explicitamente —
+    o verificador nunca quebra e nunca aceita por acidente estrutural."""
+    try:
+        return _verify_core(blocks, cert)
+    except (ValueError, KeyError, IndexError, ZeroDivisionError,
+            AttributeError, TypeError) as e:
+        return False, "REJECT: malformed/unverifiable certificate: %s" % e
+
+
+# §5/§12 — schema estrito de evidência: campo fora da lista do kernel é rejeitado.
+_STD_EV = {"input_hash", "kernel", "original_terms", "required_terms",
+           "assumption", "question"}
+_EV_WHITELIST = {
+    "NONE": {"reason"},
+    "CONSTANT_FOLD": {"expr", "value", "op", "threshold"},
+    "MONOTONE_EARLY_STOP": {"witness_terms", "witness_sum", "op",
+                            "threshold", "assumption"},
+    "INTERVAL_BOUND": {"base_sum", "unknown", "bounds", "mode", "known_sum",
+                       "unknown_count", "mean_lo", "mean_hi", "op", "threshold"},
+    "RESIDUAL_EVAL": {"base_sum", "unknown", "bounds", "evaluated_value",
+                      "final_sum", "op", "threshold"},
+    "TRIANGULAR_DET_ANALYTIC": {"diagonal", "det", "op", "threshold",
+                                "triangular_kind"},
+    "GEOMETRIC_CLOSED_FORM": {"r", "n", "closed_form", "op", "threshold"},
+    "FULL_SUM": {"full_sum", "op", "threshold"},
+    "FULL_DET": {"det", "op", "threshold"},
+    "MEDIAN_CLASSICAL": {"sorted", "median", "op", "threshold"},
+    "SCHMIDT_DET_CRITERION": {"amplitudes", "det", "norm_sq", "concurrence",
+                              "op", "threshold"},
+}
+
+
+def _verify_core(blocks, cert):
     # 0. integrity: certificate must refer to this exact source
     h = hashlib.sha256(json.dumps(blocks, sort_keys=True).encode()).hexdigest()
     if h != cert.get("INPUT_HASH"):
@@ -37,11 +71,34 @@ def verify(blocks, cert):
     k = cert.get("KERNEL")
     answer = cert.get("ANSWER")
     status = cert.get("STATUS")
+
+    # schema estrito: evidência com campos fora do vocabulário do kernel => rejeitar
+    if not set(ev) <= (_STD_EV | _EV_WHITELIST.get(k, set())):
+        return False, "REJECT: unexpected evidence fields: %s" % (
+            sorted(set(ev) - (_STD_EV | _EV_WHITELIST.get(k, set()))),)
     # 0.6 kernel de primeira classe: veredito trivalente consistente
+    # §5 princípio de não-confiança: campos declarativos têm que casar com a FONTE
+    if cert.get("QUESTION") != blocks["ASK"]["question"]:
+        return False, "REJECT: certificate question diverges from source"
+    if cert.get("MODEL_TYPE") != blocks["MODEL"].get("type", ""):
+        return False, "REJECT: certificate model type diverges from source"
+
+    # campo de execução: a contabilidade de eliminação tem que ser coerente
+    # com o status declarado (§6: adulterar o campo de execução => rejeitar)
+    _req = cert.get("EVIDENCE", {}).get("required_terms", 0)
+    if status == "DECIDED_WITHOUT_EXECUTION" and _req != 0:
+        return False, "REJECT: claims zero execution but reports required units"
+    if status == "RESIDUAL_COMPUTATION_REQUIRED" and _req != 1:
+        return False, "REJECT: residual status must report exactly one required unit"
+    if status == "FULL_EXECUTION_REQUIRED" and _req < 1:
+        return False, "REJECT: full execution must report required units"
+
     dk = cert.get("DECISION_KERNEL", {})
     from zephirum import STATUS_TO_TRIT
     if dk.get("method") != cert.get("KERNEL"):
         return False, "REJECT: kernel method diverges from certificate kernel"
+    if dk.get("residual_units", _req) != _req:
+        return False, "REJECT: kernel residual diverges from execution accounting"
     if dk.get("verdict") != STATUS_TO_TRIT.get(status, ("?",))[0]:
         return False, "REJECT: kernel verdict inconsistent with status"
     if dk.get("verdict") == "Z" and answer is not None:
@@ -202,5 +259,53 @@ def verify(blocks, cert):
         if med != ev.get("median") or cmp(med, op, thr) != answer:
             return False, "REJECT: median mismatch"
         return True, "ok: median recomputed independently"
+
+    if k == "SCHMIDT_DET_CRITERION":
+        toks = [x.strip() for x in model["state"].split(",")]
+        if len(toks) != 4:
+            return False, "REJECT: malformed entanglement state"
+        fa, fb, fc, fd = (Fraction(t) for t in toks)
+        # §5 não-confiança: as amplitudes DECLARADAS na evidência têm que
+        # ser exatamente as da fonte — falsificação achada pela própria
+        # bateria (2026-10-07), fechada antes da publicação
+        if ev.get("amplitudes") != toks:
+            return False, "REJECT: amplitudes diverge from source state"
+        fn = fa * fa + fb * fb + fc * fc + fd * fd
+        if fn == 0:
+            return False, "REJECT: zero state is not a quantum state"
+        # rota INDEPENDENTE: det(M·Mᵗ) tem que casar com det(M)²
+        mmt = (fa * fa + fb * fb) * (fc * fc + fd * fd) - (fa * fc + fb * fd) ** 2
+        fdet = fa * fd - fb * fc
+        if mmt != fdet * fdet:
+            return False, "REJECT: cross-check det(MMᵗ) != det(M)²"
+        if ev.get("det") != str(fdet) or ev.get("norm_sq") != str(fn):
+            return False, "REJECT: entanglement evidence mismatch"
+        fC = 2 * abs(fdet) / fn
+        if ev.get("concurrence") != str(fC):
+            return False, "REJECT: concurrence mismatch"
+        # re-deriva a decisão da fonte com a mesma lógica exata
+        etarget, eop, ethr = parse_question(blocks["ASK"]["question"])
+        if etarget == "entangled":
+            rec = cmp(1 if fdet != 0 else 0, eop, ethr)
+        elif etarget == "concurrence":
+            t = Fraction(str(ethr)) if isinstance(ethr, float) else Fraction(ethr)
+            sq, tsq = 4 * fdet * fdet, t * t * fn * fn
+            if eop == ">":
+                rec = True if t < 0 else sq > tsq
+            elif eop == ">=":
+                rec = True if t <= 0 else sq >= tsq
+            elif eop == "<":
+                rec = False if t <= 0 else sq < tsq
+            elif eop == "<=":
+                rec = False if t < 0 else sq <= tsq
+            else:
+                rec = sq == tsq
+        else:
+            return False, "REJECT: unexpected entanglement question"
+        if rec != answer or status != "DECIDED_WITHOUT_EXECUTION":
+            return False, "REJECT: entanglement decision not re-derived"
+        if cert.get("EVIDENCE", {}).get("required_terms", 1) != 0:
+            return False, "REJECT: analytic criterion must require zero execution"
+        return True, "ok: Schmidt criterion cross-checked (det(MMᵗ)=det(M)²)"
 
     return False, "REJECT: unknown kernel %r" % k

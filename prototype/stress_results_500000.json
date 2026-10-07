@@ -1,6 +1,9 @@
 {
   "seed": 42,
   "N": 500000,
+  "total_time_seconds": 32.6,
+  "mean_time_ms": 0.0652,
+  "certificate_valid_rate": 1.0,
   "counts": {
     "DECIDED_WITHOUT_EXECUTION": 265832,
     "DECIDED_BY_REDUCTION": 192883,
@@ -19,5 +22,6 @@
   "total_eliminated_units": 2841911,
   "elimination_ratio_pct": 76.51,
   "aggregate_net_benefit": 2794817.81,
-  "false_elimination_rate": 0.0
+  "false_elimination_rate": 0.0,
+  "unknown_rate": 0.062836
 }

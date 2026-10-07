@@ -19,7 +19,7 @@
 
 ## 4. Anterioridade pública
 - Este repositório GitHub (data pública dos commits) + publicação do paper
-- arXiv: submeter `docs/PAPER_zerum.md` (categoria cs.LO ou cs.PL) — exige endosso;
+- arXiv: submeter `docs/PAPER_zephirum.md` (categoria cs.LO ou cs.PL) — exige endosso;
   alternativa: Zenodo (DOI, sem endosso) — recomendado como primeiro passo
 
 ## 5. Licenças (já aplicadas no repositório)

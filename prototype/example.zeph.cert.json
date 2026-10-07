@@ -1,0 +1,60 @@
+{
+ "ANSWER": true,
+ "CERT_HASH": "52ea21cd28ff5461b97926dca832d5f894a03aaaf3668d7bca4feb3ded13abd3",
+ "CHECKER": "verify_certificate.verify",
+ "CONTRACT": {
+  "absolute_error": "0"
+ },
+ "COST_ESTIMATE": {
+  "analysis": 0.05,
+  "execution": 3.0,
+  "verification": 0.02
+ },
+ "DECISION_KERNEL": {
+  "id": "K-f86ab8c16010a5a2",
+  "justification": "decided with 3/8 terms (partial sum 110)",
+  "method": "MONOTONE_EARLY_STOP",
+  "name": "example.zeph",
+  "question": "sum > 100",
+  "residual_units": 3,
+  "rung": "REDUCTION",
+  "scope": {
+   "assumption": "terms_nonnegative",
+   "contract": {
+    "absolute_error": "0"
+   },
+   "question": "sum > 100"
+  },
+  "verdict": 1,
+  "verdict_reading": "colapso com execucao parcial: o residuo e o kernel"
+ },
+ "ELIMINATION_TRACE": [
+  {
+   "detail": "decided with 3/8 terms (partial sum 110)",
+   "outcome": "ELIMINATED",
+   "rung": "REDUCTION"
+  }
+ ],
+ "EVIDENCE": {
+  "assumption": "terms_nonnegative",
+  "input_hash": "c50fefaed63e178fd72ca81091c296c7241c908186dc51afc3c3cd81856a33c1",
+  "kernel": "MONOTONE_EARLY_STOP",
+  "op": ">",
+  "original_terms": 8,
+  "question": "sum > 100",
+  "required_terms": 3,
+  "threshold": 100,
+  "witness_sum": 110,
+  "witness_terms": [
+   60,
+   30,
+   20
+  ]
+ },
+ "INPUT_HASH": "c50fefaed63e178fd72ca81091c296c7241c908186dc51afc3c3cd81856a33c1",
+ "KERNEL": "MONOTONE_EARLY_STOP",
+ "MODEL_TYPE": "threshold_sum",
+ "QUESTION": "sum > 100",
+ "RUNG": "REDUCTION",
+ "STATUS": "DECIDED_BY_REDUCTION"
+}

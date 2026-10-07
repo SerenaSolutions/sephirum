@@ -9,6 +9,7 @@ Resultado gravado em stress_results.json (para o capitulo 6 do livro).
 import json
 import random
 import sys
+import time
 
 from nexa_core import parse_nexa, NCA
 from verify_certificate import verify
@@ -90,6 +91,7 @@ def ground_truth(kind, terms, unk, thr, x_val):
 
 
 def main():
+    t0 = time.time()
     counts = {"DECIDED_WITHOUT_EXECUTION": 0, "DECIDED_BY_REDUCTION": 0,
               "RESIDUAL_COMPUTATION_REQUIRED": 0, "FULL_EXECUTION_REQUIRED": 0,
               "UNKNOWN": 0}
@@ -155,8 +157,12 @@ def main():
     decided = N - counts["UNKNOWN"]
     elim_ratio = (100.0 * total_eliminated / total_original
                   if total_original else 0.0)
+    elapsed = time.time() - t0
     results = {
         "seed": 42, "N": N,
+        "total_time_seconds": round(elapsed, 2),
+        "mean_time_ms": round(1000.0 * elapsed / N, 4),
+        "certificate_valid_rate": round(certs_ok / N, 6),
         "counts": counts,
         "decided": decided,
         "wrong_answers": wrong_answers,
@@ -168,6 +174,7 @@ def main():
         "elimination_ratio_pct": round(elim_ratio, 2),
         "aggregate_net_benefit": round(net_total, 2),
         "false_elimination_rate": (wrong_answers / N),
+        "unknown_rate": round(counts["UNKNOWN"] / N, 6),
     }
     with open("stress_results_%d.json" % N, "w") as f:
         json.dump(results, f, indent=2)

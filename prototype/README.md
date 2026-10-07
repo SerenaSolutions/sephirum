@@ -1,16 +1,40 @@
-# ZERA (ex-NEXA) — protótipo v0.1
-"PROOF -> COMPUTE": compilador de necessidade com escada de eliminação, kernels de decisão,
-certificados e verificador independente. Especificação fundadora: necessity_engine/MASTER_PROMPT_NEXUS_NEXA.md.
+# Prototype ZEPHIRUM — motor NCA + verificador independente
 
-## Executar
-python3 run_tests.py   # bateria de falsificação (S19/S23); exit 0 = soundness mantida
+Pipeline: ZEPHIRUM → IR → escada → decisão 0/1/Z → certificado → CERT_HASH
+→ `verify_certificate.py` (re-deriva da fonte, sem confiar no motor).
 
-## Arquivos
-- nexa_core.py    — parser NEXA/ZERA, IR, motor NCA/ZCA (degraus: simplificação, redução, limite, analítico, clássico), ledger, certificados
-- verify_certificate.py — verificador independente (re-deriva da fonte; métodos distintos quando possível; rejeita certificados forjados)
-- run_tests.py    — casos A–E + I/J/F/G/H; ataque de soundness com 3 certificados adulterados
+## Uso
 
-## Escopo honesto
-Famílias controladas: soma com limiar, média parcial com limites, determinante triangular,
-série geométrica, dobragem constante, mediana (não-eliminável), UNKNOWN. Sem quantum real,
-sem GPU/HPC/QPU ainda (backends progressivos previstos no spec §22).
+```bash
+python3 zephirum.py check example.zeph
+python3 zephirum.py explain example.zeph
+python3 zephirum.py compile example.zeph
+python3 zephirum.py verify example.zeph.cert.json example.zeph
+python3 zephirum.py benchmark 500000
+```
+
+## Baterias (todas exit 0)
+
+```bash
+python3 run_tests.py                        # casos didáticos + soundness
+python3 test_adversarial_certificates.py    # §6: 100% adulterações rejeitadas
+python3 test_properties.py                  # §11 propriedades + §12 robustez
+python3 test_equivalence.py                # §10: tripla 10.000 casos
+python3 test_entanglement.py               # família emaranhado (Schmidt)
+python3 falsification_200.py               # 200 adversariais: 0 falsos
+python3 test_zephirum_lang.py              # linguagem: 50k equivalência
+python3 test_zephirum_ir.py                # IR transversal
+python3 stress_test.py 500000              # benchmark + soundness
+python3 ai_layer.py                       # camada consultiva (nunca decisória)
+```
+
+## Módulos
+
+| arquivo | papel |
+|---|---|
+| zephirum.py | lógica trivalente 0/1/Z + CLI |
+| nexa_core.py | motor NCA: escada, famílias, certificado |
+| decision_kernel.py | kernel de primeira classe + CERT_HASH |
+| verify_certificate.py | verificador independente (não-confiança) |
+| zephirum_lexer.py / zephirum_transpiler.py / zephirum_repl.py | linguagem (Fase 2) |
+| zephirum_ir.py | IR transversal (Fase 2) |

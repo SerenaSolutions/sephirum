@@ -11,6 +11,7 @@ Pipeline: NEXA source -> PARSER -> NEXA-IR (blocks) -> NECESSITY COMPILER
 import ast
 import hashlib
 import json
+import math
 from fractions import Fraction
 
 from decision_kernel import make_kernel, certify
@@ -49,7 +50,10 @@ def _num(s):
     try:
         return int(s)
     except ValueError:
-        return float(s)
+        v = float(s)  # §12: valores não numéricos/infinitos falham explicitamente
+        if not math.isfinite(v):
+            raise ValueError("non-finite numeric value not allowed: %r" % s)
+        return v
 
 
 def parse_list(s):
@@ -108,7 +112,10 @@ def _parse_unknown(s):
     """'x in 0..1000' -> ('x', 0, 1000)"""
     name, rest = s.split(" in ")
     lo, hi = rest.split("..")
-    return name.strip(), _num(lo), _num(hi)
+    lo, hi = _num(lo), _num(hi)
+    if hi < lo:  # §12: intervalo invertido é erro estrutural explícito
+        raise ValueError("inverted bounds in %r: hi < lo" % s)
+    return name.strip(), lo, hi
 
 
 class NCA:
@@ -212,7 +219,10 @@ class NCA:
             return self._geo(op, thr)
         if t == "raw_data":
             return self._raw(op, thr)
-        return self._unknown("unknown model type: %s" % t)
+        if t == "entanglement":
+            return self._entangle(op, thr)
+        # §12: erro estrutural falha explicitamente — nunca vira UNKNOWN
+        raise ValueError("unsupported model type: %r" % t)
 
     # ------------------------------------------------------------- rungs
     def _expression(self, op, thr):
@@ -221,7 +231,9 @@ class NCA:
             val = safe_eval(expr)
         except Exception as e:
             self.log("SIMPLIFICATION", "FAILED", str(e))
-            return self._unknown("expression not foldable")
+            # §12: erro estrutural falha explicitamente — nunca vira UNKNOWN
+            raise ValueError("expression not foldable: %s: %s"
+                              % (expr, e))
         self.log("SIMPLIFICATION", "ELIMINATED",
                  "constant fold: %s = %s" % (expr, val))
         ev = {"expr": expr, "value": val, "op": op, "threshold": thr}
@@ -408,6 +420,59 @@ class NCA:
         return self._finish("DECIDED_WITHOUT_EXECUTION", cmp(closed, op, thr),
                             "GEOMETRIC_CLOSED_FORM", "ANALYTIC", ev,
                             original=n + 1, required=0, analysis_cost=0.05)
+
+    def _entangle(self, op, thr):
+        """EMARANHADO — família de 2 qubits puros (Fase 3, direção do chefe).
+
+        Perguntas SOBRE emaranhamento, respondidas sem simular o vetor de
+        estado — o critério de Schmidt é fechado e exato:
+          M = [[a, b], [c, d]]   (a|00⟩+b|01⟩+c|10⟩+d|11⟩)
+          det(M) = 0  <=>  estado produto (posto de Schmidt 1)
+          concurrence C = 2|det| / ⟨ψ|ψ⟩,  ⟨ψ|ψ⟩ = a²+b²+c²+d²
+        Decisão exata por Fraction (o quadrado elimina a raiz):
+          C ~ t  ⟺  4·det² ~ t²·n²     (n = ⟨ψ|ψ⟩ > 0)
+        O caminho completo (autovalores de MMᵗ, 8 unidades) é ELIMINADO:
+        critério analítico de 3 multiplicações — DECIDED_WITHOUT_EXECUTION.
+        Emaranhado é a FAMÍLIA do problema; o mecanismo decisório é
+        clássico e exato (regra da Fase 3 preservada).
+        """
+        toks = [x.strip() for x in self.model["state"].split(",")]
+        if len(toks) != 4:
+            raise ValueError("entanglement state must have 4 amplitudes")
+        a, b, c, d = (Fraction(t) for t in toks)   # decimal exato, não float
+        n = a * a + b * b + c * c + d * d
+        if n == 0:
+            raise ValueError("zero state is not a quantum state (structural)")
+        det = a * d - b * c
+        C = 2 * abs(det) / n                       # Fraction exata
+        target = self.q[0]
+        if target == "entangled":
+            ans = cmp(1 if det != 0 else 0, op, thr)
+        elif target == "concurrence":
+            t = Fraction(str(thr)) if isinstance(thr, float) else Fraction(thr)
+            sq, tsq = 4 * det * det, t * t * n * n
+            if op == ">":
+                ans = True if t < 0 else sq > tsq
+            elif op == ">=":
+                ans = True if t <= 0 else sq >= tsq
+            elif op == "<":
+                ans = False if t <= 0 else sq < tsq
+            elif op == "<=":
+                ans = False if t < 0 else sq <= tsq
+            elif op == "==":
+                ans = sq == tsq
+            else:
+                raise ValueError("unsupported op for concurrence: %r" % op)
+        else:
+            raise ValueError("entanglement family answers 'entangled' or "
+                             "'concurrence', not %r" % target)
+        self.log("ANALYTIC", "ELIMINATED",
+                 "Schmidt determinant criterion: det=%s, C=%s (exact)" % (det, C))
+        ev = {"amplitudes": toks, "det": str(det), "norm_sq": str(n),
+              "concurrence": str(C), "op": op, "threshold": thr}
+        return self._finish("DECIDED_WITHOUT_EXECUTION", ans,
+                            "SCHMIDT_DET_CRITERION", "ANALYTIC", ev,
+                            original=8, required=0, analysis_cost=0.05)
 
     def _raw(self, op, thr):
         data = parse_list(self.model["data"])

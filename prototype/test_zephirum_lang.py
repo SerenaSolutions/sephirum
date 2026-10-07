@@ -3,7 +3,7 @@
 Testes da Fase 2 da ZEPHIRUM (lexer próprio + transpilador).
 
 (1) Equivalência de parser: para N problemas aleatórios, o IR do parser
-    de tokens próprios (parse_sifr) deve ser IGUAL ao da Fase 1 (parse_nexa).
+    de tokens próprios (parse_zephirum) deve ser IGUAL ao da Fase 1 (parse_nexa).
 (2) Fuzz de expressões: avaliação própria (eval_expr) == safe_eval (ast).
 (3) Transpilador: para N problemas, o código Python gerado, executado,
     responde o mesmo que o motor NCA decide (e 'Z' quando UNKNOWN).
@@ -14,7 +14,7 @@ import random
 import sys
 
 from nexa_core import parse_nexa, NCA, safe_eval
-from zephirum_lexer import parse_sifr, eval_expr, tokenize, SifrSyntaxError
+from zephirum_lexer import parse_zephirum, eval_expr, tokenize, ZephirumSyntaxError
 from zephirum_transpiler import transpile
 from stress_test import make_case, build_src
 
@@ -27,10 +27,10 @@ def test_equivalence():
         kind, terms, unk, thr, x = make_case()
         src = build_src(kind, terms, unk, thr, x)
         old = parse_nexa(src)
-        new = parse_sifr(src)
+        new = parse_zephirum(src)
         assert old == new, "IR divergente no caso %d:\n%s\n%r\n%r" % (i, src, old, new)
         tokenize(src)  # lexer não pode rejeitar fonte válida
-    print("(1) parse_sifr == parse_nexa em %d casos: OK" % N_EQUIV)
+    print("(1) parse_zephirum == parse_nexa em %d casos: OK" % N_EQUIV)
 
 
 def _rand_expr(depth=0):
@@ -67,8 +67,8 @@ def test_syntax_errors():
            "ASK:\n  question: (sum > 4", "MODEL:\n  type: $\nASK:\n  question: sum > 1"]
     for b in bad:
         try:
-            parse_sifr(b)
-        except SifrSyntaxError:
+            parse_zephirum(b)
+        except ZephirumSyntaxError:
             continue
         raise AssertionError("fonte inválida aceita: %r" % b)
     print("(3) rejeição de sintaxe inválida: OK")

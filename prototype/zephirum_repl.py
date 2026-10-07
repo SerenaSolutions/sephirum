@@ -12,7 +12,7 @@ certificado pelo módulo INDEPENDENTE (verify_certificate).
 import sys
 
 from nexa_core import NCA
-from zephirum_lexer import parse_sifr
+from zephirum_lexer import parse_zephirum
 from verify_certificate import verify
 from zephirum import STATUS_TO_TRIT
 
@@ -37,7 +37,7 @@ MODEL:
 
 def run_program(src):
     try:
-        blocks = parse_sifr(src)
+        blocks = parse_zephirum(src)
     except Exception as e:
         print("ERRO DE SINTAXE:", e)
         return

@@ -30,7 +30,7 @@ TOKEN_RE = re.compile(r"""
 """, re.VERBOSE)
 
 
-class SifrSyntaxError(Exception):
+class ZephirumSyntaxError(Exception):
     pass
 
 
@@ -49,18 +49,18 @@ def tokenize(src):
             continue
         m = TOKEN_RE.match(src, pos)
         if not m:
-            raise SifrSyntaxError("caractere ilegal %r na linha %d" % (src[pos], line))
+            raise ZephirumSyntaxError("caractere ilegal %r na linha %d" % (src[pos], line))
         kind = m.lastgroup
         val = m.group()
         if kind == "IDENT" and val in BLOCK_KEYWORDS:
-            raise SifrSyntaxError("palavra reservada %r usada como identificador (linha %d)" % (val, line))
+            raise ZephirumSyntaxError("palavra reservada %r usada como identificador (linha %d)" % (val, line))
         tokens.append((kind, val, line))
         pos = m.end()
     return tokens
 
 
 # ── Parser de blocos (produz o IR idêntico ao da Fase 1) ────────────
-def parse_sifr(src):
+def parse_zephirum(src):
     """ZEPHIRUM source (tokens próprios) -> blocks IR {ASK: {...}, ...}.
 
     Estrutura validada por tokens; os valores preservam o texto-fonte
@@ -78,22 +78,22 @@ def parse_sifr(src):
         if kind == "BLOCK":
             current = val
             if current in blocks:
-                raise SifrSyntaxError("bloco %s duplicado (linha %d)" % (val, line))
+                raise ZephirumSyntaxError("bloco %s duplicado (linha %d)" % (val, line))
             blocks[current] = {}
             i += 1
             # o cabeçalho de bloco termina em ':' (ex.: "ASK:")
             if i < n and tokens[i][0] == "COLON":
                 i += 1
             else:
-                raise SifrSyntaxError("bloco %s sem ':' (linha %d)" % (val, line))
+                raise ZephirumSyntaxError("bloco %s sem ':' (linha %d)" % (val, line))
             while i < n and tokens[i][0] != "NEWLINE":
-                raise SifrSyntaxError("conteúdo inesperado após %s (linha %d)" % (val, line))
+                raise ZephirumSyntaxError("conteúdo inesperado após %s (linha %d)" % (val, line))
             continue
         if kind == "IDENT":
             if current is None:
-                raise SifrSyntaxError("declaração fora de bloco (linha %d)" % line)
+                raise ZephirumSyntaxError("declaração fora de bloco (linha %d)" % line)
             if i + 1 >= n or tokens[i + 1][0] != "COLON":
-                raise SifrSyntaxError("chave %s sem ':' (linha %d)" % (val, line))
+                raise ZephirumSyntaxError("chave %s sem ':' (linha %d)" % (val, line))
             key = val
             # valida a sequência de tokens do valor até o fim da linha
             j = i + 2
@@ -101,16 +101,16 @@ def parse_sifr(src):
             while j < n and tokens[j][0] != "NEWLINE":
                 k2 = tokens[j][0]
                 if k2 not in ("NUMBER", "IDENT", "OP", "TWOOP", "ARITH", "COMMA"):
-                    raise SifrSyntaxError("token ilegal %r no valor (linha %d)" % (tokens[j][1], line))
+                    raise ZephirumSyntaxError("token ilegal %r no valor (linha %d)" % (tokens[j][1], line))
                 if tokens[j][1] == "(":
                     depth += 1
                 if tokens[j][1] == ")":
                     depth -= 1
                     if depth < 0:
-                        raise SifrSyntaxError("parêntese desbalanceado (linha %d)" % line)
+                        raise ZephirumSyntaxError("parêntese desbalanceado (linha %d)" % line)
                 j += 1
             if depth != 0:
-                raise SifrSyntaxError("parêntese aberto sem fechar (linha %d)" % line)
+                raise ZephirumSyntaxError("parêntese aberto sem fechar (linha %d)" % line)
             # valor = texto-fonte da linha após o ':'
             raw = src_lines[line - 1]
             ci = raw.find(":")
@@ -118,9 +118,9 @@ def parse_sifr(src):
             blocks[current][key] = value
             i = j
             continue
-        raise SifrSyntaxError("token inesperado %r (linha %d)" % (val, line))
+        raise ZephirumSyntaxError("token inesperado %r (linha %d)" % (val, line))
     if "ASK" not in blocks:
-        raise SifrSyntaxError("programa sem bloco ASK")
+        raise ZephirumSyntaxError("programa sem bloco ASK")
     return blocks
 
 
@@ -149,7 +149,7 @@ class ExprParser:
             if ch.isdigit() or ch == ".":
                 m = re.match(r"\d+\.\d+|\d+|\.\d+", text[pos:])
                 if not m:
-                    raise SifrSyntaxError("número malformado em %r" % text)
+                    raise ZephirumSyntaxError("número malformado em %r" % text)
                 s = m.group()
                 self.toks.append(("num", float(s) if "." in s else int(s)))
                 pos += len(s)
@@ -158,7 +158,7 @@ class ExprParser:
                 self.toks.append((ch, ch))
                 pos += 1
                 continue
-            raise SifrSyntaxError("caractere ilegal em expressão: %r" % ch)
+            raise ZephirumSyntaxError("caractere ilegal em expressão: %r" % ch)
         self.toks.append(("end", None))
         self.i = 0
 
@@ -173,13 +173,13 @@ class ExprParser:
     def expect(self, kind):
         t = self.take()
         if t[0] != kind:
-            raise SifrSyntaxError("esperava %s, veio %r" % (kind, t[0]))
+            raise ZephirumSyntaxError("esperava %s, veio %r" % (kind, t[0]))
         return t
 
     def parse(self):
         v = self.expr()
         if self.peek()[0] != "end":
-            raise SifrSyntaxError("sobras na expressão: %r" % self.peek()[1])
+            raise ZephirumSyntaxError("sobras na expressão: %r" % self.peek()[1])
         return v
 
     def expr(self):
@@ -228,7 +228,7 @@ class ExprParser:
             v = self.expr()
             self.expect(")")
             return v
-        raise SifrSyntaxError("átomo inválido: %r" % (t[0],))
+        raise ZephirumSyntaxError("átomo inválido: %r" % (t[0],))
 
 
 def eval_expr(text):

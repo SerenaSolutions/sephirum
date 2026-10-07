@@ -12,7 +12,10 @@ abstract: >-
   the numeral Z (zephirum), independent verification. 0 wrong answers in 500,000
   randomized problems; 500,000/500000 certificates verified; 20/20 forged
   certificates rejected; 76.5% of demanded computation units eliminated.
-  Falsification experiment: 200 adversarial problems across 4 families
+  Phase 3: independent verifier with strict evidence schema, decision
+  kernel first-class, SHA-256 certificate hash, entanglement family
+  (Schmidt criterion, exact rational arithmetic). Falsification
+  experiment: 200 adversarial problems across 4 families
   (boundary equalities, degenerate bounds, 1e16 float traps, lying
   assumptions) with 0 false certificates; 2 engine bugs found and fixed.
 keywords:

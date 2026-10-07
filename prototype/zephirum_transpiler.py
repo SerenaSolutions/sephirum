@@ -25,6 +25,8 @@ QUESTION = {question!r}
 OP = {op!r}
 THR = {thr!r}
 
+from fractions import Fraction  # decisao exata: o motor decide por Fraction
+
 
 def cmp(a, op, b):
     return {{">": a > b, "<": a < b,
@@ -86,8 +88,8 @@ def transpile(blocks):
         if bounds and bounds != "none":
             lo, hi = (int(v) for v in bounds.split(".."))  # formato "a..b"
             body.append("    lo, hi = %r, %r" % (lo, hi))
-            body.append("    a_lo = cmp((sum(known) + %d * lo) / n, OP, THR)" % ucnt)
-            body.append("    a_hi = cmp((sum(known) + %d * hi) / n, OP, THR)" % ucnt)
+            body.append("    a_lo = cmp(Fraction(sum(known) + %d * lo, n), OP, THR)" % ucnt)
+            body.append("    a_hi = cmp(Fraction(sum(known) + %d * hi, n), OP, THR)" % ucnt)
             body.append("    if a_lo == a_hi:")
             body.append("        a = a_lo")
             body.append("    else:")
