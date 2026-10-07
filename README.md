@@ -52,6 +52,7 @@ python3 prototype/zephirum_boot_b2.py  # fatia 2: geométrico infinito + média 
 python3 prototype/stress_b2.py       # resistência B2 (ST1-ST6, 10k casos)
 python3 prototype/conformance_v03.py # PADRÃO EXECUTÁVEL v0.3 (conformidade)
 python3 prototype/verifier_indep/test_verificador_c.py  # verificador independente em C
+python3 prototype/test_transpiler_multi.py   # transpilador multi-alvo (Python/C/Java/C#)
 python3 prototype/run_tests.py      # bateria de soundness; exit 0 = ok
 python3 prototype/stress_test.py 500000   # 500k problemas, ~14 s
 python3 prototype/ai_layer.py      # camada de IA consultiva

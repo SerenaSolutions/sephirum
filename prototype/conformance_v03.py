@@ -27,6 +27,8 @@ BATTERIES = [
     ("run_tests.py",           "soundness do motor ZCA"),
     (os.path.join("verifier_indep", "test_verificador_c.py"),
      "verificador independente em C (Python<->C)"),
+    ("test_transpiler_multi.py",
+     "transpilador multi-alvo: mesma fonte em Python/C/Java/C#"),
 ]
 
 

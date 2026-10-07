@@ -77,6 +77,7 @@ Executar `python3 prototype/conformance_v03.py`. PASS integral exige:
 | `run_tests.py` | soundness do motor ZCA |
 | `stress_test.py 5000` | escala com veredito verificável por semente |
 | `verifier_indep/zverify.c` | verificador INDEPENDENTE em C: re-deriva vereditos, recalcula `INPUT_HASH` (SHA-256 próprio) e audita custos §5 — concordância Python<->C 400/400, forjados 5/5 rejeitados |
+| `zephirum_transpiler_multi.py` | UMA fonte ZEPHIRUM -> programas autônomos em Python, C, Java e C#: veredito, `INPUT_HASH` e unidades idênticos (90/90); recusa §12 preservada em todos os alvos |
 
 ## §7 Versionamento
 
