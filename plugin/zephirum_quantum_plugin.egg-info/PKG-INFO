@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: zephirum-quantum-plugin
-Version: 0.3.0
+Version: 0.4.0
 Summary: Plug-in do algoritmo Zephirum para o mundo quantico: decisao exata de emaranhamento com certificado, zero unidades QPU
 Author: Serena Solutions / QALQON
 License: Proprietary - Serena Solutions
@@ -14,7 +14,7 @@ Requires-Dist: cirq; extra == "cirq"
 
 # Zephirum Quantum Plugin
 
-Plug-in do **algoritmo Zephirum** para o mundo quântico — nascido do
+Plug-in do **algoritmo Zephirum** para o mundo quântico — v0.4.0: A DECISÃO É BYTECODE ZEPHIRUM (Python é só emissor/interprete; no zvm C não há Python no runtime) — nascido do
 primeiro artefato da casa (o verificador autônomo transpilado em
 Python/C/Java): **prova antes de executar**.
 

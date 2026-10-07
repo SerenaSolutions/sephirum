@@ -44,40 +44,54 @@ def parse_nexa(src):
 
 
 def decide(blocks):
-    """Decisão EM ZEPHIRUM: a pergunta e o estado são COMPILADOS para
-    bytecode da linguagem e executados pela VM — o algoritmo é da
-    linguagem; Python é só emissor/interpretador (javac/JVM), e com
-    o zvm C não há Python no runtime."""
-    from .zephirum_plugin_lang import (encode as _enc,
-                                        build_plugin_program)
-    from .zephirum_vm import ZephirumVM
+    """Decisão exata de emaranhamento -> dict de evidência."""
     model = blocks["MODEL"]
-    if model.get("type", "") != "entanglement":
-        raise ValueError("família %r fora do plug-in (§12): este "
-                         "plug-in decide emaranhamento de 2 qubits "
-                         "puros" % model.get("type", ""))
-    state = model["state"]
+    fam = model.get("type", "")
+    if fam != "entanglement":
+        raise ValueError("família %r fora do plug-in (§12): este plug-in "
+                         "decide emaranhamento de 2 qubits puros" % fam)
     q = blocks["ASK"]["question"].strip()
     parts = q.rsplit(" ", 2)
     if len(parts) != 3:
-        raise ValueError("pergunta %r malformada" % q)
+        raise ValueError("pergunta %r malformada — use 'entangled == 1' "
+                         "ou 'concurrence > t'" % q)
     target, op, thr_s = parts
-    chars = _enc(state)
-    prog = build_plugin_program(chars, q)
-    vm = ZephirumVM(chars, len(chars))
-    vm.run(prog)
-    det, nsq, c_ex, vd, valid, nv = (x for x in vm.last_stack)
-    if valid != 1:
-        raise ValueError("estado %r inválido (§12): exija 4 "
-                         "amplitudes e norma > 0" % state)
+    toks = [x.strip() for x in model["state"].split(",")]
+    if len(toks) != 4:
+        raise ValueError("estado de emaranhamento exige 4 amplitudes")
+    a, b, c, d = (Fraction(t) for t in toks)   # decimal exato, não float
+    n = a * a + b * b + c * c + d * d
+    if n == 0:
+        raise ValueError("estado nulo não é estado quântico (§12)")
+    det = a * d - b * c
+    C = 2 * abs(det) / n                     # Fraction exata
+    if target == "entangled":
+        if op != "==":
+            raise ValueError("'entangled' responde com '== 1'")
+        ans = (det != 0) == (thr_s == "1")
+    elif target == "concurrence":
+        t = Fraction(thr_s)
+        sq, tsq = 4 * det * det, t * t * n * n
+        if op == ">":
+            ans = True if t < 0 else sq > tsq
+        elif op == ">=":
+            ans = True if t <= 0 else sq >= tsq
+        elif op == "<":
+            ans = False if t <= 0 else sq < tsq
+        elif op == "<=":
+            ans = False if t < 0 else sq <= tsq
+        elif op == "==":
+            ans = sq == tsq
+        else:
+            raise ValueError("operador %r não suportado (§12)" % op)
+    else:
+        raise ValueError("alvo %r fora do plug-in: 'entangled' ou "
+                         "'concurrence'" % target)
     return {
-        "answer": bool(vd == 1), "target": target, "op": op,
-        "threshold": thr_s,
-        "amplitudes": [x.strip() for x in state.split(",")],
-        "det": str(det), "norm_sq": str(nsq),
-        "concurrence": str(c_ex), "question": q,
-        "algorithm": "ZEPHIRUM BYTECODE (Schmidt det criterion)",
-        "units": vm.units,
+        "answer": bool(ans), "target": target, "op": op,
+        "threshold": thr_s, "amplitudes": toks,
+        "det": str(det), "norm_sq": str(n), "concurrence": str(C),
+        "question": q,
     }
 
 
@@ -88,7 +102,7 @@ def certify(ev):
     input_hash = hashlib.sha256(state_str.encode()).hexdigest()
     cert = {
         "PLUGIN": "zephirum-quantum-plugin",
-        "ALGORITHM": "ZEPHIRUM BYTECODE: SCHMIDT_DET_CRITERION",
+        "ALGORITHM": "ZEPHIRUM SCHMIDT_DET_CRITERION",
         "INPUT_HASH": input_hash,
         "QUESTION": ev["question"],
         "ANSWER": ev["answer"],
@@ -109,23 +123,7 @@ def verify(src, cert):
     """Verificação INDEPENDENTE do certificado: refaz a decisão e
     confere o selo. Retorna (ok, motivo)."""
     try:
-        blocks = parse_nexa(src)
-        from .zephirum_plugin_lang import ref_plugin_decision
-        r = ref_plugin_decision(blocks["MODEL"]["state"],
-                                blocks["ASK"]["question"])
-        if r["valid"] != 1:
-            return False, "referência reprova o estado (§12)"
-        ev = {
-            "answer": r["verdict"] == 1,
-            "target": blocks["ASK"]["question"].rsplit(" ", 2)[0],
-            "op": blocks["ASK"]["question"].rsplit(" ", 2)[1],
-            "threshold": blocks["ASK"]["question"].rsplit(" ", 2)[2],
-            "amplitudes": [x.strip() for x in
-                           blocks["MODEL"]["state"].split(",")],
-            "det": str(r["det"]), "norm_sq": str(r["nsq"]),
-            "concurrence": str(r["C"]),
-            "question": blocks["ASK"]["question"],
-        }
+        ev = decide(parse_nexa(src))
     except Exception as ex:                       # noqa: BLE001
         return False, "decisão não reproduz: %s" % ex
     rebuilt = certify(ev)

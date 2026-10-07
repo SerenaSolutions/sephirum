@@ -7,5 +7,5 @@ adversariais OPCIONAIS de contraprova float.
 """
 from .core import gateway, verify, certify, decide, parse_nexa
 
-__version__ = "0.4.0"
+__version__ = "0.3.0"
 __all__ = ["gateway", "verify", "certify", "decide", "parse_nexa"]

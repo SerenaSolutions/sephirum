@@ -1,6 +1,6 @@
 # Zephirum Quantum Plugin
 
-Plug-in do **algoritmo Zephirum** para o mundo quântico — nascido do
+Plug-in do **algoritmo Zephirum** para o mundo quântico — v0.4.0: A DECISÃO É BYTECODE ZEPHIRUM (Python é só emissor/interprete; no zvm C não há Python no runtime) — nascido do
 primeiro artefato da casa (o verificador autônomo transpilado em
 Python/C/Java): **prova antes de executar**.
 

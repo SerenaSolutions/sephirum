@@ -141,3 +141,29 @@ exata e de RESPOSTA pega na verificação (duas camadas); CLI
 end-to-end com contraprova Qiskit real.
 
 Instalação: `pip install plugin/` · extras: `[qiskit]`, `[cirq]`.
+
+## v0.4.0 — O PLUG-IN É ZEPHIRUM (direção do dono, 2026-10-07)
+
+O dono corrigiu a rota: o algoritmo do plug-in NÃO é Python — é
+ZEPHIRUM. O pacote `zephirum-quantum-plugin` v0.4.0 compila a
+pergunta e o estado para BYTECODE da linguagem (módulo
+`zephirum_plugin_lang.py`, 18ª bateria) e a decisão é executada pela
+VM; o Python no pacote é só emissor/interpretador (o papel de
+javac/JVM), e executando o mesmo programa no zvm C NÃO HÁ PYTHON no
+runtime.
+
+Em linguagem, agora: parse das 4 amplitudes COM SINAL ('-' unário,
+máscara 1-2·SIGN), determinante de Schmidt, norma, |det| por máscara
+de sinal, concorrência exata por MULTIPLICAÇÃO CRUZADA
+(4·det²·q² ~ p²·n² — a comparação nunca divide), comparação por
+diferença vs literal 0, guarda de div/0 por máscara ==0, estados
+inválidos por FLAG (4 amplitudes, n>0), nunca crash.
+
+Muro §12 verificado na prática: estados de 17 dígitos (Bell com
+decimais longos) excedem o muro C de 10^12 e o zvm FALHA com recibo
+declarado — a VM Python decide exata; dentro do muro, tripla
+concordância VM == zvm == referência (16/16 estados).
+
+A verificação do certificado usa a referência Fraction direta
+(implementação INDEPENDENTE) — duas camadas: bytecode (decisão) e
+referência (contraprova).

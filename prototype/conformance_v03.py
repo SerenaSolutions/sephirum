@@ -35,6 +35,8 @@ BATTERIES = [
      "motor de referência C puro: 200 fontes decididas sem Python (zref)"),
     ("test_hash_in_lang.py",
      "B4: SHA-256 do certificado EM LINGUAGEM (VM==zvm==hashlib)"),
+    ("test_plugin_lang.py",
+     "PLUG-IN em LINGUAGEM: decisão quântica é bytecode Zephirum"),
     ("test_plugin_quantum.py",
      "PLUG-IN quântico instalável (pip): decisão exata + certificado"),
     ("test_parse_in_lang.py",
