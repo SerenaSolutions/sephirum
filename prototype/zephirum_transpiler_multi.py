@@ -42,6 +42,10 @@ UNITS = {"gauss_series": 2, "geometric_inf": 2, "arithmetic_mean": 1,
           "entanglement": 0}   # Schmidt: decidido SEM execução
 
 
+KSTR = "#x428a2f98 #x71374491 #xb5c0fbcf #xe9b5dba5 #x3956c25b #x59f111f1 #x923f82a4 #xab1c5ed5 #xd807aa98 #x12835b01 #x243185be #x550c7dc3 #x72be5d74 #x80deb1fe #x9bdc06a7 #xc19bf174 #xe49b69c1 #xefbe4786 #x0fc19dc6 #x240ca1cc #x2de92c6f #x4a7484aa #x5cb0a9dc #x76f988da #x983e5152 #xa831c66d #xb00327c8 #xbf597fc7 #xc6e00bf3 #xd5a79147 #x06ca6351 #x14292967 #x27b70a85 #x2e1b2138 #x4d2c6dfc #x53380d13 #x650a7354 #x766a0abb #x81c2c92e #x92722c85 #xa2bfe8a1 #xa81a664b #xc24b8b70 #xc76c51a3 #xd192e819 #xd6990624 #xf40e3585 #x106aa070 #x19a4c116 #x1e376c08 #x2748774c #x34b0bcb5 #x391c0cb3 #x4ed8aa4a #x5b9cca4f #x682e6ff3 #x748f82ee #x78a5636f #x84c87814 #x8cc70208 #x90befffa #xa4506ceb #xbef9a3f7 #xc67178f2"
+SHA_LISP = '(defparameter +k+ \'#(%K%))\n(defun rotr32 (x n)\n  (let ((x (logand x #xFFFFFFFF)))\n    (logand #xFFFFFFFF (logior (ash x (- n)) (ash x (- 32 n))))))\n(defun w2hex (n)\n  (let ((s (format nil "~x" n)))\n    (concatenate \'string (subseq "00000000" (min 8 (length s))) s)))\n(defun sha256 (msg)\n  ;; FIPS 180-4 portado — inteiro puro, zero biblioteca\n  (let* ((bytes (map \'vector #\'char-code msg))\n         (len (length bytes))\n         (z (mod (- 56 (+ len 1)) 64))\n         (total (+ len 1 z 8))\n         (buf (make-array total :initial-element 0)))\n    (loop for i below len do (setf (aref buf i) (aref bytes i)))\n    (setf (aref buf len) #x80)\n    (let ((bits (* len 8)))\n      (loop for k from 0 to 7\n            do (setf (aref buf (+ len 1 z k))\n                     (logand 255 (ash bits (* -8 (- 7 k)))))))\n    (let ((h0 #x6a09e667) (h1 #xbb67ae85) (h2 #x3c6ef372) (h3 #xa54ff53a)\n          (h4 #x510e527f) (h5 #x9b05688c) (h6 #x1f83d9ab) (h7 #x5be0cd19))\n      (loop for off from 0 below total by 64\n            do (let ((w (make-array 64)))\n                 (loop for i below 16\n                       do (setf (aref w i)\n                                (logior (ash (aref buf (+ off (* 4 i))) 24)\n                                        (ash (aref buf (+ off (* 4 i) 1)) 16)\n                                        (ash (aref buf (+ off (* 4 i) 2)) 8)\n                                        (aref buf (+ off (* 4 i) 3)))))\n                 (loop for i from 16 below 64\n                       do (let* ((x15 (aref w (- i 15))) (x2 (aref w (- i 2)))\n                                 (s0 (logxor (rotr32 x15 7) (rotr32 x15 18)\n                                             (ash x15 -3)))\n                                 (s1 (logxor (rotr32 x2 17) (rotr32 x2 19)\n                                             (ash x2 -10))))\n                            (setf (aref w i)\n                                  (logand #xFFFFFFFF\n                                          (+ (aref w (- i 16)) s0\n                                             (aref w (- i 7)) s1)))))\n                 (let ((a h0) (b h1) (cc h2) (d h3) (e h4) (f h5)\n                       (g h6) (h h7))\n                   (loop for i below 64\n                         do (let* ((s1 (logxor (rotr32 e 6)\n                                               (rotr32 e 11) (rotr32 e 25)))\n                                   (ch (logior (logand e f)\n                                               (logand (lognot e) g)))\n                                   (t1 (+ h s1 ch (aref +k+ i) (aref w i)))\n                                   (s0 (logxor (rotr32 a 2)\n                                               (rotr32 a 13) (rotr32 a 22)))\n                                   (maj (logior (logand a b)\n                                                (logior (logand a cc)\n                                                        (logand b cc))))\n                                   (t2 (+ s0 maj)))\n                              (setf h g g f f e)\n                              (setf e (logand #xFFFFFFFF (+ d t1)))\n                              (setf d cc cc b b a)\n                              (setf a (logand #xFFFFFFFF (+ t1 t2)))))\n                   (setf h0 (logand #xFFFFFFFF (+ h0 a)))\n                   (setf h1 (logand #xFFFFFFFF (+ h1 b)))\n                   (setf h2 (logand #xFFFFFFFF (+ h2 cc)))\n                   (setf h3 (logand #xFFFFFFFF (+ h3 d)))\n                   (setf h4 (logand #xFFFFFFFF (+ h4 e)))\n                   (setf h5 (logand #xFFFFFFFF (+ h5 f)))\n                   (setf h6 (logand #xFFFFFFFF (+ h6 g)))\n                   (setf h7 (logand #xFFFFFFFF (+ h7 h))))))\n      (concatenate \'string\n                   (w2hex h0) (w2hex h1) (w2hex h2) (w2hex h3)\n                   (w2hex h4) (w2hex h5) (w2hex h6) (w2hex h7)))))'
+
+
 def _compile_src(src):
     blocks = parse_zephirum(src)
     model = blocks["MODEL"]
@@ -354,6 +358,77 @@ def _gen_c(c):
     return _C_TMPL.format(sha=_C_SHA, decide_c=_c_decide(c), **c)
 
 
+
+
+
+def _gen_lisp(c):
+    """Alvo COMMON LISP — racional exato NATIVO, SHA-256 FIPS 180-4
+    embutido. A ironia honesta do painel: a linguagem mais ANTIGA
+    (1958) e a mais EXATA — racionais sao primitivos do CL. So ANSI
+    CL, zero biblioteca, programa autonomo.
+    """
+    fam, op, thr = c["fam"], c["op"], c["thr"]
+    head = (";;;; SEPHIRUM -> Common Lisp (autonomo, so ANSI CL)\n"
+            ";;;; Familia: %s | pergunta: %s %s\n" % (fam, op, thr))
+    pre = SHA_LISP.replace("%K%", KSTR)
+    body = ("(defparameter data \"%s\")\n(defparameter op \"%s\")\n"
+            % (c["data_str"], op))
+    if fam == "gauss_series":
+        body += ("(defparameter n %d)\n"
+                 "(defparameter val (/ (* n (+ n 1)) 2))\n"
+                 "(defparameter thr %s)\n"
+                 "(defparameter verdict (cond ((string= op \">\") (> val thr))"
+                 " ((string= op \"<\") (< val thr))"
+                 " ((string= op \">=\") (>= val thr))"
+                 " ((string= op \"<=\") (<= val thr))))\n"
+                 % (c["data"][0], thr))
+    elif fam == "arithmetic_mean":
+        body += ("(defparameter n %d)\n"
+                 "(defparameter val (/ (+ n 1) 2))\n"
+                 "(defparameter thr %s)\n"
+                 "(defparameter verdict (cond ((string= op \">\") (> val thr))"
+                 " ((string= op \"<\") (< val thr))"
+                 " ((string= op \">=\") (>= val thr))"
+                 " ((string= op \"<=\") (<= val thr))))\n"
+                 % (c["data"][0], thr))
+    elif fam == "entanglement":
+        A, B, C_, D = c["data"]
+        body += ("(defparameter thr %s)\n" % str(thr))
+        if c.get("target") == "entangled":
+            body += ("(let* ((n (+ (* %s %s) (* %s %s) (* %s %s) (* %s %s)))\n"
+                     "      (det (- (* %s %s) (* %s %s))))\n"
+                     "  (let ((v (if (/= det 0) 1 0)))\n"
+                     "    (format t \"VERDICT ~d~%%\" (if (= v thr) 1 0))))\n"
+                     % (A, A, B, B, C_, C_, D, D, A, D, B, C_))
+        else:
+            body += ("(let* ((n (+ (* %s %s) (* %s %s) (* %s %s) (* %s %s)))\n"
+                     "      (det (- (* %s %s) (* %s %s)))\n"
+                     "      (sq (* 4 det det))\n"
+                     "      (tsq (* thr thr n n)))\n"
+                     "  (cond ((string= op \">\") (setq verdict (if (< thr 0) t (> sq tsq))))\n"
+                     "        ((string= op \">=\") (setq verdict (if (< thr 0) nil (if (= thr 0) t (>= sq tsq)))))\n"
+                     "        ((string= op \"<\") (setq verdict (if (<= thr 0) nil (< sq tsq))))\n"
+                     "        ((string= op \"<=\") (setq verdict (if (< thr 0) nil (<= sq tsq))))\n"
+                     "        (t (setq verdict (= sq tsq))))\n"
+                     "  (format t \"VERDICT ~d~%%\" (if verdict 1 0)))\n"
+                     % (A, A, B, B, C_, C_, D, D, A, D, B, C_))
+    else:
+        a, r = c["data"]
+        body += ("(defparameter a %s)\n(defparameter r %s)\n"
+                 "(defparameter val (/ a (- 1 r)))\n"
+                 "(defparameter thr %s)\n"
+                 "(defparameter verdict (cond ((string= op \">\") (> val thr))"
+                 " ((string= op \"<\") (< val thr))"
+                 " ((string= op \">=\") (>= val thr))"
+                 " ((string= op \"<=\") (<= val thr))))\n"
+                 % (a, r, thr))
+    if fam not in ("entanglement",):
+        body += '(format t "VERDICT ~d~%" (if verdict 1 0))\n'
+    body += ('(format t "HASH ~a~%" (string-upcase (sha256 data)))\n'
+             '(format t "UNITS ~d~%" ' + str(c["units"]) + ')\n')
+    return head + pre + "\n" + body
+
+
 def _gen_java(c):
     fam, op, thr = c["fam"], c["op"], c["thr"]
     if fam == "gauss_series":
@@ -446,13 +521,14 @@ def transpile(src):
                 "cirq nesta fatia — aritmética long/128 não cobre o "
                 "regime; gerar código errado seria pior que recusar")
         return {"python": _gen_python(c), "qiskit": _gen_qiskit(c),
-                "cirq": _gen_cirq(c), "c": fora, "java": fora,
-                "csharp": fora, "cert": cert}
+                "cirq": _gen_cirq(c), "lisp": _gen_lisp(c),
+                "c": fora, "java": fora, "csharp": fora, "cert": cert}
     fora_q = ("§12: os alvos qiskit/cirq cobrem a família entanglement "
               "(a ponte quântica) — a família %r transpila para "
               "python/c/java/csharp" % c["fam"])
     return {"python": _gen_python(c), "c": _gen_c(c),
             "java": _gen_java(c), "csharp": _gen_csharp(c),
+            "lisp": _gen_lisp(c),
             "qiskit": fora_q, "cirq": fora_q, "cert": cert}
 
 
