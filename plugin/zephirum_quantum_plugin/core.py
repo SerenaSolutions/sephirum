@@ -134,7 +134,7 @@ def verify(src, cert):
     if rebuilt["ANSWER"] != cert.get("ANSWER"):
         return False, "resposta diverge do certificado"
     if rebuilt["CONCURRENCE_EXACT"] != cert.get("CONCURRENCE_EXACT"):
-        return False, "concorrência exata diverge"
+        return False, "exact concurrence diverges"
     if rebuilt["CERT_HASH"] != cert.get("CERT_HASH"):
         return False, "selo CERT_HASH não confere (adulteração)"
     if rebuilt["INPUT_HASH"] != cert.get("INPUT_HASH"):
@@ -143,7 +143,7 @@ def verify(src, cert):
     okq, whyq = pq_verify(cert)
     if not okq:
         return False, whyq
-    return True, "decisão reproduzida, selo e assinatura pós-quântica conferem"
+    return True, "decision reproduced, seal and post-quantum signature match"
 
 
 def gateway(src, sdk=None, sdk_check=None):

@@ -111,11 +111,11 @@ def pq_protect(cert):
 
 
 def pq_verify(cert):
-    """Verifica o selo pos-quantico do certificado."""
+    """Verifies the post-quantum seal of the certificate."""
     pq = cert.get("PQ_PROTECT")
     if not pq:
-        return False, "sem selo pos-quantico"
+        return False, "missing post-quantum seal"
     ch = bytes.fromhex(cert["CERT_HASH"])
     if not verify(ch, pq["SIG"], pq["PK"]):
         return False, "assinatura Lamport NAO confere (adulteracao)"
-    return True, "selo pos-quantico Lamport confere (FIPS 205 family)"
+    return True, "post-quantum Lamport seal matches (FIPS 205 family)"

@@ -28,16 +28,16 @@ def qpu_probe():
     # declarado como fato da engenharia, não como promessa.
     return {
         "QPU_REAL": False,
-        "STATUS": "AGUARDANDO",
-        "MOTIVO": ("nenhum processador quântico físico acessível a "
-                   "este dispositivo (§12); SDKs clássicos instalados "
-                   "são SIMULADORES, não QPU; quando um QPU real "
-                   "existir no aparelho, o mesmo certificado roteia"),
+        "STATUS": "AWAITING",
+        "MOTIVO": ("no physical quantum processor accessible to this "
+                   "device (§12); installed classic SDKs are "
+                   "SIMULATORS, not QPUs; the moment a real QPU exists "
+                   "on the device, the same certificate routes"),
         "SDKS_CLASSICOS": sdks,
-        "DECISAO_CLASSICA": "ATIVA — bytecode Zephirum, exata, "
-                            "zero unidades QPU",
-        "PRONTO_PARA": "rotear ao QPU sem mudar o caminho de "
-                       "certificado (INPUT_HASH/CERT_HASH)",
+        "DECISAO_CLASSICA": "ACTIVE — Zephirum bytecode, exact, "
+                            "zero QPU units",
+        "PRONTO_PARA": "route to the QPU without changing the "
+                       "certificate path (INPUT_HASH/CERT_HASH)",
     }
 
 

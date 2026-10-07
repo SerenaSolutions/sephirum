@@ -10,7 +10,7 @@ from .core import gateway
 def main(argv=None):
     ap = argparse.ArgumentParser(
         prog="zephirum-q",
-        description="Zephirum Quantum Plugin — decisão exata de "
+        description="Zephirum Quantum Plugin — exact quantum decision "
                     "emaranhamento com certificado, zero unidades QPU")
     ap.add_argument("source", nargs="?",
                 help="arquivo .zeph (fonte NEXA; opcional "
@@ -47,20 +47,20 @@ def main(argv=None):
                          default=str))
         return 0 if receipt.get("routed") else 1
     if not receipt.get("routed"):
-        print("NAO ROTEADO (§12): %s" % receipt["reason"])
+        print("NOT ROUTED (§12): %s" % receipt["reason"])
         return 1
     cert = receipt["cert"]
     print("STATUS      %s" % receipt["status"])
     print("VERDICT     %d" % receipt["verdict"])
-    print("CONCURRENCE %s (exata)" % receipt["concurrence_exact"])
-    print("QPU UNITS   %d (faturadas)" % receipt["qpu_units_billed"])
+    print("CONCURRENCE %s (exact)" % receipt["concurrence_exact"])
+    print("QPU UNITS   %d (billed)" % receipt["qpu_units_billed"])
     print("INPUT_HASH  %s" % cert["INPUT_HASH"])
     print("CERT_HASH   %s" % cert["CERT_HASH"])
     print("INDEP CHECK %s" % receipt["independent_check"][1])
     if "pq_protect" in receipt:
         print("PQ PROTECT  %s" % receipt["pq_protect"][1])
     if "standby" in receipt:
-        print("QPU         %s (§12) — decisão clássica exata ATIVA"
+        print("QPU         %s (§12) — exact classical decision ACTIVE"
               % receipt["standby"]["STATUS"])
     if "sdk_cross_check" in receipt:
         print("SDK CROSS   %s" % receipt["sdk_cross_check"])

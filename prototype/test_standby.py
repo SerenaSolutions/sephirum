@@ -35,7 +35,7 @@ def main():
     from zephirum_quantum_plugin import qpu_probe
     pr = qpu_probe()
     assert pr["QPU_REAL"] is False, pr
-    assert pr["STATUS"] == "AGUARDANDO", pr
+    assert pr["STATUS"] == "AWAITING", pr
     assert "§12" in pr["MOTIVO"], pr
     assert "SIMULADORES" in pr["MOTIVO"], pr
     assert "sem mudar o caminho de certificado" in pr["PRONTO_PARA"], pr
@@ -64,7 +64,7 @@ def main():
     assert ok and rec_sb["cert"]["CERT_HASH"] == \
         rec_normal["cert"]["CERT_HASH"]
     assert rec_sb["verdict"] == rec_normal["verdict"] == 1
-    assert rec_sb["standby"]["STATUS"] == "AGUARDANDO"
+    assert rec_sb["standby"]["STATUS"] == "AWAITING"
     print("SB3: recibo standby carrega a MESMA decisão e o MESMO "
           "CERT_HASH do caminho normal — standby é estado, não "
           "degradação")
@@ -75,10 +75,10 @@ def main():
     r = subprocess.run(["zephirum-q", ex, "--standby"],
                        capture_output=True, text=True)
     assert r.returncode == 0, r.stderr[:200]
-    assert "AGUARDANDO" in r.stdout and "VERDICT     1" in r.stdout
+    assert "AWAITING" in r.stdout and "VERDICT     1" in r.stdout
     r = subprocess.run(["zephirum-q", "--qpu-probe"],
                        capture_output=True, text=True)
-    assert r.returncode == 0 and "AGUARDANDO" in r.stdout, r.stdout
+    assert r.returncode == 0 and "AWAITING" in r.stdout, r.stdout
     print("SB4: CLI --standby e --qpu-probe end-to-end — o plug-in "
           "que o mundo instala HOJE e o QPU encontra pronto AMANHÃ")
 
