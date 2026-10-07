@@ -91,7 +91,7 @@ different from the engine's where possible, and rejects any inconsistency.
 
 \section{Experiments}
 All experiments are reproducible from the reference repository with a fixed
-seed (stdlib-only Python); an executable conformance suite of ten batteries
+seed (stdlib-only Python); an executable conformance suite of eleven
 defines the current standard (v0.3) and must pass in full for any
 implementation to claim the name.
 
@@ -140,6 +140,16 @@ $(n+1)/2$ (1 unit), and --- with stack opcodes DUP/SWAP/POW added to the ISA
 cross-checked against a naive summation on 120 randomized cases plus the C
 verifier). A forged program cannot spend beyond its certificate: budget,
 step, call-depth and exponent walls stop it with explicit faults.
+
+\textbf{Cross-paradigm confrontation.} With the quantum SDKs installed,
+a dedicated battery measures who lies and where: on ten exact-tie
+traps at the $2^{53}$ frontier, float64 returns wrong verdicts in five
+and lucky ones in the rest; at an exact concurrence tie ($C = 0.8$),
+the float route decides with noise; two independent exact stacks
+(Python Fraction and C \_\_int128) agree on 120/120 verdicts; and the
+transpiled Qiskit/Cirq twins execute the eliminated statevector path
+on real SDKs while the certified verdict stays immune to the noise,
+zero QPU units billed.
 
 \textbf{Q-SIM Gateway.} A first product layer routes entanglement-family
 questions in front of quantum SDKs (Qiskit, Cirq, PennyLane): the question is
