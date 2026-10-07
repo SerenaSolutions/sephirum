@@ -84,6 +84,7 @@ Executar `python3 prototype/conformance_v03.py`. PASS integral exige:
 | `verifier_indep/zverify.c` | verificador INDEPENDENTE em C: re-deriva vereditos, recalcula `INPUT_HASH` (SHA-256 próprio) e audita custos §5 — concordância Python<->C 520/520 (inclui 120 geofin), forjados 8/8 rejeitados |
 | `zephirum_transpiler_multi.py` | UMA fonte ZEPHIRUM -> programas autônomos em Python, C, Java, C#, Qiskit e Cirq: veredito, `INPUT_HASH` e unidades idênticos (90/90 + 40 emaranhamentos); recusa §12 preservada em todos os alvos |
 | `test_confront.py` CC1–CC5 | confronto medido clássico × quântico × exato: float64 mente na fronteira 2^53; SDKs com ruído/NaN declarados; Python×C exatos 120/120; ponte qiskit+cirq 30/30 com zero QPU |
+| `verifier_indep/zvm.c` + `test_vm_c.py` | máquina virtual ORÇADA em C puro: 150 execuções cruzadas (boot+naive de 4 famílias + ISA inteira) com ANSWER, UNITS e TRACE_HASH idênticos byte a byte; 54 faltas espelhadas |
 | `verifier_indep/zref.c` + `test_ref_c.py` | motor de referência em C puro: 200 fontes ZEPHIRUM decididas direto da fonte (5 famílias), sem Python em execução; muros §12 declarados e auditados |
 
 ## §7 Versionamento
@@ -94,6 +95,9 @@ Executar `python3 prototype/conformance_v03.py`. PASS integral exige:
 - v0.3 + fatia geofin (2026-10-07, v0.8.1): ISA `DUP`/`SWAP`/`POW` +
   família `geometric_fin` — emenda aditiva, nenhum certificado existente
   é quebrado.
+- v0.3 + fatia zvm (2026-10-07): a VM orçada executando em C puro
+  (`zvm`) — ANSWER/UNITS/TRACE_HASH idênticos à referência; emenda
+  aditiva, nenhum certificado quebrado.
 - v0.3 + fatias interop e motor C (2026-10-07): alvos qiskit/cirq no
   transpilador, bateria de confronto CC1–CC5 e `zref` (motor C puro) —
   emendas aditivas; o Python deixa de ser necessário para DECIDIR

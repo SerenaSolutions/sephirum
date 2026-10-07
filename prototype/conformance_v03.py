@@ -33,6 +33,8 @@ BATTERIES = [
      "transpilador multi-alvo: mesma fonte em Python/C/Java/C#/Qiskit/Cirq"),
     ("verifier_indep/test_ref_c.py",
      "motor de referência C puro: 200 fontes decididas sem Python (zref)"),
+    ("verifier_indep/test_vm_c.py",
+     "VM orçada em C puro: 150 execuções cruzadas, trace idêntico (zvm)"),
     ("test_confront.py",
      "confronto clássico x quântico x exato (CC1-CC5, SDKs opcionais)"),
     ("test_qsim_gateway.py",

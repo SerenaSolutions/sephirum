@@ -103,7 +103,7 @@ Evidência (bateria GF1–GF6, PASS):
 - GF6: mesma execução => mesmo trace_hash; adulteração responde.
 - Verificador C estendido com a família `geofin` (produtos cruzados
   __int128, transborno declarado): 520/520 honestos, 8/8 forjados.
-- Conformidade v0.3 integral: 12 batteries + escala, PASS.
+- Conformidade v0.3 integral: 13 batteries + escala, PASS.
 
 ## Limitações honestas (§12)
 
@@ -135,3 +135,22 @@ O que isto muda no caminho "excluir o Python": o padrão agora DECIDE,
 CERTIFICA e RECUSA sem Python em execução. O Python permanece como
 (1) bateria de conformidade (o juiz), (2) regime de precisão
 arbitrária além dos muros e (3) um alvo de transpilação entre outros.
+
+
+## MARCO ZVM — a máquina virtual orçada em C puro (2026-10-07)
+
+`verifier_indep/zvm.c`: executa o bytecode da VM orçada com a MESMA
+semântica da referência Python — unidades certificadas, muros §12
+idênticos (STEP_LIMIT 65536, CALL_DEPTH 64, POW 65536, stack 1024) e
+TRAÇO DETERMINÍSTICO: o TRACE_HASH é byte a byte igual.
+
+Bateria `verifier_indep/test_vm_c.py` (PASS): 150 execuções cruzadas
+(planos boot+naive de gauss/geo/média/geofin + 60 programas sintéticos
+com a ISA inteira: JMPZ/CALL/LOOP/MEDIAN/POW/…), 54 faltas espelhadas
+(orçamento, JMPZ para trás, DIV por zero, muro POW, opcode) e o muro C
+de fração (10^12, reduzida em __int128) declarado com honestidade §12.
+
+Com o zref (DECIDE) e o zvm (EXECUTA), o Zephirum cobre em C puro o
+ciclo inteiro: decidir, certificar, recusar e executar. O Python resta
+como juiz de conformidade e referência de precisão arbitrária — um
+alvo entre outros, não mais uma dependência.
