@@ -306,6 +306,31 @@ A specification that must be reproducible by different languages, on
 different machines, in different eras — that is how a standard crosses
 borders of place, time and platform.
 
+## Q-SIM Gateway — prove before you pay
+
+<p align="center"><img src="assets/brand/qsim_gateway_logo.png" width="360" alt="Q-SIM GATEWAY logo: a quantum gate arch in teal, a Bloch sphere in gold with the state vector pinned on the equator (the Z state), gold circuit traces stopping at the gate"></p>
+
+The gateway sits in FRONT of a quantum SDK (Qiskit, Cirq, PennyLane) or a
+real QPU: entanglement-family questions are decided ANALYTICALLY at the
+gate — exact Fractions, certificate, ZERO QPU units billed. Only the
+residual is routed to the SDK. Unsupported questions are NOT ROUTED with
+an explicit reason and the SDK cost they would have required (§12) — never
+a silent UNKNOWN. When the SDK is absent the cross-check prints an honest
+SKIP instead of pretending.
+
+Battery (`test_qsim_gateway.py`): 40/40 decisions at the gate (product,
+Bell, partial, decimal and random states), ZERO QPU units billed, every
+certificate verified by the independent checker; float counter-proof
+(eigenvalues of rho_A) agrees off the boundary; gauss NOT ROUTED
+explicitly; malformed and zero states are structural errors.
+
+```bash
+python3 prototype/qsim_gateway.py prog.zeph [--sdk qiskit]
+```
+
+Local install: `./install.sh` (see `INSTALL.md`) — `qsim-gateway` and
+`zephirum-decide` become shell commands.
+
 ## Process isolation (v0.6.3)
 
 The VM runs jailed in a disposable child process: walls of CPU
