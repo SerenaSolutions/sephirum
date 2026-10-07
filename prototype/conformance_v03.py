@@ -35,6 +35,8 @@ BATTERIES = [
      "motor de referência C puro: 200 fontes decididas sem Python (zref)"),
     ("test_hash_in_lang.py",
      "B4: SHA-256 do certificado EM LINGUAGEM (VM==zvm==hashlib)"),
+    ("test_lex_in_lang.py",
+     "B3.1: lexer de assinatura EM LINGUAGEM (VM==zvm==referência)"),
     ("verifier_indep/test_vm_c.py",
      "VM orçada em C puro: 150 execuções cruzadas, trace idêntico (zvm)"),
     ("test_confront.py",

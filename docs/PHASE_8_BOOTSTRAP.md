@@ -67,7 +67,7 @@ Resistência B2 (`stress_b2.py`, ST1-ST6): 10.000 casos geométricos com
 materializado acima de 5.000 — eliminação pura); 4 ataques de
 falsificação rejeitados; muros STEP_LIMIT/CALL_DEPTH/stack firmes;
 racionais de 10^30 exatos; 500 casos x 2 execuções com traços idênticos.
-| B3 | lexer/parser em ZEPHIRUM | exige strings/tokens como dados (ISA futura) |
+| B3 | lexer/parser em ZEPHIRUM | **FATIA 1 CONCLUÍDA** (2026-10-07: lexer de assinatura em bytecode, sobre a memória e o bit do B4); restam tokens como DADOS e o parser |
 | B4 | SHA-256 do certificado em bytecode | **CONCLUÍDA** (2026-10-07, fatia de bit: AND/OR/XOR/SHL/SHR/MOD/STORE/FETCH) |
 | B5 | VM escrita em ZEPHIRUM | exige modelo de memória; fronteira declarada |
 
@@ -182,3 +182,28 @@ bytes) — multi-bloco é a mesma técnica, outra fatia.
 Self-hosting agora: o certificado pode derivar o PRÓPRIO INPUT_HASH
 na linguagem. Restam as fronteiras B3 (lexer/parser: strings/tokens)
 e B5 (VM completa em Zephirum: modelo de memória completo).
+
+
+## MARCO B3.1 — o LEXER de assinatura NA LINGUAGEM (2026-10-07)
+
+Seguindo a mesma emenda aditiva do B4 (slots + domínio de bit), a
+primeira parte da fronteira B3 caiu: `zephirum_lex_lang.py` executa
+um LEXER COMPLETO em bytecode — classificação de cada caractere por
+CMP e máscaras 0/1 combinadas com AND/OR/XOR (branchless, sem JMPZ),
+reconhecimento de TOKENS NUMÉRICOS (sequências maximais de dígitos,
+acumuladas com MUL 10/ADD, muradas mod 2^32) e fecho em EOF, com
+custo exatamente igual ao comprimento do texto (1 LOAD/caractere).
+
+Bateria `test_lex_in_lang.py` (PASS): 10 textos com assinatura léxica
+exata em 100% dos casos; tripla concordância VM Python == zvm C ==
+referência independente (assinatura, UNITS e TRACE_HASH idênticos);
+recibo derivado à mão da especificação (SP1); e o muro de bit
+VERIFICADO — 12 dígitos dão wrap mod 2^32 idêntico nos três
+caminhos, nunca silêncio.
+
+Declarado (§12): a codificação texto->inteiros fica no hospedeiro
+(strings ainda não são um TIPO da linguagem), o ponto entra como
+operador (números reais: próxima fatia) e não há parser/árvore —
+tokens viram assinatura, não estrutura. Restam de B3: tokens como
+dados e o parser; e a fronteira B5 (VM completa) segue dependendo
+dessas fatias.
