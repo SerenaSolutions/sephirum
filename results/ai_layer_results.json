@@ -1,0 +1,13 @@
+{
+  "train_n": 40000,
+  "test_n": 10000,
+  "accuracy_pct": 95.67,
+  "baseline_pct": 53.05,
+  "per_class_recall": {
+    "DECIDED_BY_REDUCTION": 100.0,
+    "DECIDED_WITHOUT_EXECUTION": 94.2,
+    "FULL_EXECUTION_REQUIRED": 100.0,
+    "UNKNOWN": 90.0,
+    "RESIDUAL_COMPUTATION_REQUIRED": 0.0
+  }
+}
