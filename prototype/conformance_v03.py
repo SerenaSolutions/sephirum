@@ -25,6 +25,8 @@ BATTERIES = [
     ("test_vm.py",             "ISA, muros e faltas da VM"),
     ("test_zephirum_lang.py",  "equivalência linguagem <-> núcleo"),
     ("run_tests.py",           "soundness do motor ZCA"),
+    (os.path.join("verifier_indep", "test_verificador_c.py"),
+     "verificador independente em C (Python<->C)"),
 ]
 
 

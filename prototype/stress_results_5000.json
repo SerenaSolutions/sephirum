@@ -1,0 +1,27 @@
+{
+  "seed": 42,
+  "N": 5000,
+  "total_time_seconds": 0.72,
+  "mean_time_ms": 0.1436,
+  "certificate_valid_rate": 1.0,
+  "counts": {
+    "DECIDED_WITHOUT_EXECUTION": 2690,
+    "DECIDED_BY_REDUCTION": 1913,
+    "RESIDUAL_COMPUTATION_REQUIRED": 27,
+    "FULL_EXECUTION_REQUIRED": 54,
+    "UNKNOWN": 316
+  },
+  "decided": 4684,
+  "wrong_answers": 0,
+  "certificates_verified": 5000,
+  "certificates_rejected": 0,
+  "forged_attacks": 20,
+  "forged_rejected": 20,
+  "total_original_units": 37130,
+  "total_executed_units": 8499,
+  "total_eliminated_units": 28631,
+  "elimination_ratio_pct": 77.11,
+  "aggregate_net_benefit": 28158.27,
+  "false_elimination_rate": 0.0,
+  "unknown_rate": 0.0632
+}

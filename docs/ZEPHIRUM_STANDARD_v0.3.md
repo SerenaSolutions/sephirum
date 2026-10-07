@@ -16,7 +16,10 @@ resíduo, com certificado verificável. Uma implementação v0.3 fornece:
 3. VM de bytecode ORÇAMENTADA conforme §4;
 4. degraus de eliminação conforme §5;
 5. certificado conforme §3;
-6. PASS na suíte de conformidade §6.
+6. PASS na suíte de conformidade §6 — executada
+   por MAIS DE UMA linguagem: a referência Python e o verificador
+   independente em C (`verifier_indep/zverify.c`) têm de concordar
+   integralmente.
 
 ## §2 Núcleo normativo
 
@@ -73,6 +76,7 @@ Executar `python3 prototype/conformance_v03.py`. PASS integral exige:
 | `test_zephirum_lang.py` | equivalência linguagem ↔ núcleo (Fase 2) |
 | `run_tests.py` | soundness do motor ZCA |
 | `stress_test.py 5000` | escala com veredito verificável por semente |
+| `verifier_indep/zverify.c` | verificador INDEPENDENTE em C: re-deriva vereditos, recalcula `INPUT_HASH` (SHA-256 próprio) e audita custos §5 — concordância Python<->C 400/400, forjados 5/5 rejeitados |
 
 ## §7 Versionamento
 
