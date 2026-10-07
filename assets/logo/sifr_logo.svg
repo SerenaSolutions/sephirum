@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- SIFR — monograma ZERUM: o Z feito de 0 e 1 -->
+  <!-- leitura tripla: o traço diagonal = 1, o contorno = 0, o conjunto = Z -->
+  <!-- paleta: Midnight Navy #0A1A3C · ciano #22D3EE -->
+  <rect width="512" height="512" rx="96" fill="#0A1A3C"/>
+  <!-- o ZERO: contorno do numeral, presença silenciosa -->
+  <rect x="116" y="116" width="280" height="280" rx="44"
+        fill="none" stroke="#22D3EE" stroke-width="18" opacity="0.32"/>
+  <!-- o UM e o ZED: barra superior, diagonal (o 1 deitado na diagonal), barra inferior -->
+  <g stroke="#22D3EE" stroke-width="34" stroke-linecap="round" fill="none">
+    <path d="M124 152 H 388"/>
+    <path d="M388 152 L 124 360"/>
+    <path d="M124 360 H 388"/>
+  </g>
+  <!-- o ponto de colapso do Decision Kernel: onde 0 e 1 se encontram -->
+  <circle cx="256" cy="256" r="10" fill="#22D3EE"/>
+</svg>

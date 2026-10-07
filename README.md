@@ -1,4 +1,8 @@
+<p align="center"><img src="assets/logo/sifr_logo_dark.png" width="140" alt="SIFR — monograma ZERUM: o Z feito de 0 e 1"></p>
+
 # ZERUM — A Computação Antes da Execução
+
+<p align="center"><img src="assets/logo/sifr_logo_dark.png" width="140" alt="SIFR — monograma ZERUM: o Z feito de 0 e 1"></p>
 
 > **PERGUNTE PRIMEIRO. PROVE DEPOIS. COMPUTE POR ÚLTIMO.**
 
@@ -80,6 +84,8 @@ Python 3 puro. Sem dependências. Sem LLM. Sem nuvem.
 ---
 
 # ZERUM — Computation Before Execution
+
+<p align="center"><img src="assets/logo/sifr_logo_dark.png" width="140" alt="SIFR — monograma ZERUM: o Z feito de 0 e 1"></p>
 
 > **ASK FIRST. PROVE NEXT. COMPUTE LAST.**
 
