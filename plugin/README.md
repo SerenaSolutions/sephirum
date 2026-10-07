@@ -1,43 +1,46 @@
 # Zephirum Quantum Plugin
 
-Plug-in do **algoritmo Zephirum** para o mundo quântico — v0.4.0: A DECISÃO É BYTECODE ZEPHIRUM (Python é só emissor/interprete; no zvm C não há Python no runtime) — nascido do
-primeiro artefato da casa (o verificador autônomo transpilado em
-Python/C/Java): **prova antes de executar**.
+The **Zephirum algorithm** plugin for the quantum world — v0.5.0: THE
+DECISION IS ZEPHIRUM BYTECODE (Python is only the emitter/interpreter;
+the zvm C runtime contains no Python) — born from the house's first
+artifact (the autonomous verifier transpiled to Python/C/Java):
+**prove before executing**.
 
-Decide emaranhamento de estados puros de 2 qubits com **aritmética
-exata** (Fraction — critério fechado de Schmidt), emite **certificado
-verificável** (INPUT_HASH + selo CERT_HASH em SHA-256), cobra **zero
-unidades QPU** e trata os SDKs (Qiskit/Cirq) como **gêmeos
-adversariais opcionais** de contraprova float — nunca fonte do
-veredito.
+It decides entanglement of 2-qubit pure states with **exact
+arithmetic** (Fraction — the closed Schmidt criterion), issues a
+**verifiable certificate** (INPUT_HASH + CERT_HASH seal in SHA-256,
+plus the post-quantum PQ-PROTECT signature), charges **zero QPU
+units**, and treats the SDKs (Qiskit/Cirq) as **optional adversarial
+twins** for float counter-evidence — never as the source of the
+verdict.
 
-A fundamentação é matéria universal: concorrência de Wootters
-(PRL 80, 2245, 1998), decomposição de Schmidt (1906), Nielsen & Chuang
-(cap. 2). Nada de autores individuais de redes sociais.
+The grounding is universal literature: Wootters concurrence (PRL 80,
+2245, 1998), the Schmidt decomposition (1906), Nielsen & Chuang
+(ch. 2). No individual social-media authors.
 
-## Instalação
+## Install
 
 ```
 pip install .
-# com o gêmeo adversarial:
+# with the adversarial twin:
 pip install .[qiskit]
 ```
 
-## Uso
+## Usage
 
 ```
 $ zephirum-q examples/bell_phi_plus.zeph --sdk qiskit
 STATUS      DECIDED_WITHOUT_EXECUTION
 VERDICT     1
-CONCURRENCE 1 (exata)
-QPU UNITS   0 (faturadas)
+CONCURRENCE 1 (exact)
+QPU UNITS   0 (billed)
 INPUT_HASH  ...
 CERT_HASH   ...
-INDEP CHECK decisão reproduzida e selo confere
-SDK CROSS   qiskit float concurrence C = 0.99999... (ruído em volta do exato)
+INDEP CHECK decision reproduced, seal and post-quantum signature match
+SDK CROSS   qiskit float concurrence C = 0.99999... (noise around the exact value)
 ```
 
-API Python:
+Python API:
 
 ```python
 from zephirum_quantum_plugin import gateway
@@ -46,17 +49,21 @@ receipt, ok = gateway(open("examples/separable.zeph").read(),
                       sdk="cirq")
 ```
 
-## PQ-PROTECT (autoprotecao pos-quantica)
+## PQ-PROTECT (post-quantum self-protection)
 
-Assinatura hash-based Lamport (familia FIPS 205) no certificado, selo SHA-256 dos proprios arquivos, nucleo puro encapsulado (sem rede/I/O/processo) — verificado na bateria 20 com bloqueios ativos e adulteracao pega em DUAS camadas.
+Hash-based Lamport signature (FIPS 205 family) on the certificate,
+SHA-256 self-integrity seal of the plugin's own files, pure
+encapsulated core (no network/I/O/process) — verified in battery 20
+with active blockades and tampering caught in TWO independent layers.
 
-## Honestidade (§12)
+## Honesty (§12)
 
-1. Zero unidades QPU: o critério analítico ELIMINA o caminho do SDK
-   (vetor de estado + autodecomposição, 8 unidades).
-2. O float do SDK é ruído em volta do exato — o certificado é o
-   veredito estável.
-3. SDK ausente = recibo `SKIP (§12)`, nunca erro escondido.
-4. Família fora do plug-in = recusa com motivo, sem rotear.
-5. O certificado é verificável INDEPENDENTEMENTE: `verify()` refaz a
-   decisão e confere o selo — adulteração pega no CERT_HASH.
+1. Zero QPU units: the analytic criterion ELIMINATES the SDK path
+   (state vector + self-decomposition, 8 units).
+2. The SDK float is noise around the exact value — the certificate
+   is the stable verdict.
+3. Missing SDK = `SKIP (§12)` receipt, never a hidden error.
+4. Family outside the plugin = refusal with a reason, no routing.
+5. The certificate is INDEPENDENTLY verifiable: `verify()`
+   re-derives the decision and checks the seal — tampering is caught
+   by CERT_HASH.
