@@ -205,6 +205,18 @@ class NCA:
 
     # ------------------------------------------------------------- compile
     def compile(self):
+        # §12 — contrato: o motor implementa SOMENTE o contrato exato.
+        # Declarar orçamento de erro diferente, ou chave de contrato
+        # desconhecida, é ERRO ESTRUTURAL — nunca aceito em silêncio.
+        c = self.b.get("CONTRACT", {})
+        if c:
+            ae = str(c.get("absolute_error", "0")).strip()
+            if ae not in ("0", "0.0", ""):
+                raise ValueError("unsupported contract: only absolute_error "
+                                 "= 0 (exact) is implemented")
+            unknown = [k for k in c if k != "absolute_error"]
+            if unknown:
+                raise ValueError("unsupported contract keys: %r" % unknown)
         t = self.model.get("type")
         target, op, thr = self.q
         if t == "expression":

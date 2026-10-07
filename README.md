@@ -231,9 +231,19 @@ construção que a eliminação era certa (`docs/PHASE_4.md`):
   1e16 onde o modelo exato acerta — por isso a aritmética é exata
 
 ```bash
-python3 prototype/zephirum.py simulate prog.zeph   # kernel vs plena
+python3 prototype/zephirum.py simulate prog.zeph   # kernel vs plena + contratos
 python3 prototype/test_simulator.py                # bateria 20k
+python3 prototype/test_contracts.py                # contrato: 3 camadas independentes
+python3 prototype/test_models.py                   # modelos: exact vs float64
 ```
+
+**Fatia 2** — contratos são máquinas: o motor rejeita contrato
+não-suportado explicitamente (§12), o simulator confere suposições
+contra os dados, o checker rejeita testemunha que contraria a suposição
+declarada. Modelos computacionais múltiplos: `exact` (Fraction) e
+`float64` concordam na faixa comum (10.000/10.000); na zona 2^53+ o
+float64 erra onde o exato acerta — medida, não promessa. `gpu`/`hpc`/
+`qpu` registrados e honestos: falham explicitamente até existirem.
 
 ## The four pillars / Os quatro pilares
 

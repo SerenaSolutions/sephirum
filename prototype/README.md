@@ -28,6 +28,8 @@ python3 test_zephirum_ir.py                # IR transversal
 python3 stress_test.py 500000              # benchmark + soundness
 python3 ai_layer.py                       # camada consultiva (nunca decisória)
 python3 test_simulator.py                # gêmeo adversarial: 20k diferenciais
+python3 test_contracts.py                 # contrato como máquina (3 camadas)
+python3 test_models.py                   # modelos: exact vs float64 (10k+armadilhas)
 ```
 
 ## Módulos

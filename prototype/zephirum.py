@@ -182,6 +182,8 @@ def cli(argv=None):
                   "| %d units" % sim["units"])
             print("VERDICT:   ", cc["verdict"].upper(), "| certificate:",
                   "VALID" if cc["cert_ok"] else "INVALID")
+            print("CONTRACT:  ", "OK" if cc["contract_ok"]
+                  else "VIOLATED %r" % cc["contract_violations"])
             print("COMPUTATION AVOIDED: %d of %d units"
                   % (cc["avoided_units"], cc["sim_units"]))
             return 0 if cc["verdict"] != "MISMATCH" and cc["cert_ok"] else 1

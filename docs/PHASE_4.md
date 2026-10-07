@@ -49,8 +49,32 @@ unidades plenas vs residual (original × residual).
 3. O simulator é instrumento de prova, NÃO é o Runtime (não despacha
    nada para produção).
 
-## Veredito
+## Fatia 2 (2026-10-07): contratos como máquinas + modelos múltiplos
 
-PASS — fatia 1 do pilar SIMULATOR (diferencial + contabilidade +
-modelos). Próximas fatias: contratos como máquinas de decisão
-explícitas no simulator; backend de modelos múltiplos plugável.
+**Contrato como máquina de decisão** — cada cláusula declarada é
+VERIFICADA, em três camadas independentes (`test_contracts.py`, PASS):
+1. MOTOR (§12): `absolute_error != 0` ou chave de contrato desconhecida
+   = erro estrutural EXPLÍCITO (nunca aceito em silêncio);
+2. `check_contracts()` no simulator: vocabulário estrito, orçamento de
+   erro, suposições conferidas CONTRA OS DADOS (terms_nonnegative com
+   termo negativo = violação sinalizada);
+3. CHECKER: certificado cuja testemunha contraria a suposição declarada
+   é REJEITADO (defesa com profundidade — o motor pode mentir; o
+   verificador nunca confia).
+Contrato ausente = contrato exato (documentado).
+
+**Backend de modelos computacionais** — o MESMO problema por modelos
+distintos (`simulate_full(blocks, model)`, `test_models.py`, PASS):
+- `exact` (Fraction) e `float64` implementados: 10.000 casos na faixa
+  comum concordam 100%; na zona 2^53+ o float64 erra onde o exato
+  acerta (soma e média em 1e16 medidas) — a razão da aritmética exata,
+  agora evidência medida, não promessa;
+- `gpu`/`hpc`/`qpu` REGISTRADOS e não implementados: falham
+  explicitamente (`ModelNotAvailable`), nunca fingem execução (§12).
+
+## Veredito (fatias 1+2)
+
+PASS — fatias 1+2 do pilar SIMULATOR (diferencial + contabilidade +
+contratos como máquinas + backend de modelos múltiplos). Próximas
+fatias: backends gpu/hpc/qpu de verdade; contratos não-exatos
+(orçamento de erro > 0) como semântica intervalar formal.
