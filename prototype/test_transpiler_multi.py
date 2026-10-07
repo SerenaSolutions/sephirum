@@ -149,6 +149,9 @@ def main():
     # ---------------- 40 casos EMARANHAMENTO -> python/qiskit/cirq
     from nexa_core import parse_nexa, NCA
     import hashlib as _hl
+    import importlib.util as _iu
+    _has_qk = _iu.find_spec("qiskit") is not None
+    _has_cr = _iu.find_spec("cirq") is not None
     ent_ok = 0
     for i in range(40):
         if i < 8:      # estados PRODUTO: det = 0 exato (separável)
@@ -204,17 +207,26 @@ def main():
             assert u == 0, ("unidades divergentes", tgt, i)
             if tgt in ("qiskit", "cirq"):
                 assert "QPU_UNITS_BILLED 0" in r.stdout, (tgt, i)
-                assert "SKIP (§12)" in r.stdout, (tgt, i, "SDK ausente "
-                                                  "tem de ser SKIP")
+                _presente = _has_qk if tgt == "qiskit" else _has_cr
+                if _presente:
+                    # SDK instalado: o gêmeo adversarial EXECUTA de
+                    # verdade — e o veredito exato não muda (§12)
+                    assert "SDK_CROSS_CHECK" in r.stdout, (tgt, i)
+                    assert "SKIP" not in r.stdout, (tgt, i)
+                else:
+                    assert "SKIP (§12)" in r.stdout, (tgt, i, "SDK "
+                        "ausente tem de ser SKIP")
         for tgt in ("c", "java", "csharp"):
             assert isinstance(out[tgt], str) and "§12" in out[tgt], \
                 (tgt, "recusa explícita esperada")
         ent_ok += 1
     print("QISKIT/CIRQ: %d fontes de emaranhamento -> python/qiskit/cirq "
           "autônomos — veredito EXATO idêntico ao kernel, ZERO unidades "
-          "QPU faturadas, SKIP §12 declarado sem SDK (produto, fronteira "
-          "2^53 e quase-separável incluídos); C/Java/C# recusam a família "
-          "com motivo explícito" % ent_ok)
+          "QPU faturadas (produto, fronteira 2^53 e quase-separável "
+          "incluídos); SDK %s — C/Java/C# recusam a família com motivo "
+          "explícito" % (ent_ok, "PRESENTE: gêmeo adversarial executou "
+                        "de verdade" if (_has_qk or _has_cr) else
+                        "AUSENTE: SKIP §12 declarado, nunca finge"))
 
     # ---------------- a recusa também viaja
     refusas = 0

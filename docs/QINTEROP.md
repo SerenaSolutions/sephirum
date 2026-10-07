@@ -122,3 +122,30 @@ abandonar o Qiskit/Cirq para adotar o ZEPHIRUM — o certificado
 atravessa PARA DENTRO do ecossistema deles. Uma especificação aberta,
 certificados portáteis, verificadores em linguagens diferentes: é
 assim que um padrão atravessa fronteiras de lugar, época e plataforma.
+
+
+## CONFRONTO CLÁSSICO × QUÂNTICO × EXATO (2026-10-07, medido)
+
+`test_confront.py` (CC1–CC5, PASS, SDKs instalados de verdade):
+
+- CC1 float64 CLÁSSICO: nas 10 armadilhas da média em 10^16, float64
+  mente em 5 e acerta por sorte nas outras — o veredito vira lance de
+  dados do arredondamento; a Fraction exata acerta em todas;
+- CC2 float64 CLÁSSICO: C = 0.8 exato; a rota float devolve
+  0.79999999999999993 e decide o empate com ruído (nesta amostra, falso
+  negativo; a direção da mentira é sorte);
+- CC3 SDKs QUÂNTICOS: 100 estados aleatórios — rota float interna
+  concorda em 12 dígitos em 100/100 (casos comuns: o ruído é pequeno),
+  ruído máx 2.22e-16; nos adversariais do QINTEROP (produto, 2^53) o
+  NaN e a autocontradição já estão medidos acima;
+- CC4 CLÁSSICO×CLÁSSICO: Python (Fraction) e C (__int128), DOIS EXATOS
+  em linguagens e compiladores diferentes: 120/120 vereditos idênticos
+  — o que separa mentir de acertar não é a linguagem, é o desenho da
+  aritmética;
+- CC5 A PONTE COM SDK REAL: 15 fontes de emaranhamento transpiladas,
+  gêmeos qiskit+cirq executando de verdade: veredito exato imune ao
+  ruído, 30/30, ZERO unidades QPU.
+
+Conclusão medida: o float64 não é vilão — é uma ferramenta com fronteira
+declarada. O ZEPHIRUM é a camada que diz ONDE a fronteira morde, com
+certificado, antes de pagar por execução.

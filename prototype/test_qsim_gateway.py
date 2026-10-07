@@ -99,11 +99,23 @@ def main():
             raise AssertionError("bad state accepted: %r" % bad)
     print("STRUCTURAL: malformed and zero states are explicit errors (2/2)")
 
-    # SDK absent — declared SKIP
-    receipt, _ = gateway(_src(states[0][0], "entangled == 1"), sdk="qiskit")
-    assert "SKIP (§12)" in receipt["sdk_cross_check"]
-    print("SDK CROSS-CHECK: SKIP declared honestly (no qiskit here) — the "
-          "gateway never pretends to have checked")
+    # SDK cross-check: honesto nos DOIS mundos (§12)
+    import importlib.util
+    if importlib.util.find_spec("qiskit") is not None:
+        receipt, _ = gateway(_src(states[0][0], "entangled == 1"),
+                             sdk="qiskit")
+        assert "float concurrence" in receipt["sdk_cross_check"]
+        assert "SKIP" not in receipt["sdk_cross_check"]
+        assert receipt["qpu_units_billed"] == 0
+        print("SDK CROSS-CHECK: qiskit PRESENTE — concurrence float medido "
+              "como ruído em torno do exato; o veredito do certificado "
+              "não muda, ZERO unidades QPU (§12)")
+    else:
+        receipt, _ = gateway(_src(states[0][0], "entangled == 1"),
+                             sdk="qiskit")
+        assert "SKIP (§12)" in receipt["sdk_cross_check"]
+        print("SDK CROSS-CHECK: SKIP declared honestly (no qiskit here) — "
+              "the gateway never pretends to have checked")
 
     print("RESULT: PASS — Q-SIM GATEWAY: the entanglement family is decided "
           "at the gate; the SDK is only ever paid for what cannot be proven")

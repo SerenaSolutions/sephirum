@@ -31,6 +31,8 @@ BATTERIES = [
      "verificador independente em C (Python<->C)"),
     ("test_transpiler_multi.py",
      "transpilador multi-alvo: mesma fonte em Python/C/Java/C#/Qiskit/Cirq"),
+    ("test_confront.py",
+     "confronto clássico x quântico x exato (CC1-CC5, SDKs opcionais)"),
     ("test_qsim_gateway.py",
      "Q-SIM Gateway: emaranhamento decidido no portao, zero unidades QPU"),
 ]

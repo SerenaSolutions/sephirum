@@ -312,22 +312,33 @@ def _gen_entangle_exact(c, sdk):
                  'exato)" % cf)\n'
                  'except ImportError:\n'
                  '    print("SDK_CROSS_CHECK SKIP (§12): qiskit não '
-                 'instalado neste ambiente — o gateway nunca finge")\n')
+                 'instalado neste ambiente — o gateway nunca finge")\n'
+                 'except Exception as e:\n'
+                 '    print("SDK_CROSS_CHECK FAIL (§12): o SDK não '
+                 'representa este estado:", e)\n')
     elif sdk == "cirq":
         head += ('try:\n'
                  '    import numpy as np\n'
                  '    import cirq\n'
-                 '    sv = cirq.to_valid_state_vector([float(A), '
-                 'float(B), float(C_), float(D)])\n'
+                 '    # o Cirq VALIDA a normalização: o estado exato cru\n'
+                 '    # (norm != 1) não é representável lá. A pista do\n'
+                 '    # gêmeo normaliza por float — perde exatidão, e é\n'
+                 '    # exatamente isso que ela existe para mostrar.\n'
+                 '    _v = [float(A), float(B), float(C_), float(D)]\n'
+                 '    _n = sum(x * x for x in _v) ** 0.5\n'
+                 '    sv = cirq.to_valid_state_vector(\n'
+                 '        [x / _n for x in _v])\n'
                  '    m = np.asarray(sv).reshape(2, 2)\n'
-                 '    cf = 2 * abs(m[0, 0] * m[1, 1] - m[0, 1] * m[1, 0])'
-                 ' / float(N)\n'
+                 '    cf = 2 * abs(m[0, 0] * m[1, 1] - m[0, 1] * m[1, 0])\n'
                  '    print("SDK_CROSS_CHECK", "cirq Statevector '
                  'concurrence = %.17g (ruído float em torno do veredito '
                  'exato)" % cf)\n'
                  'except ImportError:\n'
                  '    print("SDK_CROSS_CHECK SKIP (§12): cirq não '
-                 'instalado neste ambiente — o gateway nunca finge")\n')
+                 'instalado neste ambiente — o gateway nunca finge")\n'
+                 'except Exception as e:\n'
+                 '    print("SDK_CROSS_CHECK FAIL (§12): o SDK não '
+                 'representa este estado:", e)\n')
     return head
 
 
