@@ -57,19 +57,57 @@ class QiskitBackend:
 
 
 class CirqBackend:
+    """Adapter Cirq: density_matrix_from_state_vector + rota da pureza."""
     name = "cirq"
 
     def __init__(self):
-        raise ModelNotAvailable("cirq not installed in this sandbox "
-                                "(registrado, não instalado — §12)")
+        cirq = try_import("cirq")
+        if cirq is None:
+            raise ModelNotAvailable("cirq not installed (§12)")
+        import numpy as np
+        self.np = np
+        self.dm = cirq.qis.density_matrix_from_state_vector
+
+    def rho_a(self, amps):
+        # traço parcial sobre o qubit 1 => estado reduzido do qubit 0
+        sv = self.np.asarray(amps, dtype=complex)
+        return self.dm(sv, (0,))
+
+    def concurrence(self, amps):
+        rho = self.rho_a(amps)
+        purity = float(self.np.real(self.np.trace(rho @ rho)))
+        return float(self.np.sqrt(2 * (1 - purity)))
+
+    def rho_a_eigenvalues(self, amps):
+        rho = self.rho_a(amps)
+        return sorted(self.np.linalg.eigvalsh(rho).real, reverse=True)
 
 
 class PennyLaneBackend:
+    """Adapter PennyLane (Xanadu): reduce_dm + purity nativos."""
     name = "pennylane"
 
     def __init__(self):
-        raise ModelNotAvailable("pennylane (Xanadu) not installed in "
-                                "this sandbox (registrado, §12)")
+        if try_import("pennylane") is None:
+            raise ModelNotAvailable("pennylane not installed (§12)")
+        import pennylane
+        import numpy as np
+        import pennylane as qml
+        self.np = np
+        self.qml = qml
+
+    def rho_a(self, amps):
+        rho = self.qml.math.dm_from_state_vector(amps)
+        return self.qml.math.reduce_dm(rho, indices=[0])
+
+    def concurrence(self, amps):
+        rho = self.qml.math.dm_from_state_vector(amps)
+        pur = float(self.qml.math.purity(rho, indices=[0]))
+        return float(self.np.sqrt(2 * (1 - pur)))
+
+    def rho_a_eigenvalues(self, amps):
+        rho = self.rho_a(amps)
+        return sorted(self.np.linalg.eigvalsh(rho).real, reverse=True)
 
 
 BACKENDS = {"qiskit": QiskitBackend, "cirq": CirqBackend,

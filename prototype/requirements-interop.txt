@@ -1,3 +1,5 @@
-# dependência OPCIONAL da interoperabilidade quântica (test_qinterop)
-# sem ela o teste sai com SKIP explícito — nunca falha em silêncio
+# dependências OPCIONAIS da interoperabilidade quântica
+# sem elas o teste sai com SKIP explícito — nunca falha em silêncio
 qiskit>=2.0
+cirq>=1.4
+pennylane>=0.40

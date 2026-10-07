@@ -297,6 +297,20 @@ executa o que foi eliminado, como gêmeo adversarial.
   concurrence diz sim por ruído, ρ_A diz puro) — o certificado exato é
   o único veredicto estável
 
+## Confronto quântico triplo: ZEPHIRUM × Qiskit × Cirq × PennyLane
+
+O ciclo fechado: os três SDKs quânticos atuais enfrentaram o ZEPHIRUM
+(`docs/QINTEROP.md`, `test_qinterop.py`, `pip install qiskit cirq
+pennylane` — sem eles, SKIP explícito):
+
+- **A1 (300 estados)**: os três concordam com o certificado onde
+  conseguem responder — 7-8 NaN cada; ZEPHIRUM respondeu os 346
+- **A2 (46 estados produto)**: ZEPHIRUM C = 0 EXATO; os três: ruído
+  3.0e-08 e 11-12 NaN cada
+- **A3 (fronteira 2^53, det = 1 exato)**: **os três se contradizem**
+  (det float "não", pureza "sim" por ruído, ρ_A "puro") — o
+  certificado ZEPHIRUM é o único veredicto estável
+
 ## The four pillars / Os quatro pilares
 
 ```
