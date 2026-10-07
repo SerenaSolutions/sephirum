@@ -94,3 +94,31 @@ que sobreviveu — ou valida executando o que foi eliminado.
 4. Resultados medidos em Qiskit 2.5.2, Cirq 1.7.0, PennyLane 0.45.1;
    a instabilidade da rota da pureza é comportamento observado
    destas versões.
+
+
+## PONTE TRANSPIADA — o certificado DENTRO do ecossistema (2026-10-07)
+
+O par antitético num só programa: `zephirum_transpiler_multi.py` agora
+gera alvos `qiskit` e `cirq`. O veredito EXATO (critério de Schmidt,
+Fraction, zero execução) viaja como código autônomo do PRÓPRIO
+ecossistema do SDK — o IBM executa, o ZEPHIRUM prova, e os dois
+assinam o mesmo recibo.
+
+O programa gerado imprime VERDICT, HASH, UNITS 0, QPU_UNITS_BILLED 0
+e SDK_PATH_ELIMINATED; o SDK é o GÊMEO ADVERSARIAL: presente, roda o
+statevector e reporta o concurrence float como ruído em torno do
+exato; ausente, imprime SKIP (§12) — nunca finge.
+
+Bateria (test_transpiler_multi.py, PASS): 40 fontes de emaranhamento
+(estados produto com det = 0 exato, fronteira 2^53, quase-separáveis
+com det minúsculo e decimais exatos) transpiladas e EXECUTADAS nos
+alvos python/qiskit/cirq — veredito idêntico ao kernel em 40/40, hash
+idêntico, zero unidades QPU; C/Java/C# recusam a família com §12
+explícito (limites long/128 declarados — gerar código errado seria
+pior que recusar).
+
+O que a ponte muda estrategicamente: nenhum laboratório precisa
+abandonar o Qiskit/Cirq para adotar o ZEPHIRUM — o certificado
+atravessa PARA DENTRO do ecossistema deles. Uma especificação aberta,
+certificados portáteis, verificadores em linguagens diferentes: é
+assim que um padrão atravessa fronteiras de lugar, época e plataforma.

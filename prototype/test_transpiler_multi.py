@@ -11,6 +11,11 @@ Os três têm de dar o MESMO veredito, o MESMO INPUT_HASH e as mesmas
 unidades normativas. Java/C# são gerados e verificados estruturalmente;
 executam onde houver toolchain (§12: nesta máquina só C e Python).
 
+E a PONTE QUÂNTICA: fontes de EMARANHAMENTO transpilam para python/qiskit/
+cirq — o veredito exato (Schmidt, Fraction, zero execução) roda DENTRO do
+ecossistema do SDK, com o SDK como gêmeo adversarial opcional (ausente =>
+SKIP §12, nunca finge).
+
 A recusa honesta também viaja: |r| >= 1 é recusado ANTES de gerar
 qualquer programa, em qualquer alvo.
 """
@@ -141,6 +146,76 @@ def main():
         print("JAVA/C#: gerados e verificados estruturalmente (90/90); "
               "execução declarada §12 — sem JVM/.NET nesta máquina")
 
+    # ---------------- 40 casos EMARANHAMENTO -> python/qiskit/cirq
+    from nexa_core import parse_nexa, NCA
+    import hashlib as _hl
+    ent_ok = 0
+    for i in range(40):
+        if i < 8:      # estados PRODUTO: det = 0 exato (separável)
+            p0, p1 = (Fraction(random.randint(1, 9)),
+                      Fraction(random.randint(-9, 9)))
+            p2 = Fraction(random.randint(1, 9))
+            amp = (p0, p0 * p1, p2 * 0, p2) if False else (
+                p0 * p2, p0, p1 * p2, p1)      # outer product => det=0
+            if amp[0] * amp[3] - amp[1] * amp[2] != 0:
+                amp = (Fraction(1), Fraction(0), Fraction(0),
+                       Fraction(1))
+        elif i < 16:   # fronteira 2^53: det exato = 2^53(2^53+1)
+            amp = (Fraction(2 ** 53 + 1), Fraction(0), Fraction(0),
+                   Fraction(2 ** 53))
+        elif i < 24:   # quase-separável: det minúsculo
+            q0 = random.randint(2, 6)
+            amp = (Fraction(1, q0), Fraction(1, q0 ** 3),
+                   Fraction(1, q0), Fraction(1, q0))
+        else:          # decimais exatos aleatórios
+            amp = tuple(Fraction(str(round(random.uniform(-2, 2), 2)))
+                       for _ in range(4))
+            if sum(x * x for x in amp) == 0:
+                amp = (Fraction(1), Fraction(0), Fraction(0),
+                       Fraction(0))
+        st = ",".join(str(x) for x in amp)
+        if i % 2:
+            qline = "concurrence %s %s" % (
+                random.choice(OPS),
+                random.choice(["0", "0.5", "0.25", "1", "0.125", "0.75"]))
+        else:
+            qline = "entangled %s %s" % (
+                random.choice(OPS), random.choice(["0", "1"]))
+        src = ("ASK:\n    question: %s\nCONTRACT:\n    "
+               "absolute_error: 0\nMODEL:\n    type: entanglement\n"
+               "    state: %s\n" % (qline, st))
+        res = NCA(parse_nexa(src), "battery").compile()
+        expected = 1 if res["answer"] is True else 0
+        assert res["required"] == 0, "emaranhado tem de custar 0 unidades"
+        out = transpile(src)
+        dstr = "|".join(str(x) for x in amp)
+        xhash = _hl.sha256(dstr.encode()).hexdigest()
+        assert out["cert"]["units"] == 0
+        assert out["cert"]["input_hash"] == xhash
+        for tgt in ("python", "qiskit", "cirq"):
+            f = os.path.join(tmp, "ent_%02d_%s.py" % (i, tgt))
+            with open(f, "w") as fh:
+                fh.write(out[tgt])
+            r = _run(["python3", f])
+            assert r.returncode == 0, (tgt, i, r.stderr[-400:])
+            v, h, u = _parse_out(r.stdout)
+            assert v == expected, ("veredito divergente", tgt, i)
+            assert h == xhash, ("hash divergente", tgt, i)
+            assert u == 0, ("unidades divergentes", tgt, i)
+            if tgt in ("qiskit", "cirq"):
+                assert "QPU_UNITS_BILLED 0" in r.stdout, (tgt, i)
+                assert "SKIP (§12)" in r.stdout, (tgt, i, "SDK ausente "
+                                                  "tem de ser SKIP")
+        for tgt in ("c", "java", "csharp"):
+            assert isinstance(out[tgt], str) and "§12" in out[tgt], \
+                (tgt, "recusa explícita esperada")
+        ent_ok += 1
+    print("QISKIT/CIRQ: %d fontes de emaranhamento -> python/qiskit/cirq "
+          "autônomos — veredito EXATO idêntico ao kernel, ZERO unidades "
+          "QPU faturadas, SKIP §12 declarado sem SDK (produto, fronteira "
+          "2^53 e quase-separável incluídos); C/Java/C# recusam a família "
+          "com motivo explícito" % ent_ok)
+
     # ---------------- a recusa também viaja
     refusas = 0
     for src in [
@@ -156,13 +231,23 @@ def main():
         except VMFault as e:
             assert "não converge" in str(e)
             refusas += 1
-    assert refusas == 2
-    print("RECUSA: |r| >= 1 recusado ANTES de gerar qualquer programa "
-          "(2/2) — honestidade preservada em todos os alvos")
+    refusas_ent = 0
+    for st in ["0,0,0,0", "1,2,3"]:     # nulo e 3 amplitudes
+        try:
+            transpile("ASK:\n    question: entangled > 0\nCONTRACT:\n"
+                      "    absolute_error: 0\nMODEL:\n    type: "
+                      "entanglement\n    state: %s\n" % st)
+        except VMFault:
+            refusas_ent += 1
+    assert refusas_ent == 2
+    print("RECUSA: |r| >= 1 (2/2) e estado nulo/malformado de emaranhado "
+          "(2/2) recusados ANTES de gerar qualquer programa — "
+          "honestidade preservada em todos os alvos")
 
     print("RESULTADO: PASS — transpilador multi-alvo: a fonte ZEPHIRUM "
           "roda como Python e como C nativo; Java e C# gerados e à espera "
-          "de runtime")
+          "de runtime; a ponte quântica qiskit/cirq entrega o veredito "
+          "exato DENTRO do ecossistema do SDK com zero unidades QPU")
 
 
 if __name__ == "__main__":

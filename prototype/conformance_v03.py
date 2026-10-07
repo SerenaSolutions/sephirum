@@ -30,7 +30,7 @@ BATTERIES = [
     (os.path.join("verifier_indep", "test_verificador_c.py"),
      "verificador independente em C (Python<->C)"),
     ("test_transpiler_multi.py",
-     "transpilador multi-alvo: mesma fonte em Python/C/Java/C#"),
+     "transpilador multi-alvo: mesma fonte em Python/C/Java/C#/Qiskit/Cirq"),
     ("test_qsim_gateway.py",
      "Q-SIM Gateway: emaranhamento decidido no portao, zero unidades QPU"),
 ]

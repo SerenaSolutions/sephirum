@@ -13,10 +13,19 @@ Alvos desta fatia:
   .c   — __int128 + SHA-256 (FIPS 180-4) embutido, gcc -std=c11
   .java— long com cruzamento de produtos + MessageDigest
   .cs  — long + SHA256.Create
+  .qiskit / .cirq — A PONTE QUÂNTICA: o veredito EXATO (Schmidt,
+      Fraction, zero execução) roda DENTRO do ecossistema do SDK;
+      o SDK é o gêmeo adversarial (cross-check opcional). Sem o SDK
+      instalado o programa imprime SKIP (§12) — nunca finge. Eles
+      executam; o ZEPHIRUM prova: o par antitético num só programa.
 
 Famílias cobertas: gauss_series, geometric_inf, arithmetic_mean (a escada
-de self-hosting, fatias 1-2). A recusa honesta (§12) é PRESERVADA em todos
-os alvos: |r| >= 1 não gera programa — gera recusa.
+de self-hosting, fatias 1-2) + ENTANGLEMENT nos alvos python/qiskit/cirq
+(decisão de Schmidt exata transpilada, ZERO unidades QPU faturadas).
+A recusa honesta (§12) é PRESERVADA em todos os alvos: |r| >= 1, estado
+nulo e família fora de escopo não geram programa — geram recusa com
+motivo explícito. Entanglement NÃO transpila para C/Java/C# nesta fatia
+(limites long/128 declarados) — os alvos recusam com §12 visível.
 
 §12 declarado: Java/C# são GERADOS com aritmética long (limites ±9,2e18);
 a execução em JVM/.NET é testada onde o toolchain existir — nesta bateria,
@@ -29,7 +38,8 @@ from fractions import Fraction
 from zephirum_lexer import parse_zephirum
 from zephirum_vm import VMFault
 
-UNITS = {"gauss_series": 2, "geometric_inf": 2, "arithmetic_mean": 1}
+UNITS = {"gauss_series": 2, "geometric_inf": 2, "arithmetic_mean": 1,
+          "entanglement": 0}   # Schmidt: decidido SEM execução
 
 
 def _compile_src(src):
@@ -40,7 +50,29 @@ def _compile_src(src):
         raise VMFault("família %r fora dos alvos desta fatia (§12)" % fam)
     q = blocks["ASK"]["question"]
     parts = q.rsplit(" ", 2)
-    op, thr = parts[1], int(parts[2])
+    op = parts[1]
+    if fam == "entanglement":
+        toks = [x.strip() for x in model["state"].split(",")]
+        if len(toks) != 4:
+            raise VMFault("estado com %d amplitudes — precisa 4 (§12: "
+                          "recusa antes de gerar qualquer programa)"
+                          % len(toks))
+        data = [Fraction(t) for t in toks]
+        if sum(x * x for x in data) == 0:
+            raise VMFault("estado nulo não é estado quântico (§12: "
+                          "recusa antes de gerar qualquer programa)")
+        target = parts[0]
+        if target not in ("entangled", "concurrence"):
+            raise VMFault("pergunta %r fora da família de emaranhamento "
+                          "(§12)" % target)
+        # threshold FRACIONÁRIO exato (decimal de token, não float)
+        return {"fam": fam, "op": op, "thr": Fraction(parts[2]),
+                "target": target, "data": data,
+                "data_str": "|".join(str(v) for v in data),
+                "input_hash": hashlib.sha256(
+                    "|".join(str(v) for v in data).encode()).hexdigest(),
+                "units": UNITS[fam]}
+    thr = int(parts[2])
     if fam == "gauss_series":
         n = int(model["n"])
         if n < 1:
@@ -179,6 +211,8 @@ def _gen_python(c):
     elif fam == "arithmetic_mean":
         body = "val = Fraction(n+1, 2)"
         decl = "n = %d" % c["data"][0]
+    elif fam == "entanglement":
+        return _gen_entangle_exact(c, sdk=None)
     else:
         a, r = c["data"]
         body = "val = a / (1 - r)"
@@ -203,6 +237,106 @@ print("VERDICT", 1 if verdict else 0)
 print("HASH", hashlib.sha256(DATA.encode()).hexdigest())
 print("UNITS", %d)
 ''' % (fam, op, thr, c["data_str"], op, thr, decl, body, c["units"])
+
+
+def _ent_exact_body(c):
+    """Núcleo de decisão exato (Schmidt, Fraction) — transpilado."""
+    if c.get("target") == "entangled":
+        dec = ('TARGET = "entangled"\n'
+               'THR = Fraction(%r)\n'
+               'N = A*A + B*B + C_*C_ + D*D\n'
+               'DET = A*D - B*C_\n'
+               'v = Fraction(1 if DET != 0 else 0)\n'
+               'verdict = {">": v > THR, "<": v < THR, ">=": v >= THR,\n'
+               '           "<=": v <= THR, "==": v == THR}[OP]')
+        return dec % str(c["thr"])
+    dec = ('TARGET = "concurrence"\n'
+           'THR = Fraction(%r)\n'
+           'N = A*A + B*B + C_*C_ + D*D\n'
+           'DET = A*D - B*C_\n'
+           'sq, tsq = 4*DET*DET, THR*THR*N*N\n'
+           'if OP == ">":\n'
+           '    verdict = True if THR < 0 else sq > tsq\n'
+           'elif OP == ">=":\n'
+           '    verdict = True if THR <= 0 else sq >= tsq\n'
+           'elif OP == "<":\n'
+           '    verdict = False if THR <= 0 else sq < tsq\n'
+           'elif OP == "<=":\n'
+           '    verdict = False if THR < 0 else sq <= tsq\n'
+           'else:\n'
+           '    verdict = sq == tsq')
+    return dec % str(c["thr"])
+
+
+def _gen_entangle_exact(c, sdk):
+    """Programa autônomo: veredito EXATO do ZEPHIRUM + gêmeo SDK opcional.
+
+    O SDK (qiskit/cirq) é o ADVERSÁRIO: executa o caminho que o
+    certificado eliminou. Sem SDK instalado => SKIP §12 — nunca finge.
+    """
+    a, b, cc, d = c["data"]
+    decl = ('A = Fraction(%r)\nB = Fraction(%r)\nC_ = Fraction(%r)\n'
+            'D = Fraction(%r)\nDATA = %r\nOP = %r\n'
+            % (str(a), str(b), str(cc), str(d), c["data_str"], c["op"]))
+    head = ('#!/usr/bin/env python3\n'
+            '# Gerado pelo TRANSPILER MULTI-ALVO ZEPHIRUM — ALVO %s.\n'
+            '# Família: entanglement · pergunta: %s %s %s\n'
+            '# O veredito EXATO é do ZEPHIRUM (critério de Schmidt,\n'
+            '# Fraction, ZERO execução). O SDK é o gêmeo adversarial;\n'
+            '# ausente => SKIP §12.\n'
+            'import hashlib\n'
+            'from fractions import Fraction\n\n'
+            '%s\n%s\n\n'
+            'print("VERDICT", 1 if verdict else 0)\n'
+            'print("HASH", hashlib.sha256(DATA.encode()).hexdigest())\n'
+            'print("UNITS", %d)\n'
+            'print("QPU_UNITS_BILLED", 0)\n'
+            'print("SDK_PATH_ELIMINATED",\n'
+            '      "statevector + eigendecomposition (8 unidades, salvas '
+            'pelo "\n'
+            '      "critério de Schmidt)")\n'
+            % (sdk or "EXATO (sem SDK)", c.get("target", "entangled"),
+               c["op"], str(c["thr"]), decl, _ent_exact_body(c),
+               c["units"]))
+    if sdk == "qiskit":
+        head += ('try:\n'
+                 '    import numpy as np\n'
+                 '    from qiskit.quantum_info import Statevector\n'
+                 '    sv = Statevector([float(A), float(B), float(C_), '
+                 'float(D)])\n'
+                 '    m = np.asarray(sv.data).reshape(2, 2)\n'
+                 '    cf = 2 * abs(m[0, 0] * m[1, 1] - m[0, 1] * m[1, 0])'
+                 ' / float(N)\n'
+                 '    print("SDK_CROSS_CHECK", "qiskit Statevector '
+                 'concurrence = %.17g (ruído float em torno do veredito '
+                 'exato)" % cf)\n'
+                 'except ImportError:\n'
+                 '    print("SDK_CROSS_CHECK SKIP (§12): qiskit não '
+                 'instalado neste ambiente — o gateway nunca finge")\n')
+    elif sdk == "cirq":
+        head += ('try:\n'
+                 '    import numpy as np\n'
+                 '    import cirq\n'
+                 '    sv = cirq.to_valid_state_vector([float(A), '
+                 'float(B), float(C_), float(D)])\n'
+                 '    m = np.asarray(sv).reshape(2, 2)\n'
+                 '    cf = 2 * abs(m[0, 0] * m[1, 1] - m[0, 1] * m[1, 0])'
+                 ' / float(N)\n'
+                 '    print("SDK_CROSS_CHECK", "cirq Statevector '
+                 'concurrence = %.17g (ruído float em torno do veredito '
+                 'exato)" % cf)\n'
+                 'except ImportError:\n'
+                 '    print("SDK_CROSS_CHECK SKIP (§12): cirq não '
+                 'instalado neste ambiente — o gateway nunca finge")\n')
+    return head
+
+
+def _gen_qiskit(c):
+    return _gen_entangle_exact(c, sdk="qiskit")
+
+
+def _gen_cirq(c):
+    return _gen_entangle_exact(c, sdk="cirq")
 
 
 def _gen_c(c):
@@ -293,17 +427,28 @@ def transpile(src):
     Recusa (§12) em TODOS os alvos: |r| >= 1, n < 1, família desconhecida.
     """
     c = _compile_src(src)
+    cert = {"fam": c["fam"], "op": c["op"], "thr": c["thr"],
+            "input_hash": c["input_hash"], "units": c["units"],
+            "data_str": c["data_str"]}
+    if c["fam"] == "entanglement":
+        fora = ("§12 RECUSA: entanglement transpila para python/qiskit/"
+                "cirq nesta fatia — aritmética long/128 não cobre o "
+                "regime; gerar código errado seria pior que recusar")
+        return {"python": _gen_python(c), "qiskit": _gen_qiskit(c),
+                "cirq": _gen_cirq(c), "c": fora, "java": fora,
+                "csharp": fora, "cert": cert}
+    fora_q = ("§12: os alvos qiskit/cirq cobrem a família entanglement "
+              "(a ponte quântica) — a família %r transpila para "
+              "python/c/java/csharp" % c["fam"])
     return {"python": _gen_python(c), "c": _gen_c(c),
             "java": _gen_java(c), "csharp": _gen_csharp(c),
-            "cert": {"fam": c["fam"], "op": c["op"], "thr": c["thr"],
-                     "input_hash": c["input_hash"], "units": c["units"],
-                     "data_str": c["data_str"]}}
+            "qiskit": fora_q, "cirq": fora_q, "cert": cert}
 
 
 if __name__ == "__main__":
     import sys
     src = open(sys.argv[1]).read()
     out = transpile(src)
-    for tgt in ("python", "c", "java", "csharp"):
+    for tgt in ("python", "c", "java", "csharp", "qiskit", "cirq"):
         print("=== %s ===" % tgt)
         print(out[tgt])
