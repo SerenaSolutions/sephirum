@@ -11,7 +11,8 @@ certificado pelo módulo INDEPENDENTE (nexa_checker).
 """
 import sys
 
-from nexa_core import parse_nexa, NCA
+from nexa_core import NCA
+from sifr_lexer import parse_sifr
 from nexa_checker import verify
 from zerum import STATUS_TO_TRIT
 
@@ -36,7 +37,7 @@ MODEL:
 
 def run_program(src):
     try:
-        blocks = parse_nexa(src)
+        blocks = parse_sifr(src)
     except Exception as e:
         print("ERRO DE SINTAXE:", e)
         return

@@ -30,8 +30,10 @@ O paradigma se inverte: de `ALGORITHM → COMPUTE` para `PROOF → COMPUTE`.
 ## Estrutura
 
 ```
-prototype/   Parser SIFR, motor SCA, verificador independente, testes
-             (run_tests.py = bateria de soundness; stress_test.py = 500k casos;
+prototype/   Lexer/parser SIFR próprios (Fase 2: zero ast/eval), motor SCA,
+             verificador independente, REPL, transpilador SIFR→Python
+             (run_tests.py = soundness; stress_test.py = 500k casos;
+              test_sifr_lang.py = equivalência da linguagem; sifr_repl.py = REPL;
               ai_layer.py = previsão consultiva; zerum.py = lógica trivalente)
 book/        O livro (PT mestre → EN → AR), estrutura e figuras
 results/     Resultados JSON das baterias (reproduzíveis por semente)
@@ -44,6 +46,9 @@ docs/        Charter do projeto, paper (arXiv-ready), roteiro INPI
 python3 prototype/run_tests.py      # bateria de soundness; exit 0 = ok
 python3 prototype/stress_test.py 500000   # 500k problemas, ~14 s
 python3 prototype/ai_layer.py      # camada de IA consultiva
+python3 prototype/sifr_repl.py     # REPL: digite programas SIFR
+cat prog.sifr | python3 prototype/sifr_transpiler.py  # gera Python autônomo
+python3 prototype/test_sifr_lang.py  # equivalência da linguagem (Fase 2)
 ```
 
 Python 3 puro. Sem dependências. Sem LLM. Sem nuvem.
@@ -106,8 +111,10 @@ The paradigm inverts: from `ALGORITHM → COMPUTE` to `PROOF → COMPUTE`.
 ## Structure
 
 ```
-prototype/   SIFR parser, SCA engine, independent verifier, tests
-             (run_tests.py = soundness battery; stress_test.py = 500k cases;
+prototype/   Own SIFR lexer/parser (Phase 2: zero ast/eval), SCA engine,
+             independent verifier, REPL, SIFR→Python transpiler
+             (run_tests.py = soundness; stress_test.py = 500k cases;
+              test_sifr_lang.py = language equivalence; sifr_repl.py = REPL;
               ai_layer.py = advisory prediction; zerum.py = trivalent logic)
 book/        The book (PT master → EN → AR), structure and figures
 results/     JSON results (reproducible by seed)
@@ -120,6 +127,9 @@ docs/        Project charter, arXiv-ready paper, INPI roadmap
 python3 prototype/run_tests.py      # soundness battery; exit 0 = ok
 python3 prototype/stress_test.py 500000   # 500k problems, ~14 s
 python3 prototype/ai_layer.py      # advisory AI layer
+python3 prototype/sifr_repl.py     # REPL: type SIFR programs
+cat prog.sifr | python3 prototype/sifr_transpiler.py  # standalone Python output
+python3 prototype/test_sifr_lang.py  # language equivalence (Phase 2)
 ```
 
 Pure Python 3. No dependencies. No LLM. No cloud.

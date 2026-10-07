@@ -75,11 +75,13 @@ necessidade → certificado → ledger. A escada de evolução:
 |---|---|---|
 | 0 | Parser + IR + motor + verificador | **feita e testada (500k casos)** |
 | 1 | Gramática formal (este documento) + REPL | **feita** |
-| 2 | Lexer próprio (sem `ast` do Python) + transpilação SIFR→Python | próxima |
+| 2 | Lexer próprio (sem `ast` do Python) + transpilação SIFR→Python | **feita e testada** |
 | 3 | Máquina de bytecode própria (VM) + tipos | futura |
 | 4 | Toolchain em Rust/C + gerenciador de pacotes + stdlib | futura |
 
-A fase 2 é o divisor de águas: enquanto o parser empresta o `ast` do Python
-para expressões, a SIFR é uma DSL hospedada. Com lexer e parser próprios, ela
-passa a ser uma linguagem no sentido pleno — o mesmo degrau que separa o
-Python 0.9.0 de um script experimental.
+**A fase 2 está concluída (2026-10-07).** `sifr_lexer.py` tokeniza a fonte
+com expressões próprias (recursive descent, zero `ast`); `test_sifr_lang.py`
+prova equivalência com a Fase 1 em 50.000 programas, iguala o avaliador de
+expressões em 20.000 expressões aleatórias, rejeita fonte inválida e valida o
+transpilador SIFR→Python em 500 casos. O REPL já usa o lexer próprio.
+O que ainda vem emprestado do Python: a VM de execução (fase 3).

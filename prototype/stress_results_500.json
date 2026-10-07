@@ -1,0 +1,23 @@
+{
+  "seed": 42,
+  "N": 500,
+  "counts": {
+    "DECIDED_WITHOUT_EXECUTION": 292,
+    "DECIDED_BY_REDUCTION": 169,
+    "RESIDUAL_COMPUTATION_REQUIRED": 3,
+    "FULL_EXECUTION_REQUIRED": 7,
+    "UNKNOWN": 29
+  },
+  "decided": 471,
+  "wrong_answers": 0,
+  "certificates_verified": 500,
+  "certificates_rejected": 0,
+  "forged_attacks": 20,
+  "forged_rejected": 20,
+  "total_original_units": 3784,
+  "total_executed_units": 789,
+  "total_eliminated_units": 2995,
+  "elimination_ratio_pct": 79.15,
+  "aggregate_net_benefit": 2946.23,
+  "false_elimination_rate": 0.0
+}
