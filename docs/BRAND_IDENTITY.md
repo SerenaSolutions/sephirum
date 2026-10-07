@@ -1,4 +1,4 @@
-# Identidade Visual da Plataforma SIFR (v2, 2026-10-06)
+# Identidade Visual da Plataforma ZEPHIRUM (v2, 2026-10-06)
 
 Kit de marca oficial. O monograma Z v1 (`assets/logo/`) permanece no
 repositório como registro histórico — nada é apagado.
@@ -7,8 +7,8 @@ repositório como registro histórico — nada é apagado.
 
 | Marca | Produto | Significado |
 |---|---|---|
-| **Bloch-Z** | **SIFR** — a linguagem | A esfera de Bloch com o vetor de estado **no equador**: nem \|0⟩ nem \|1⟩. É o ZERUM desenhado na geometria universal da computação quântica. Os dois traços tracejados são os colapsos possíveis — o trabalho do Decision Kernel. |
-| **Escada Certificada** | **SCA** — o algoritmo comercial | O algoritmo desce do degrau barato ao caro e **para no primeiro degrau que decide**, com o diamante (certificado) pousado nele. Os degraus abaixo ficam em fantasma: **nunca executados**. |
+| **Bloch-Z** | **ZEPHIRUM** — a linguagem | A esfera de Bloch com o vetor de estado **no equador**: nem \|0⟩ nem \|1⟩. É o ZEPHIRUM desenhado na geometria universal da computação quântica. Os dois traços tracejados são os colapsos possíveis — o trabalho do Decision Kernel. |
+| **Escada Certificada** | **ZCA** — o algoritmo comercial | O algoritmo desce do degrau barato ao caro e **para no primeiro degrau que decide**, com o diamante (certificado) pousado nele. Os degraus abaixo ficam em fantasma: **nunca executados**. |
 | **O Caroço** | **Decision Kernel** — o produto | *Kernel* significa caroço. Da computação inteira, só o caroço sobrevive: a casca (hexágono) é o certificado, a semente (diamante) é a resposta. "Não coma a polpa; pergunte ao caroço." |
 
 A narrativa em três marcas: **o Bloch-Z pergunta, a Escada desce, o Caroço sobra.**
@@ -34,14 +34,14 @@ Regra de cor: navy + UM acento ciano. Nunca arco-íris; o diamante branco
 
 ## Rigor científico (obrigatório em qualquer uso)
 
-O Bloch-Z é **analogia iconográfica**: o estado Z da SIFR é um estado de
+O Bloch-Z é **analogia iconográfica**: o estado Z da ZEPHIRUM é um estado de
 DECISÃO (epistêmico), não superposição física. Em material científico, a
 ressalva "Z é epistêmico; a analogia com |+⟩ é visual" acompanha a marca.
 Nunca converter analogia em alegação de fato (hierarquia de evidências).
 
 ## Rótulos
 
-- **SIFR** — a linguagem (wordmark SIFR, caixa alta; nunca "Python", nunca "DSL")
-- **SCA** — SIFR Compilation Algorithm (rótulo: `SCA` + Escada Certificada)
+- **ZEPHIRUM** — a linguagem (wordmark ZEPHIRUM, caixa alta; nunca "Python", nunca "DSL")
+- **ZCA** — Zephirum Compilation Algorithm (rótulo: `ZCA` + Escada Certificada)
 - **Decision Kernel** — o núcleo certificado (rótulo bilingue: "o caroço")
 - Assinatura etimológica: *ṣifr — a raiz de "zero"*

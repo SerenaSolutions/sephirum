@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """
-Testes mínimos do SIFR-IR (Fase 3 — ordem corrigida: testar antes de expandir).
+Testes mínimos do ZEPHIRUM-IR (Fase 3 — ordem corrigida: testar antes de expandir).
 
-(1) Todo resultado do NCA atual se expressa como SIFR-IR completo e válido.
+(1) Todo resultado do NCA atual se expressa como ZEPHIRUM-IR completo e válido.
 (2) Round-trip JSON preserva o IR (hash idêntico).
 (3) UNKNOWN mantém os invariantes (trit Z, sem resposta, sem kernel).
 (4) Sabotagem detectada: fabricar resposta em UNKNOWN, kernel em UNKNOWN,
@@ -17,8 +17,8 @@ import random
 import sys
 
 from nexa_core import parse_nexa, NCA
-from nexa_checker import verify
-from sifr_ir import (from_nca, validate, ir_hash, to_json, from_json,
+from verify_certificate import verify
+from zephirum_ir import (from_nca, validate, ir_hash, to_json, from_json,
                      SifrIRError)
 from stress_test import make_case, build_src
 
@@ -67,12 +67,12 @@ def run():
                 validate(bad)
             except SifrIRError:
                 pass
-    print("(1) %d resultados NCA -> SIFR-IR válido: OK" % N)
+    print("(1) %d resultados NCA -> ZEPHIRUM-IR válido: OK" % N)
     print("(2) round-trip JSON preserva o IR: OK")
     print("(3) UNKNOWN preservado honesto: %d/%d casos: OK" % (n_unknown, N))
     print("(4) sabotagens rejeitadas pelo validate(): OK")
     print("(5) certificados embutidos verificados de forma independente: OK")
-    print("\nSIFR-IR CONSOLIDADO — infraestrutura transversal pronta. Exit 0.")
+    print("\nZEPHIRUM-IR CONSOLIDADO — infraestrutura transversal pronta. Exit 0.")
 
 
 if __name__ == "__main__":

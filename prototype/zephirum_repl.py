@@ -1,23 +1,23 @@
 #!/usr/bin/env python3
 """
-SIFR REPL — a linguagem que você digita.
+ZEPHIRUM REPL — a linguagem que você digita.
 
-Uso interativo:   python3 sifr_repl.py
-Uso por pipe:     cat programa.sifr | python3 sifr_repl.py
+Uso interativo:   python3 zephirum_repl.py
+Uso por pipe:     cat programa.zeph | python3 zephirum_repl.py
 
-Cole (ou digite) um programa SIFR; linha vazia compila. O resultado traz o
-estado (5 possíveis), a resposta (0/1/Z) na lógica zerum, e a verificação do
-certificado pelo módulo INDEPENDENTE (nexa_checker).
+Cole (ou digite) um programa ZEPHIRUM; linha vazia compila. O resultado traz o
+estado (5 possíveis), a resposta (0/1/Z) na lógica zephirum, e a verificação do
+certificado pelo módulo INDEPENDENTE (verify_certificate).
 """
 import sys
 
 from nexa_core import NCA
-from sifr_lexer import parse_sifr
-from nexa_checker import verify
-from zerum import STATUS_TO_TRIT
+from zephirum_lexer import parse_sifr
+from verify_certificate import verify
+from zephirum import STATUS_TO_TRIT
 
 BANNER = """
-SIFR 0.2 — a linguagem da computação antes da execução
+ZEPHIRUM 0.2 — a linguagem da computação antes da execução
 PERGUNTE PRIMEIRO. PROVE DEPOIS. COMPUTE POR ÚLTIMO.
 Comandos: :exemplo  :ajuda  :sair   (linha vazia = compilar)
 """
@@ -54,7 +54,7 @@ def run_program(src):
     print("─" * 56)
     print("ESTADO   :", res["status"])
     print("RESPOSTA :", answer)
-    print("ZERUM    :", trit_msg)
+    print("ZEPHIRUM    :", trit_msg)
     print("KERNEL   :", cert["KERNEL"], "| degrau:", cert["RUNG"])
     print("UNIDADES : demandadas %s | executadas %s | eliminadas %s"
           % (original, executed, original - executed))
@@ -72,7 +72,7 @@ def main():
         return 0
     while True:
         try:
-            line = input("sifr> " if not buf else "  ...> ")
+            line = input("zephirum> " if not buf else "  ...> ")
         except EOFError:
             print()
             return 0

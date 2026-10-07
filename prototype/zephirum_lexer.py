@@ -1,13 +1,13 @@
 #!/usr/bin/env python3
 """
-SIFR LEXER — Fase 2 da evolução da linguagem (roadmap da gramática).
+ZEPHIRUM LEXER — Fase 2 da evolução da linguagem (roadmap da gramática).
 
-A partir daqui a SIFR não pede mais emprestado o módulo `ast` do Python:
+A partir daqui a ZEPHIRUM não pede mais emprestado o módulo `ast` do Python:
 tokenização e avaliação de expressões são próprias (recursive descent).
 O objetivo de soundness se mantém: sem execução de código arbitrário,
 sem `eval`, sem chamadas — só aritmética de literais.
 
-Pipeline Fase 2: SIFR source -> LEXER -> TOKENS -> PARSER -> blocks IR
+Pipeline Fase 2: ZEPHIRUM source -> LEXER -> TOKENS -> PARSER -> blocks IR
 (igual ao da Fase 1) -> NCA (inalterado).
 """
 import re
@@ -35,7 +35,7 @@ class SifrSyntaxError(Exception):
 
 
 def tokenize(src):
-    """SIFR source -> lista de tokens (type, value, line)."""
+    """ZEPHIRUM source -> lista de tokens (type, value, line)."""
     tokens, pos, line = [], 0, 1
     n = len(src)
     while pos < n:
@@ -61,7 +61,7 @@ def tokenize(src):
 
 # ── Parser de blocos (produz o IR idêntico ao da Fase 1) ────────────
 def parse_sifr(src):
-    """SIFR source (tokens próprios) -> blocks IR {ASK: {...}, ...}.
+    """ZEPHIRUM source (tokens próprios) -> blocks IR {ASK: {...}, ...}.
 
     Estrutura validada por tokens; os valores preservam o texto-fonte
     (contracto da Fase 1), garantindo equivalência exata com parse_nexa.

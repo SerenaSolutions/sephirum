@@ -163,7 +163,7 @@ class NCA:
             "ELIMINATION_TRACE": self.ledger,
             "STATUS": status,
             "ANSWER": answer,
-            "CHECKER": "nexa_checker.verify",
+            "CHECKER": "verify_certificate.verify",
             "COST_ESTIMATE": {
                 "analysis": analysis_cost,
                 "execution": exec_cost,

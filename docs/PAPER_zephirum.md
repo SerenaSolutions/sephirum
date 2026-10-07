@@ -1,21 +1,21 @@
-# ZERUM — Computation Before Execution: A Certified Necessity Compiler with a Trivalent Decision Logic
+# ZEPHIRUM — Computation Before Execution: A Certified Necessity Compiler with a Trivalent Decision Logic
 
 *Draft technical report (arXiv-ready), 2026-10-06. Author: AUŠRA Quantinum.*
 
 ## Abstract
 
-We present ZERUM, a system that answers questions *about* computations before
-running them. Problems are stated in SIFR, a small domain-specific language in
+We present ZEPHIRUM, a system that answers questions *about* computations before
+running them. Problems are stated in ZEPHIRUM, a small domain-specific language in
 which the user declares a question (e.g., "is the sum above a threshold?"), a
-contract (tolerance, budget, assumptions) and a model. The SIFR Compilation
-Algorithm (SCA) searches an *elimination ladder* of increasingly expensive
+contract (tolerance, budget, assumptions) and a model. The ZEPHIRUM Compilation
+Algorithm (ZCA) searches an *elimination ladder* of increasingly expensive
 techniques — identity, simplification, reduction, interval bounding, closed-form
 evaluation, certified approximation, classical execution — and returns one of
 five explicit states: decided without execution, decided by reduction, residual
 computation required, full execution required, or UNKNOWN. Every decision is
 emitted with a certificate that an independent verifier re-derives from the
-original source. We introduce the numeral Z (zerum), the third truth value of
-SIFR logic, which remains whenever neither necessity nor unnecessity can be
+original source. We introduce the numeral Z (zephirum), the third truth value of
+ZEPHIRUM logic, which remains whenever neither necessity nor unnecessity can be
 proven. On 500,000 randomized problems across four families, the system made
 zero wrong decisions, all 500,000 certificates passed independent verification,
 20/20 forged certificates were rejected, and 76.5% of the demanded computation
@@ -28,7 +28,7 @@ is deliberately quantum-last.
 
 Computation exists to answer questions, yet the standard pipeline — pick an
 algorithm, run it, then interpret — pays for execution before asking whether
-execution is needed. ZERUM inverts this order: PROOF → COMPUTE. Given a problem
+execution is needed. ZEPHIRUM inverts this order: PROOF → COMPUTE. Given a problem
 P, a question Q and a contract C (tolerance ε, budget B, model M), the compiler
 searches for a *decision kernel*: a certified procedure sufficient to decide Q
 under C at minimal justified cost. The design principle is stated in the project
@@ -53,23 +53,22 @@ charter (§26).
 
 ## 3. Architecture
 
-**SIFR** (from Arabic ṣifr, the etymological root of "zero") declares ASK
+**ZEPHIRUM** (from Arabic ṣifr, the etymological root of "zero") declares ASK
 (the question), CONTRACT (tolerance, error model), and MODEL (computation
-family, assumptions, unknowns with optional bounds). The SCA ladder is ordered
+family, assumptions, unknowns with optional bounds). The ZCA ladder is ordered
 by cost: rung attempts are cheap first; the first certified success decides the
 question and emits a certificate; exhaustion of the ladder justifies execution.
 Five states are explicit; in particular, UNKNOWN is a first-class result, never
 a failure.
 
-**The numeral Z (zerum).** SIFR logic is trivalent: 0 (false/eliminated),
+**The numeral Z (zephirum).** ZEPHIRUM logic is trivalent: 0 (false/eliminated),
 1 (true/necessary), and Z — the question not yet collapsed. The decision
 kernel is the collapse operator Z → 0|1, always accompanied by a verifiable
 certificate. In quantum notation the concept is named by the plus state
 Z ≡ (|0⟩+|1⟩)/√2; we stress that this is a *naming*, not new mathematics, and
-the current implementation is classical. In Arabic the numeral's sibling name
-is SIWAHID (ṣifr + wāḥid, "zero and one"); the Arabic grammatical dual
-(ṣifrayn, "the two zeros together") is recorded as the concept's grammatical
-ancestor.
+the current implementation is classical. The name ZEPHIRUM comes from the medieval Latin
+*zephirum* — the form in which Fibonacci recorded the numeral in the
+Liber Abaci (1202), the step that became "zero" in Europe.
 
 **Certificates.** Each certificate carries the deciding rung, its evidence
 (witness sums, bounds, evaluated values), and the eliminated units. The
@@ -118,7 +117,7 @@ No quantum backend exists; the final rung is future work. Anterioridade
 
 ## 6. Conclusion
 
-ZERUM demonstrates, in a controlled but fully reproducible setting, that a
+ZEPHIRUM demonstrates, in a controlled but fully reproducible setting, that a
 question-first compiler with independent verification can eliminate most
 demanded computation while remaining unable to lie: zero wrong answers, all
 certificates verified, all forgeries rejected. The deeper claim is

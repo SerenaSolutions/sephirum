@@ -1,6 +1,9 @@
-# Varredura de Singularidade — Dossiê de Anterioridade (2026-10-06)
+# Varredura de Singularidade
 
-**Objeto:** a composição SIFR/ZERUM — Computation-Elimination-First:
+> Renomeado 2026-10-07: ZERUM→**ZEPHIRUM**, SIFR→**ZEPHIRUM** (linguagem),
+> SCA→**ZCA**. O texto abaixo usa os nomes atuais. — Dossiê de Anterioridade (2026-10-06)
+
+**Objeto:** a composição ZEPHIRUM — Computation-Elimination-First:
 necessity compilation (P, Q, C, B → menor computação certificável),
 veredito trivalente (DESNECESSÁRIO_PROVADO / NECESSÁRIO_NO_MODELO /
 UNKNOWN-Z), escada de eliminação de 11 degraus com parada no primeiro

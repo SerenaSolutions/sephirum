@@ -24,7 +24,7 @@ evidência, rastro da escada, custos, status, resposta.
 import hashlib
 import json
 
-from zerum import STATUS_TO_TRIT
+from zephirum import STATUS_TO_TRIT
 
 
 def canonical(obj):

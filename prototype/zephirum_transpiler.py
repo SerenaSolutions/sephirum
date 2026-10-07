@@ -1,25 +1,25 @@
 #!/usr/bin/env python3
 """
-SIFR TRANSPILER — SIFR -> Python (Fase 2).
+ZEPHIRUM TRANSPILER — ZEPHIRUM -> Python (Fase 2).
 
-Gera um programa Python autônomo que responde à pergunta SIFR SEM precisar
-do motor SIFR: a lógica de decisão do kernel é embutida no código gerado
+Gera um programa Python autônomo que responde à pergunta ZEPHIRUM SEM precisar
+do motor ZEPHIRUM: a lógica de decisão do kernel é embutida no código gerado
 (a mesma aritmética do verificador independente). Quando nem o kernel
-consegue decidir, o programa gerado responde Z (zerum) — honestidade
+consegue decidir, o programa gerado responde Z (zephirum) — honestidade
 preservada também no código transpilado.
 
 Nota honesta: o transpilado recomputa a decisão com aritmética própria;
 ele não reexecuta a escada completa (isso é trabalho do compilador, não
 do programa respondido). Para as famílias atuais a resposta coincide
-por construção; o teste `test_sifr_lang.py` verifica isso caso a caso.
+por construção; o teste `test_zephirum_lang.py` verifica isso caso a caso.
 """
 import sys
 
 from nexa_core import parse_question, parse_list, _parse_unknown
-from sifr_lexer import eval_expr
+from zephirum_lexer import eval_expr
 
 TEMPLATE = '''#!/usr/bin/env python3
-# Gerado automaticamente pelo transpilador SIFR (Fase 2).
+# Gerado automaticamente pelo transpilador ZEPHIRUM (Fase 2).
 # Pergunta original: {question!r}
 QUESTION = {question!r}
 OP = {op!r}

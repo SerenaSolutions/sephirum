@@ -1,23 +1,23 @@
-<p align="center"><img src="assets/brand/sifr_bloch_z_dark.png" width="140" alt="SIFR — monograma ZERUM: o Z feito de 0 e 1"></p>
+<p align="center"><img src="assets/brand/zephirum_bloch_z_dark.png" width="140" alt="ZEPHIRUM — monograma ZEPHIRUM: o Z feito de 0 e 1"></p>
 
-# ZERUM — A Computação Antes da Execução
+# ZEPHIRUM — A Computação Antes da Execução
 
-<p align="center"><img src="assets/brand/sifr_bloch_z_dark.png" width="140" alt="SIFR — monograma ZERUM: o Z feito de 0 e 1"></p>
+<p align="center"><img src="assets/brand/zephirum_bloch_z_dark.png" width="140" alt="ZEPHIRUM — monograma ZEPHIRUM: o Z feito de 0 e 1"></p>
 
 > **PERGUNTE PRIMEIRO. PROVE DEPOIS. COMPUTE POR ÚLTIMO.**
 
-ZERUM é um **compilador de necessidade**: dada uma pergunta sobre uma computação
-(via linguagem **SIFR**), ele procura provar que **não é preciso computar** — e só
+ZEPHIRUM é um **compilador de necessidade**: dada uma pergunta sobre uma computação
+(via linguagem **ZEPHIRUM**), ele procura provar que **não é preciso computar** — e só
 executa o que sobrar, com certificado verificável.
 
 O paradigma se inverte: de `ALGORITHM → COMPUTE` para `PROOF → COMPUTE`.
 
-- **Linguagem:** SIFR (árabe *ṣifr*, raiz etimológica de "zero")
-- **Algoritmo:** SCA — SIFR Compilation Algorithm (escada de eliminação)
-- **Numeral:** ZERUM (Z) — o dígito que é 0 e 1 ao mesmo tempo; o terceiro
-  valor de verdade (UNKNOWN) da lógica SIFR; nome-irmão árabe: **SIWAHID**
-  (*ṣifr* + *wāḥid*)
-- **Livro:** *ZERUM — A Computação Antes da Execução* (PT/EN/AR, em produção)
+- **Linguagem:** ZEPHIRUM (do latim *zephirum*, a forma que Fibonacci
+  registrou no *Liber Abaci*, 1202)
+- **Algoritmo:** ZCA — Zephirum Compilation Algorithm (escada de eliminação)
+- **Numeral:** ZEPHIRUM (Z) — o dígito que é 0 e 1 ao mesmo tempo; o terceiro
+  valor de verdade (UNKNOWN) da lógica ZEPHIRUM — o numeral **Z**.
+- **Livro:** *ZEPHIRUM — A Computação Antes da Execução* (PT/EN/AR, em produção)
 
 ## Resultados medidos (reproduzíveis)
 
@@ -34,11 +34,11 @@ O paradigma se inverte: de `ALGORITHM → COMPUTE` para `PROOF → COMPUTE`.
 ## Estrutura
 
 ```
-prototype/   Lexer/parser SIFR próprios (Fase 2: zero ast/eval), motor SCA,
-             verificador independente, REPL, transpilador SIFR→Python
+prototype/   Lexer/parser ZEPHIRUM próprios (Fase 2: zero ast/eval), motor ZCA,
+             verificador independente, REPL, transpilador ZEPHIRUM→Python
              (run_tests.py = soundness; stress_test.py = 500k casos;
-              test_sifr_lang.py = equivalência da linguagem; sifr_repl.py = REPL;
-              ai_layer.py = previsão consultiva; zerum.py = lógica trivalente)
+              test_zephirum_lang.py = equivalência da linguagem; zephirum_repl.py = REPL;
+              ai_layer.py = previsão consultiva; zephirum.py = lógica trivalente)
 book/        O livro (PT mestre → EN → AR), estrutura e figuras
 results/     Resultados JSON das baterias (reproduzíveis por semente)
 docs/        Charter do projeto, paper (arXiv-ready), roteiro INPI
@@ -50,9 +50,9 @@ docs/        Charter do projeto, paper (arXiv-ready), roteiro INPI
 python3 prototype/run_tests.py      # bateria de soundness; exit 0 = ok
 python3 prototype/stress_test.py 500000   # 500k problemas, ~14 s
 python3 prototype/ai_layer.py      # camada de IA consultiva
-python3 prototype/sifr_repl.py     # REPL: digite programas SIFR
-cat prog.sifr | python3 prototype/sifr_transpiler.py  # gera Python autônomo
-python3 prototype/test_sifr_lang.py  # equivalência da linguagem (Fase 2)
+python3 prototype/zephirum_repl.py     # REPL: digite programas ZEPHIRUM
+cat prog.zeph | python3 prototype/zephirum_transpiler.py  # gera Python autônomo
+python3 prototype/test_zephirum_lang.py  # equivalência da linguagem (Fase 2)
 ```
 
 Python 3 puro. Sem dependências. Sem LLM. Sem nuvem.
@@ -79,28 +79,28 @@ Python 3 puro. Sem dependências. Sem LLM. Sem nuvem.
 
 ---
 
-[🇧🇷 Português](#zerum--a-computação-antes-da-execução) | [🇺🇸 English](#zerum--computation-before-execution)
+[🇧🇷 Português](#zephirum--a-computação-antes-da-execução) | [🇺🇸 English](#zephirum--computation-before-execution)
 
 ---
 
-# ZERUM — Computation Before Execution
+# ZEPHIRUM — Computation Before Execution
 
-<p align="center"><img src="assets/brand/sifr_bloch_z_dark.png" width="140" alt="SIFR — monograma ZERUM: o Z feito de 0 e 1"></p>
+<p align="center"><img src="assets/brand/zephirum_bloch_z_dark.png" width="140" alt="ZEPHIRUM — monograma ZEPHIRUM: o Z feito de 0 e 1"></p>
 
 > **ASK FIRST. PROVE NEXT. COMPUTE LAST.**
 
-ZERUM is a **necessity compiler**: given a question about a computation
-(stated in the **SIFR** language), it tries to prove that **no computation is
+ZEPHIRUM is a **necessity compiler**: given a question about a computation
+(stated in the **ZEPHIRUM** language), it tries to prove that **no computation is
 needed** — and only executes what remains, with a verifiable certificate.
 
 The paradigm inverts: from `ALGORITHM → COMPUTE` to `PROOF → COMPUTE`.
 
-- **Language:** SIFR (Arabic *ṣifr*, the etymological root of "zero")
-- **Algorithm:** SCA — SIFR Compilation Algorithm (elimination ladder)
-- **Numeral:** ZERUM (Z) — the digit that is 0 and 1 at the same time; the
-  third truth value (UNKNOWN) of SIFR logic; Arabic sibling name: **SIWAHID**
-  (*ṣifr* + *wāḥid*)
-- **Book:** *ZERUM — Computation Before Execution* (PT/EN/AR, in production)
+- **Language:** ZEPHIRUM (from Latin *zephirum*, as recorded by Fibonacci
+  in *Liber Abaci*, 1202)
+- **Algorithm:** ZCA — Zephirum Compilation Algorithm (elimination ladder)
+- **Numeral:** ZEPHIRUM (Z) — the digit that is 0 and 1 at the same time; the
+  third truth value (UNKNOWN) of ZEPHIRUM logic — the numeral **Z**.
+- **Book:** *ZEPHIRUM — Computation Before Execution* (PT/EN/AR, in production)
 
 ## Measured results (reproducible)
 
@@ -117,11 +117,11 @@ The paradigm inverts: from `ALGORITHM → COMPUTE` to `PROOF → COMPUTE`.
 ## Structure
 
 ```
-prototype/   Own SIFR lexer/parser (Phase 2: zero ast/eval), SCA engine,
-             independent verifier, REPL, SIFR→Python transpiler
+prototype/   Own ZEPHIRUM lexer/parser (Phase 2: zero ast/eval), ZCA engine,
+             independent verifier, REPL, ZEPHIRUM→Python transpiler
              (run_tests.py = soundness; stress_test.py = 500k cases;
-              test_sifr_lang.py = language equivalence; sifr_repl.py = REPL;
-              ai_layer.py = advisory prediction; zerum.py = trivalent logic)
+              test_zephirum_lang.py = language equivalence; zephirum_repl.py = REPL;
+              ai_layer.py = advisory prediction; zephirum.py = trivalent logic)
 book/        The book (PT master → EN → AR), structure and figures
 results/     JSON results (reproducible by seed)
 docs/        Project charter, arXiv-ready paper, INPI roadmap
@@ -133,9 +133,9 @@ docs/        Project charter, arXiv-ready paper, INPI roadmap
 python3 prototype/run_tests.py      # soundness battery; exit 0 = ok
 python3 prototype/stress_test.py 500000   # 500k problems, ~14 s
 python3 prototype/ai_layer.py      # advisory AI layer
-python3 prototype/sifr_repl.py     # REPL: type SIFR programs
-cat prog.sifr | python3 prototype/sifr_transpiler.py  # standalone Python output
-python3 prototype/test_sifr_lang.py  # language equivalence (Phase 2)
+python3 prototype/zephirum_repl.py     # REPL: type ZEPHIRUM programs
+cat prog.zeph | python3 prototype/zephirum_transpiler.py  # standalone Python output
+python3 prototype/test_zephirum_lang.py  # language equivalence (Phase 2)
 ```
 
 Pure Python 3. No dependencies. No LLM. No cloud.
@@ -157,8 +157,8 @@ Pure Python 3. No dependencies. No LLM. No cloud.
 
 | Mark | Product |
 |---|---|
-| ![SIFR](assets/brand/sifr_bloch_z_dark.png) | **SIFR** — the language (Bloch-Z: the state vector pinned to the equator, neither \|0⟩ nor \|1⟩) |
-| ![SCA](assets/brand/sca_escada_dark.png) | **SCA** — the commercial algorithm (the certified ladder: stops at the first rung that decides) |
+| ![ZEPHIRUM](assets/brand/zephirum_bloch_z_dark.png) | **ZEPHIRUM** — the language (Bloch-Z: the state vector pinned to the equator, neither \|0⟩ nor \|1⟩) |
+| ![ZCA](assets/brand/zca_escada_dark.png) | **ZCA** — the commercial algorithm (the certified ladder: stops at the first rung that decides) |
 | ![Kernel](assets/brand/kernel_caroco_dark.png) | **Decision Kernel** — the product (only the kernel survives; shell = certificate, seed = answer) |
 
 Full spec: `docs/BRAND_IDENTITY.md`. Z is an epistemic decision state; the
@@ -166,8 +166,8 @@ Bloch-sphere analogy is iconographic, never a physical claim.
 
 | Marca | Produto |
 |---|---|
-| ![SIFR](assets/brand/sifr_bloch_z_dark.png) | **SIFR** — a linguagem (Bloch-Z: o vetor no equador, nem \|0⟩ nem \|1⟩ = Z) |
-| ![SCA](assets/brand/sca_escada_dark.png) | **SCA** — o algoritmo comercial (a escada certificada: para no primeiro degrau que decide) |
+| ![ZEPHIRUM](assets/brand/zephirum_bloch_z_dark.png) | **ZEPHIRUM** — a linguagem (Bloch-Z: o vetor no equador, nem \|0⟩ nem \|1⟩ = Z) |
+| ![ZCA](assets/brand/zca_escada_dark.png) | **ZCA** — o algoritmo comercial (a escada certificada: para no primeiro degrau que decide) |
 | ![Caroço](assets/brand/kernel_caroco_dark.png) | **Decision Kernel** — o produto (só o caroço sobrevive; casca = certificado, semente = resposta) |
 
 Especificação completa: `docs/BRAND_IDENTITY.md`. Z é estado de decisão
@@ -176,9 +176,9 @@ epistêmico; a analogia com a esfera de Bloch é iconográfica, nunca alegação
 ## The four pillars / Os quatro pilares
 
 ```
-LANGUAGE (SIFR) → COMPILER (NCA + Decision Kernel) → SIMULATOR → RUNTIME
+LANGUAGE (ZEPHIRUM) → COMPILER (NCA + Decision Kernel) → SIMULATOR → RUNTIME
                         │
-              CERTIFICATE + RESIDUAL + SIFR-IR (transversal)
+              CERTIFICATE + RESIDUAL + ZEPHIRUM-IR (transversal)
 ```
 
 EN: The transpiler to Python is a provisional RUNTIME backend, not the

@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-CAMADA DE IA SOBRE A ESCADA SIFR (charter, secao 7: "o gerador pode ser
+CAMADA DE IA SOBRE A ESCADA ZEPHIRUM (charter, secao 7: "o gerador pode ser
 complexo, heuristico ou baseado em IA; o verificador deve ser independente").
 
 Enriquecimento honesto: um modelo estatistico (naive Bayes) aprende do LEDGER

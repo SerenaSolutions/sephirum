@@ -1,5 +1,5 @@
 # Capítulo 1 — O mundo executa antes de perguntar
-*ZERUM — A Computação Antes da Execução | Parte I: A Pergunta*
+*ZEPHIRUM — A Computação Antes da Execução | Parte I: A Pergunta*
 
 ## Nível 1 — Para qualquer leitor
 

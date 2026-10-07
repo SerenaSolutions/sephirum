@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-Testes da Fase 2 da SIFR (lexer próprio + transpilador).
+Testes da Fase 2 da ZEPHIRUM (lexer próprio + transpilador).
 
 (1) Equivalência de parser: para N problemas aleatórios, o IR do parser
     de tokens próprios (parse_sifr) deve ser IGUAL ao da Fase 1 (parse_nexa).
@@ -14,8 +14,8 @@ import random
 import sys
 
 from nexa_core import parse_nexa, NCA, safe_eval
-from sifr_lexer import parse_sifr, eval_expr, tokenize, SifrSyntaxError
-from sifr_transpiler import transpile
+from zephirum_lexer import parse_sifr, eval_expr, tokenize, SifrSyntaxError
+from zephirum_transpiler import transpile
 from stress_test import make_case, build_src
 
 random.seed(1234)

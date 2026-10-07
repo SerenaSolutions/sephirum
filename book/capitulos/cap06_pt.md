@@ -1,5 +1,5 @@
 # Capítulo 6 — Falsificação
-*ZERUM — A Computação Antes da Execução | Parte II: O Tribunal da Ciência*
+*ZEPHIRUM — A Computação Antes da Execução | Parte II: O Tribunal da Ciência*
 *(Resultados do experimento de 2026-10-06, N=500, semente 42, reproduzíveis via `stress_test.py`)*
 
 ## Nível 1 — Para qualquer leitor
@@ -14,7 +14,7 @@ O resultado está na figura abaixo e na tabela adiante. O sistema **não errou u
 
 ## Nível 2 — Para o cientista e o engenheiro
 
-**Protocolo.** 500 problemas aleatórios (semente fixa, reproduzíveis), quatro famílias: somas com termos conhecidos e monotonicidade declarada (40%); incógnitas com limites e oráculo executável (30%); incógnitas sem oráculo, quando `UNKNOWN` é o único acerto possível (20%); médias com cinco desconhecidos, com e sem limites declarados (10%). Para cada problema, o motor SCA decide; a verdade é calculada à parte por força bruta; todo certificado é re-derificado pelo verificador independente a partir da fonte original.
+**Protocolo.** 500 problemas aleatórios (semente fixa, reproduzíveis), quatro famílias: somas com termos conhecidos e monotonicidade declarada (40%); incógnitas com limites e oráculo executável (30%); incógnitas sem oráculo, quando `UNKNOWN` é o único acerto possível (20%); médias com cinco desconhecidos, com e sem limites declarados (10%). Para cada problema, o motor ZCA decide; a verdade é calculada à parte por força bruta; todo certificado é re-derificado pelo verificador independente a partir da fonte original.
 
 **Resultados.**
 
@@ -31,7 +31,7 @@ O resultado está na figura abaixo e na tabela adiante. O sistema **não errou u
 | Unidades eliminadas com certificado | 2.995 (**79,2%**) |
 | NetBenefit agregado | +2.946,23 |
 
-**Distribuição dos estados**: 292 decididos sem execução alguma; 169 por redução; 3 exigiram resíduo; 7 exigiram execução completa; 29 permaneceram Z (zerum).
+**Distribuição dos estados**: 292 decididos sem execução alguma; 169 por redução; 3 exigiram resíduo; 7 exigiram execução completa; 29 permaneceram Z (zephirum).
 
 **Os números negativos, com a mesma honestidade.** Nos 3 casos de execução completa e nos 28 `UNKNOWN`, o NetBenefit foi negativo (o custo da análise não se pagou): a escada tem preço, e este capítulo o mostra em vez de escondê-lo. A economia veio de onde a teoria previa: decisões por identidade, limite e redução custam centavos e poupam quase tudo.
 

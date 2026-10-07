@@ -39,7 +39,7 @@ def verify(blocks, cert):
     status = cert.get("STATUS")
     # 0.6 kernel de primeira classe: veredito trivalente consistente
     dk = cert.get("DECISION_KERNEL", {})
-    from zerum import STATUS_TO_TRIT
+    from zephirum import STATUS_TO_TRIT
     if dk.get("method") != cert.get("KERNEL"):
         return False, "REJECT: kernel method diverges from certificate kernel"
     if dk.get("verdict") != STATUS_TO_TRIT.get(status, ("?",))[0]:

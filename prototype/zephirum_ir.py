@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
 """
-SIFR-IR — representação intermediária própria da plataforma SIFR (Fase 3).
+ZEPHIRUM-IR — representação intermediária própria da plataforma ZEPHIRUM (Fase 3).
 
 Infraestrutura TRANSVERSAL: serve ao Compiler (produz), ao Simulator (valida)
 e ao Runtime (executa o residual). NÃO é um quinto pilar.
 
 Este módulo NÃO substitui nada do que existe: o `from_nca` adapta os
-resultados do motor NCA atual (Fase 1) para a forma completa do SIFR-IR,
+resultados do motor NCA atual (Fase 1) para a forma completa do ZEPHIRUM-IR,
 provando que o protótipo já emite IR compatível. O protocolo de soundness
 permanece: nenhum campo fabricado, UNKNOWN não vira necessidade.
 """
@@ -38,7 +38,7 @@ def _question_of(blocks):
 
 
 def from_nca(blocks, result):
-    """(blocks IR, resultado NCA) -> SIFR-IR completo e validável."""
+    """(blocks IR, resultado NCA) -> ZEPHIRUM-IR completo e validável."""
     model = blocks.get("MODEL", {})
     cert = result["certificate"]
     status = result["status"]

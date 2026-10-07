@@ -1,4 +1,4 @@
-# Roteiro de registro — ZERUM/SIFR (Brasil)
+# Roteiro de registro — ZEPHIRUM (Brasil)
 
 ## 1. INPI — Registro de programa de computador (faça primeiro)
 - Onde: inpi.gov.br → Registro de Programas de Computador
@@ -7,11 +7,11 @@
 - Prova: autoria com data oficial
 
 ## 2. INPI — Marca
-- Nomes a registrar: **ZERUM**, **SIFR** (e considerar ZERUM/SIW AHID para o mercado árabe)
+- Nomes a registrar: **ZEPHIRUM**, **ZEPHIRUM** (e considerar ZEPHIRUM/SIW AHID para o mercado árabe)
 - Classes NICE: 9 (software), 42 (serviços de tecnologia), 16 (livros/publicações)
 - ANTES de depositar: busca de anterioridade no banco INPI + colisões conhecidas:
-  - "Zerum": existe empresa BR de TI/cibersegurança e construtora britânica (classes distintas, mas registrar a busca)
-  - "SIFR": sem colisão encontrada em espaço de linguagens (busca preliminar 2026-10-06)
+  - "Zephirum": existe empresa BR de TI/cibersegurança e construtora britânica (classes distintas, mas registrar a busca)
+  - "ZEPHIRUM": sem colisão encontrada em espaço de linguagens (busca preliminar 2026-10-06)
 - Livro: o título de obra é protegido por direito autoral no registro de obra literária (ver item 3)
 
 ## 3. Fundação Biblioteca Nacional — Registro de obra literária

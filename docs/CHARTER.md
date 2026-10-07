@@ -120,36 +120,46 @@ Adendo do chefe: o projeto deixou de ser ideia abstrata. Tema, finalidade, públ
 
 ## ADENDO 2 — NOMES DEFINITIVOS EM OUTRA LÍNGUA (2026-10-06)
 - **Livro: PRASHNA — A Computação Antes da Execução.** Prashna (sânscrito प्रश्न, "a pergunta"). Ancorado no Prashna Upanishad, texto milenar composto de perguntas ao sábio Pippalada, que só responde a quem pergunta corretamente — a tese exata do livro: a pergunta como objeto primário. Sonoro (PRAHSH-na), global, sem colisões encontradas em busca preliminar.
-- **Linguagem: SIFR** (árabe صفر, "zero") — a raiz etimológica da própria palavra "zero" (ṣifr → zephirum → zero). A linguagem que devolve a execução ao zero, nomeada com o nascimento do zero. Curto, sonoro, comercial, sem colisão encontrada no espaço de linguagens (Shunya foi descartado: colide com Shunya Labs/Shunya Ekai, empresas de IA na Índia).
-- **Algoritmo: SCA — SIFR Compilation Algorithm** (ex-ZCA; também citável como "Ask-to-Zero"). Vocabulário técnico inalterado (Decision Kernel, estados, certificados).
+- **Linguagem: ZEPHIRUM** (árabe صفر, "zero") — a raiz etimológica da própria palavra "zero" (ṣifr → zephirum → zero). A linguagem que devolve a execução ao zero, nomeada com o nascimento do zero. Curto, sonoro, comercial, sem colisão encontrada no espaço de linguagens (Shunya foi descartado: colide com Shunya Labs/Shunya Ekai, empresas de IA na Índia).
+- **Algoritmo: ZCA — Zephirum Compilation Algorithm** (ex-ZCA; também citável como "Ask-to-Zero"). Vocabulário técnico inalterado (Decision Kernel, estados, certificados).
 - Verificação formal de marcas/PI permanece pendente antes de uso comercial.
 
 ---
 
-## ADENDO 3 — O NUMERAL ZERUM (criado em 2026-10-06, por solicitação do chefe)
-**ZERUM (Z)** — o numeral que é 0 e 1 ao mesmo tempo. Zero + um (PT) / unum (latim); rima com "quantum" deliberadamente.
+## ADENDO 3 — O NUMERAL ZEPHIRUM (criado em 2026-10-06, por solicitação do chefe)
+**ZEPHIRUM (Z)** — o numeral que é 0 e 1 ao mesmo tempo. Zero + um (PT) / unum (latim); rima com "quantum" deliberadamente.
 
 Definições por contexto (hierarquia de evidência respeitada):
-1. Leitura quântica: Z ≡ (|0⟩+|1⟩)/√2 = |+⟩. HONESTIDADE: o estado |+⟩ já existe na física; zerum é um NOME para o conceito, não uma nova matemática.
-2. Leitura lógica SIFR (central do livro): Z é o terceiro valor de verdade — 0 = falso/eliminado; 1 = verdadeiro/necessário; Z = UNKNOWN, a pergunta ainda não colapsada. O Decision Kernel é o operador de colapso Z → 0 ou 1, sempre com certificado.
-3. Leitura filosófica: toda pergunta nasce zerum; a execução só entra quando o colapso exige. "O zerum é o estado natural de toda pergunta."
+1. Leitura quântica: Z ≡ (|0⟩+|1⟩)/√2 = |+⟩. HONESTIDADE: o estado |+⟩ já existe na física; zephirum é um NOME para o conceito, não uma nova matemática.
+2. Leitura lógica ZEPHIRUM (central do livro): Z é o terceiro valor de verdade — 0 = falso/eliminado; 1 = verdadeiro/necessário; Z = UNKNOWN, a pergunta ainda não colapsada. O Decision Kernel é o operador de colapso Z → 0 ou 1, sempre com certificado.
+3. Leitura filosófica: toda pergunta nasce zephirum; a execução só entra quando o colapso exige. "O zephirum é o estado natural de toda pergunta."
 
-- LIVRO: "ZERUM — A Computação Antes da Execução" (subtítulo: "Da Pergunta ao Decision Kernel"). Prashna aposentado como título (dúvida do chefe sobre origem indiana); reaproveitado como homenagem: bloco de pergunta da linguagem SIFR pode se chamar PRASHNA.
-- LINGUAGEM: SIFR (mantido, aprovado: zephirum/árabe, a raiz de "zero").
-- ALGORITMO: SCA — SIFR Compilation Algorithm.
-- Colisões ZERUM (busca 2026-10-06): empresa brasileira de TI/cibersegurança (@zerum_it) e construtora britânica Zerum — classes diferentes das nossas (livro/linguagem científica); verificação formal INPI/marcas pendente antes de uso comercial. Alternativas se necessário: ZERUN, ZUNO, ZERONE, ZHEN.
+- LIVRO: "ZEPHIRUM — A Computação Antes da Execução" (subtítulo: "Da Pergunta ao Decision Kernel"). Prashna aposentado como título (dúvida do chefe sobre origem indiana); reaproveitado como homenagem: bloco de pergunta da linguagem ZEPHIRUM pode se chamar PRASHNA.
+- LINGUAGEM: ZEPHIRUM (mantido, aprovado: zephirum/árabe, a raiz de "zero").
+- ALGORITMO: ZCA — Zephirum Compilation Algorithm.
+- Colisões ZEPHIRUM (busca 2026-10-06): empresa brasileira de TI/cibersegurança (@zerum_it) e construtora britânica Zephirum — classes diferentes das nossas (livro/linguagem científica); verificação formal INPI/marcas pendente antes de uso comercial. Alternativas se necessário: ZERUN, ZUNO, ZERONE, ZHEN.
 
 ---
 
 ## ADENDO 4 — INQUÉRITO LINGUÍSTICO MUNDIAL DO NUMERAL (2026-10-06)
 Mundo: ~7.100 línguas vivas (Ethnologue). Europa ~250; Ásia ~2.300; África ~2.000; Pacífico ~1.100; Américas ~1.000.
-Jornada do zero (fato histórico): śūnya (sânscrito) → ṣifr (árabe) → ṣiprā (siríaco/aramaico científico medieval; o aramaico ANTIGO não tinha zero — o conceito nasceu depois, na Índia) → zephirum (latim medieval, via Fibonacci) → zero. ZERUM entra nesse mesmo rio.
-Fusões zero+um por idioma: EN zerone; PT zerum/zeroum; ES ceruno (COLIDE: Ceruno AG suíça de TI + marca australiana classe 9 IA — descartado); IT zeruno (COLIDE: Italdesign Zerouno + marca de luminárias — descartado); AR **SIWAHID** (ṣifr+wāḥid, limpo); HE efechad; GR medhén; SK śunyeka; JA reiichi (零一); ZH língyī (零一; coincidência: 灵异 = sobrenatural); RU nolodin; siríaco ṣipraḥad.
-INSIGHT DO ÁRABE: o árabe possui o DUAL gramatical ("-ayn/-ān"): ṣifrayn (صفرين) = "os dois zeros, juntos" — a língua-mãe da SIFR já gramaticaliza "dois ao mesmo tempo" há mais de um milênio. O zerum tem ancestral gramatical.
-DECISÃO REGISTRADA: ZERUM permanece o numeral e o título global do livro; SIWAHID (limpo de colisões) fica registrado como o nome árabe-irmão do numeral (usável na edição árabe e no vocabulário da linguagem SIFR, ex.: operador de colapso). Runner-up EN: ZERONE.
+Jornada do zero (fato histórico): śūnya (sânscrito) → ṣifr (árabe) → ṣiprā (siríaco/aramaico científico medieval; o aramaico ANTIGO não tinha zero — o conceito nasceu depois, na Índia) → zephirum (latim medieval, via Fibonacci) → zero. ZEPHIRUM entra nesse mesmo rio.
+Fusões zero+um por idioma: EN zerone; PT zephirum/zeroum; ES ceruno (COLIDE: Ceruno AG suíça de TI + marca australiana classe 9 IA — descartado); IT zeruno (COLIDE: Italdesign Zerouno + marca de luminárias — descartado); HE efechad; GR medhén; SK śunyeka; JA reiichi (零一); ZH língyī (零一; coincidência: 灵异 = sobrenatural); RU nolodin; siríaco ṣipraḥad.
+DECISÃO REGISTRADA (atualizada 2026-10-07): ZEPHIRUM permanece o numeral e o título global do livro. O nome árabe-irmão SIWAHID foi DEPRECATO por decisão do chefe: todo o vocabulário da linguagem ZEPHIRUM usa exclusivamente o numeral Z. Runner-up EN: ZERONE.
 
 ---
 
-## ADENDO 5 — CONFIRMAÇÃO DO CHEFE (2026-10-06): "SIWAHID? PROSSIGA"
-SIWAHID adotado como nome-irmão árabe do numeral ZERUM (edição árabe do livro + vocabulário SIFR).
-Milestone executado: (1) lógica trivalente Z formalizada no protótipo (zerum.py: 0/1/Z, colapso pelo Decision Kernel); (2) estrutura completa do livro criada em livro_zerum/ESTRUTURA.md (5 partes, 18 capítulos, narrativa de investigação §24, 4 apêndices).
+## ADENDO 5 — CONFIRMAÇÃO DO CHEFE (2026-10-06): "SIWAHID? PROSSIGA" — SUPERSEDED PELO ADENDO 6
+SIWAHID adotado como nome-irmão árabe do numeral ZEPHIRUM (edição árabe do livro + vocabulário ZEPHIRUM).
+Milestone executado: (1) lógica trivalente Z formalizada no protótipo (zephirum.py: 0/1/Z, colapso pelo Decision Kernel); (2) estrutura completa do livro criada em livro_zerum/ESTRUTURA.md (5 partes, 18 capítulos, narrativa de investigação §24, 4 apêndices).
+
+## ADENDO 6 — RENOMEAÇÃO ZEPHIRUM (2026-10-07)
+O chefe decidiu: "EU QUERO ZEPHIRUM NO NOME, MUDE TUDO DO ÁRABE". Aplicado:
+- ZERUM → ZEPHIRUM (numeral, título do livro, marca global)
+- SIFR → ZEPHIRUM (a linguagem assume o nome da marca)
+- SCA → ZCA (Zephirum Compilation Algorithm)
+- SIWAHID deprecado: fora do vocabulário; a edição árabe do livro permanece
+  como tradução de mercado, não como fonte de nomes
+- Etimologia oficial: latim zephirum (Fibonacci, Liber Abaci, 1202) — o
+  passo que virou "zero" na Europa. A jornada histórica śūnya→ṣifr→zephirum
+  permanece como fato histórico, não como vocabulário do produto.

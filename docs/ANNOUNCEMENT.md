@@ -1,10 +1,10 @@
-# ZERUM — Launch announcement
+# ZEPHIRUM — Launch announcement
 
 ## English (GitHub / international audience)
 
-Today I open-sourced ZERUM: a necessity compiler.
+Today I open-sourced ZEPHIRUM: a necessity compiler.
 
-The current paradigm is: pick an algorithm, execute, interpret. ZERUM inverts it: ask first, prove next, compute last.
+The current paradigm is: pick an algorithm, execute, interpret. ZEPHIRUM inverts it: ask first, prove next, compute last.
 
 Given a problem and a question ("does the sum exceed the threshold? is the average above X?"), it tries to prove that no computation is needed at all, through an escalating ladder: identity, simplification, reduction, interval bounds, closed form. Only what remains gets executed — and every decision ships with a certificate verified by a module independent of the engine.
 
@@ -14,11 +14,11 @@ The numbers (reproducible, fixed seed, pure Python, zero dependencies):
 - 500,000/500,000 certificates independently verified
 - 20/20 deliberately forged certificates were rejected
 - **76.5% of the demanded computation eliminated by proof**
-- when it doesn't know, it says UNKNOWN instead of guessing (the numeral Z, zerum: the digit that is 0 and 1 at the same time)
+- when it doesn't know, it says UNKNOWN instead of guessing (the numeral Z, zephirum: the digit that is 0 and 1 at the same time)
 
-Open source (MIT), with a trilingual book in production and the technical paper in this repository: **github.com/SerenaSolutions/zerum**
+Open source (MIT), with a trilingual book in production and the technical paper in this repository: **github.com/SerenaSolutions/zephirum**
 
-The name follows the same journey as zero itself: śūnya → ṣifr → zerum.
+The name follows the same journey as zero itself: śūnya → ṣifr → zephirum.
 
 The thesis is simple: before asking machines to compute more, ask whether they need to compute at all.
 
@@ -26,9 +26,9 @@ The thesis is simple: before asking machines to compute more, ask whether they n
 
 ## Português (LinkedIn)
 
-Hoje tornei open source o ZERUM: um compilador de necessidade.
+Hoje tornei open source o ZEPHIRUM: um compilador de necessidade.
 
-O paradigma atual é: escolher algoritmo, executar, interpretar. O ZERUM inverte: perguntar primeiro, provar depois, computar por último.
+O paradigma atual é: escolher algoritmo, executar, interpretar. O ZEPHIRUM inverte: perguntar primeiro, provar depois, computar por último.
 
 Dado um problema e uma pergunta ("a soma ultrapassa o limiar? a média excede X?"), ele tenta provar que não é preciso computar nada, por uma escada crescente: identidade, simplificação, redução, limites, forma fechada. Só executa o que sobrar — e cada decisão sai com certificado verificável por um módulo independente do motor.
 
@@ -38,10 +38,10 @@ Os números (reproduzíveis, semente fixa, Python puro, zero dependências):
 - 500.000/500.000 certificados verificados de forma independente
 - 20/20 certificados forjados deliberadamente foram rejeitados
 - **76,5% da computação demandada eliminada por prova**
-- quando não sabe, diz UNKNOWN em vez de inventar (o numeral Z, zerum: o dígito que é 0 e 1 ao mesmo tempo)
+- quando não sabe, diz UNKNOWN em vez de inventar (o numeral Z, zephirum: o dígito que é 0 e 1 ao mesmo tempo)
 
-Open source (MIT), com livro trilíngue em produção e paper técnico no repositório: **github.com/SerenaSolutions/zerum**
+Open source (MIT), com livro trilíngue em produção e paper técnico no repositório: **github.com/SerenaSolutions/zephirum**
 
-O nome segue a mesma viagem do zero: śūnya → ṣifr → zerum.
+O nome segue a mesma viagem do zero: śūnya → ṣifr → zephirum.
 
 A tese é simples: antes de pedir às máquinas que computem mais, pergunte se elas precisam computar.

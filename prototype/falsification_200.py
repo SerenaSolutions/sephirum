@@ -21,7 +21,7 @@ import sys
 from fractions import Fraction
 
 from nexa_core import parse_nexa, NCA
-from nexa_checker import verify
+from verify_certificate import verify
 
 
 def det_bareiss(M):

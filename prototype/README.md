@@ -7,7 +7,7 @@ python3 run_tests.py   # bateria de falsificação (S19/S23); exit 0 = soundness
 
 ## Arquivos
 - nexa_core.py    — parser NEXA/ZERA, IR, motor NCA/ZCA (degraus: simplificação, redução, limite, analítico, clássico), ledger, certificados
-- nexa_checker.py — verificador independente (re-deriva da fonte; métodos distintos quando possível; rejeita certificados forjados)
+- verify_certificate.py — verificador independente (re-deriva da fonte; métodos distintos quando possível; rejeita certificados forjados)
 - run_tests.py    — casos A–E + I/J/F/G/H; ataque de soundness com 3 certificados adulterados
 
 ## Escopo honesto

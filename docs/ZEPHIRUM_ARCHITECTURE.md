@@ -1,13 +1,13 @@
-# SIFR — Arquitetura da Plataforma (v1.0, 2026-10-06)
+# ZEPHIRUM — Arquitetura da Plataforma (v1.0, 2026-10-06)
 
-*Correção arquitetural aceita: a SIFR não é uma DSL que transpila para Python.
+*Correção arquitetural aceita: a ZEPHIRUM não é uma DSL que transpila para Python.
 A transpilação Python é um backend provisório do RUNTIME. A VM própria é
 componente interno do RUNTIME — não a próxima camada conceitual.*
 
 ## Os QUATRO PILARES
 
 ```
-                         SIFR
+                         ZEPHIRUM
                    LANGUAGE
                        │
                        ▼
@@ -35,8 +35,8 @@ componente interno do RUNTIME — não a próxima camada conceitual.*
    (a VM própria vive DENTRO do bloco RUNTIME)
 ```
 
-1. **LANGUAGE — SIFR.** A linguagem de programação própria: lexer, parser,
-   gramática, semântica, REPL, tipos. SIFR ≠ Python; SIFR ≠ DSL hospedada.
+1. **LANGUAGE — ZEPHIRUM.** A linguagem de programação própria: lexer, parser,
+   gramática, semântica, REPL, tipos. ZEPHIRUM ≠ Python; ZEPHIRUM ≠ DSL hospedada.
 2. **COMPILER — NCA.** O Necessity Compilation Algorithm: dado (P, Q, C, B),
    determinar *qual é a menor computação certificável necessária para
    responder Q sob C*, materializada no **Decision Kernel**.
@@ -48,7 +48,7 @@ componente interno do RUNTIME — não a próxima camada conceitual.*
    Despacha para CPU, GPU, HPC, Simulator, (futuro) QPU. A VM própria é
    um componente interno deste pilar.
 
-O **SIFR-IR** é infraestrutura transversal aos pilares Compiler, Simulator
+O **ZEPHIRUM-IR** é infraestrutura transversal aos pilares Compiler, Simulator
 e Runtime — não é um quinto pilar.
 
 ## A inversão em relação a IBM/Qiskit
@@ -58,12 +58,12 @@ finalidade oposta:
 
 ```
 Qiskit:  PROBLEMA → CIRCUITO → COMPILAÇÃO → EXECUÇÃO → RESULTADO
-SIFR:    PROBLEMA → PERGUNTA → CONTRATO → NECESSITY ANALYSIS
+ZEPHIRUM:    PROBLEMA → PERGUNTA → CONTRATO → NECESSITY ANALYSIS
                        → DECISION KERNEL → CERTIFICATE
                        → RESIDUAL → EXECUÇÃO
 ```
 
-A pergunta central da SIFR: **"Eu realmente preciso executar esta computação
+A pergunta central da ZEPHIRUM: **"Eu realmente preciso executar esta computação
 para responder à pergunta?"**
 
 ## Definição formal do NCA
@@ -113,9 +113,9 @@ Nunca transformar UNKNOWN em necessidade automaticamente. Nunca
 transformar ausência de prova em prova de desnecessidade. Nunca fabricar
 certificado.
 
-## SIFR-IR — representação intermediária própria
+## ZEPHIRUM-IR — representação intermediária própria
 
-Infraestrutura transversal (implementação: `prototype/sifr_ir.py`). Campos
+Infraestrutura transversal (implementação: `prototype/zephirum_ir.py`). Campos
 obrigatórios do nível superior:
 
 ```
@@ -146,7 +146,7 @@ executa APENAS o residual, no backend declarado, e devolve o registro de
 
 **Runtime → Compiler:** o resultado da execução do residual preenche
 `RESULT` e fecha o ciclo do certificado. O certificado continua verificável
-pelo caminho independente (`nexa_checker`).
+pelo caminho independente (`verify_certificate`).
 
 **Simulator vs Runtime:** o Simulator valida e compara (mundo da evidência);
 o Runtime despacha e executa (mundo da operação). Não se confundem.
@@ -156,16 +156,16 @@ o Runtime despacha e executa (mundo da operação). Não se confundem.
 | Fase | Entrega | Status |
 |---|---|---|
 | 0 | Conceito / pesquisa / anterioridade | concluída |
-| 1 | Protótipo SIFR + IR + motor NCA inicial | concluída (500k casos) |
+| 1 | Protótipo ZEPHIRUM + IR + motor NCA inicial | concluída (500k casos) |
 | 2 | Linguagem própria: lexer, parser, gramática, REPL, transpiler, fuzzing | **concluída** |
-| 3 | **COMPILER CORE**: SIFR-IR consolidado, NCA formal, Decision Kernel, ladder, trace, certificados, residual | **atual** |
+| 3 | **COMPILER CORE**: ZEPHIRUM-IR consolidado, NCA formal, Decision Kernel, ladder, trace, certificados, residual | **atual** |
 | 4 | SIMULATOR: execução de referência, validação de kernels, original × residual, benchmarks | futura |
 | 5 | RUNTIME: scheduler, abstração de backend (CPU/GPU/HPC/Simulator) | futura |
 | 6 | VM própria — construída DENTRO do Runtime | futura |
 
 ## O que NÃO fazer (permanente)
 
-Não apagar lexer/parser; não transformar SIFR em Python; não tratar o
+Não apagar lexer/parser; não transformar ZEPHIRUM em Python; não tratar o
 transpiler como produto final; não tratar VM como núcleo conceitual; não
 criar quinto pilar; não assumir que quântico é sempre o destino; não
 afirmar novidade sem verificação de anterioridade; não converter UNKNOWN em

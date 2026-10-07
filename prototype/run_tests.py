@@ -10,7 +10,7 @@ import copy
 import sys
 
 from nexa_core import parse_nexa, NCA
-from nexa_checker import verify
+from verify_certificate import verify
 
 A = """
 ASK:

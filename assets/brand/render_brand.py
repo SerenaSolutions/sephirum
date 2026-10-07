@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 """
-Kit de marca SIFR — gera todos os PNGs a partir da mesma geometria dos SVGs.
+Kit de marca ZEPHIRUM — gera todos os PNGs a partir da mesma geometria dos SVGs.
 
 Marcas oficiais (2026-10-06):
-- sifr_bloch_z   — SIFR (linguagem): o vetor no equador, nem |0⟩ nem |1⟩ = Z
-- sca_escada     — SCA (algoritmo comercial): para no primeiro degrau que decide
+- zephirum_bloch_z   — ZEPHIRUM (linguagem): o vetor no equador, nem |0⟩ nem |1⟩ = Z
+- zca_escada     — ZCA (algoritmo comercial): para no primeiro degrau que decide
 - kernel_caroco  — Decision Kernel (produto): só o caroço sobrevive
 
 Cada marca sai em: dark, light, transparent, favicon (64px, sem texto).
@@ -23,8 +23,8 @@ LIGHT = dict(bg="#FFFFFF", dim="#5A75A8", ghost="#C6D4EC",
              accent="#0891B2", bright="#0A1A3C")
 
 
-# ── SIFR: Bloch-Z ──────────────────────────────────────────────────
-def draw_sifr(ax, p, simple=False):
+# ── ZEPHIRUM: Bloch-Z ──────────────────────────────────────────────────
+def draw_zephirum(ax, p, simple=False):
     ax.set_xlim(0, 512); ax.set_ylim(0, 512); ax.set_aspect("equal"); ax.axis("off")
     C, R, SQ = 256, 170, 47.6
     ax.add_patch(Circle((C, C), R, fill=False, ec=p["dim"], lw=1.6, alpha=.75))
@@ -51,8 +51,8 @@ def draw_sifr(ax, p, simple=False):
                 fontweight="bold", ha="center", va="center", zorder=8)
 
 
-# ── SCA: Escada Certificada ────────────────────────────────────────
-def draw_sca(ax, p, simple=False):
+# ── ZCA: Escada Certificada ────────────────────────────────────────
+def draw_zca(ax, p, simple=False):
     ax.set_xlim(0, 512); ax.set_ylim(0, 512); ax.set_aspect("equal"); ax.axis("off")
     if not simple:
         ax.annotate("", xy=(488, 500), xytext=(488, 12),
@@ -99,7 +99,7 @@ def draw_kernel(ax, p, simple=False):
         ax.text(452, 70, "só o kernel sai", fontsize=10.5, color=p["accent"], ha="right")
 
 
-MARKS = [("sifr_bloch_z", draw_sifr), ("sca_escada", draw_sca), ("kernel_caroco", draw_kernel)]
+MARKS = [("zephirum_bloch_z", draw_zephirum), ("zca_escada", draw_zca), ("kernel_caroco", draw_kernel)]
 
 
 def render(draw, pal, path, size=(8, 8), dpi=64, transparent=False):

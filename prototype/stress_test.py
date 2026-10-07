@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-STRESS TEST — A SIFR/NCA funciona mesmo?
+STRESS TEST — A ZEPHIRUM/NCA funciona mesmo?
 500 problemas aleatorios, 4 familias, ground truth por forca bruta.
 Mede: decisoes corretas, taxa de eliminacao, NetBenefit agregado,
 e SOUNDNESS: 0 certificados falsos aceitos; N certificados forjados rejeitados.
@@ -11,7 +11,7 @@ import random
 import sys
 
 from nexa_core import parse_nexa, NCA
-from nexa_checker import verify
+from verify_certificate import verify
 
 import os
 N = int(sys.argv[1]) if len(sys.argv) > 1 else 500

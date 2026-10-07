@@ -1,14 +1,14 @@
-# SIFR — Gramática Formal (v0.2)
+# ZEPHIRUM — Gramática Formal (v0.2)
 
 *Formalização fiel ao interpretador existente (`prototype/nexa_core.py`).
 Nada aqui é aspiracional: cada regra descreve sintaxe que o parser atual aceita.*
 
 ## 1. Visão
 
-SIFR é uma linguagem declarativa de **pergunta sobre computação**. Um programa
-SIFR não descreve COMO computar; descreve O QUE SE PERGUNTA sobre uma
+ZEPHIRUM é uma linguagem declarativa de **pergunta sobre computação**. Um programa
+ZEPHIRUM não descreve COMO computar; descreve O QUE SE PERGUNTA sobre uma
 computação, sob que contrato, e com que modelo. O compilador de necessidade
-(SCA) então decide: prova a resposta sem executar, ou declara ZERUM (UNKNOWN).
+(ZCA) então decide: prova a resposta sem executar, ou declara ZEPHIRUM (UNKNOWN).
 
 ```
 PERGUNTE PRIMEIRO. PROVE DEPOIS. COMPUTE POR ÚLTIMO.
@@ -67,7 +67,7 @@ MODEL:
 ## 5. O caminho "como o Python foi criado"
 
 O Python nasceu (1991) como: sintaxe projetada → lexer → parser → AST →
-interpretador de bytecode → biblioteca padrão. A SIFR já tem o embrião
+interpretador de bytecode → biblioteca padrão. A ZEPHIRUM já tem o embrião
 (existente e testado): fonte → parser → IR (blocos) → compilador de
 necessidade → certificado → ledger. A escada de evolução:
 
@@ -75,15 +75,15 @@ necessidade → certificado → ledger. A escada de evolução:
 |---|---|---|
 | 0 | Parser + IR + motor + verificador | **feita e testada (500k casos)** |
 | 1 | Gramática formal (este documento) + REPL | **feita** |
-| 2 | Lexer próprio (sem `ast` do Python) + transpilação SIFR→Python | **feita e testada** |
+| 2 | Lexer próprio (sem `ast` do Python) + transpilação ZEPHIRUM→Python | **feita e testada** |
 | 3 | Máquina de bytecode própria (VM) + tipos | futura |
 | 4 | Toolchain em Rust/C + gerenciador de pacotes + stdlib | futura |
 
-**A fase 2 está concluída (2026-10-07).** `sifr_lexer.py` tokeniza a fonte
-com expressões próprias (recursive descent, zero `ast`); `test_sifr_lang.py`
+**A fase 2 está concluída (2026-10-07).** `zephirum_lexer.py` tokeniza a fonte
+com expressões próprias (recursive descent, zero `ast`); `test_zephirum_lang.py`
 prova equivalência com a Fase 1 em 50.000 programas, iguala o avaliador de
 expressões em 20.000 expressões aleatórias, rejeita fonte inválida e valida o
-transpilador SIFR→Python em 500 casos. O REPL já usa o lexer próprio.
+transpilador ZEPHIRUM→Python em 500 casos. O REPL já usa o lexer próprio.
 O que ainda vem emprestado do Python: a VM de execução — que pertence ao
 pilar RUNTIME e só chega na Fase 6, DEPOIS de COMPILER CORE (Fase 3),
 SIMULATOR (Fase 4) e RUNTIME (Fase 5).
