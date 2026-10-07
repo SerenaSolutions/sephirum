@@ -1,8 +1,8 @@
 {
   "seed": 42,
   "N": 500000,
-  "total_time_seconds": 33.44,
-  "mean_time_ms": 0.0669,
+  "total_time_seconds": 33.25,
+  "mean_time_ms": 0.0665,
   "certificate_valid_rate": 1.0,
   "counts": {
     "DECIDED_WITHOUT_EXECUTION": 265832,

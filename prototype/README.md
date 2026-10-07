@@ -35,6 +35,7 @@ python3 test_runtime.py                 # runtime: 20k recibos, gate, backends
 python3 test_vm.py                      # VM: orçamento como lei (V1-V6)
 python3 test_qinterop.py               # ZEPHIRUM x Qiskit/Cirq/PennyLane (SKIP honesto sem SDKs)
 python3 test_trust.py                   # Passo 7: Ed25519 de emitente (SKIP honesto sem cryptography/pynacl)
+python3 test_isolate.py                 # isolamento de processo: muros CPU/mem/tempo (V16-V21)
 ```
 
 ## Módulos

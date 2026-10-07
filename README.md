@@ -348,6 +348,15 @@ quem responde é o certificado; determinante pleno recusa com MOTIVO
 explícito: unidade certificada n! != dado consumido (§12).
 `docs/PHASE_6.md`, `test_vm.py` V1-V15.
 
+## Isolamento de processo (v0.6.3)
+
+A VM roda enjaulada em processo filho descartável: muros de CPU
+(RLIMIT 5s), memória (128 MB), tempo (relógio do pai) e cwd vazio.
+Laço forjado, crash ou estouro morrem NO FILHO — o runtime entrega
+limpa (RuntimeRefusal). Backend `vm_isolated` na CLI e no runtime.
+Limites declarados: sem sandbox de filesystem/rede em Python puro
+(§12) — container do SO é camada de deploy. `test_isolate.py` V16-V21.
+
 ## The four pillars / Os quatro pilares
 
 ```

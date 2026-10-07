@@ -27,8 +27,9 @@ from fractions import Fraction
 from nexa_core import NCA, _parse_unknown, cmp, parse_list, parse_question
 from verify_certificate import verify
 from zephirum_simulator import MODELS, ModelNotAvailable, simulate_full
+from zephirum_isolate import IsolationFault
 
-BACKENDS = ("cpu_exact", "float64", "vm", "gpu", "hpc", "qpu")
+BACKENDS = ("cpu_exact", "float64", "vm", "vm_isolated", "gpu", "hpc", "qpu")
 
 
 class RuntimeRefusal(Exception):
@@ -55,6 +56,26 @@ def execute_residual(blocks, res, backend):
     if backend in ("gpu", "hpc", "qpu"):
         raise ModelNotAvailable("backend %r registered, not implemented "
                                 "(§12: refusing to fake it)" % backend)
+
+    if backend == "vm_isolated":
+        # mesmo bytecode da VM, mas enjaulado em processo filho com muros
+        # de CPU/memória/tempo — um crash morre no filho (zephirum_isolate)
+        from zephirum_isolate import run_isolated
+        try:
+            prog, data, budget = _vm_plan(blocks, res)
+        except RuntimeRefusal as e:
+            raise e
+        try:
+            rec = run_isolated(prog, data, budget)
+        except IsolationFault as e:
+            raise RuntimeRefusal(str(e))
+        if rec["units"] > budget:
+            raise VMFault("contabilidade aberta: %d > %d"
+                          % (rec["units"], budget))
+        return (rec["answer"], rec["units"],
+                "VM ISOLADA (processo filho, muros CPU/mem/tempo), "
+                "orçamento %d/%d, trace %s..."
+                % (rec["units"], rec["budget"], rec["trace_hash"][:16]))
 
     if backend == "vm":
         from zephirum_vm import VMNotEncodable, vm_execute
@@ -161,3 +182,13 @@ def run(blocks, name="rt", backend="cpu_exact"):
 
 if __name__ == "__main__":
     print(__doc__)
+
+
+def _vm_plan(blocks, res):
+    """Plano de execução da VM: (bytecode, dados, orçamento) —
+    compartilhado pelos backends vm e vm_isolated."""
+    from zephirum_vm import VMNotEncodable, compile_program
+    try:
+        return compile_program(blocks, res)
+    except VMNotEncodable as e:
+        raise RuntimeRefusal(str(e))

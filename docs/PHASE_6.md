@@ -120,3 +120,27 @@ A última recusa honesta da VM vira cobertura explícita:
 Bateria V1-V15 completa (PASS). O que a VM NÃO faz segue declarado:
 det pleno, sub-rotina (return address), LOOP com contagem dependente
 de dado.
+
+
+## FATIA 4 — Isolamento de processo (2026-10-07, v0.6.3)
+
+A VM sai do processo do runtime e vira filho descartável:
+`zephirum_isolated_runner.py` (o filho) + `zephirum_isolate.py` (as
+portas) + backend `vm_isolated` no runtime e CLI.
+
+MUROS aplicados ao filho: RLIMIT_CPU 5s (kernel), RLIMIT_AS 128 MB,
+timeout de 10s no relógio do pai, cwd em diretório temporário vazio,
+ambiente mínimo. Um crash — laço forjado, BUDGET EXCEEDED, STEP
+LIMIT, falta de memória — morre no FILHO; o hospedeiro segue de pé e
+entrega LIMPA (IsolationFault => RuntimeRefusal, nunca entrega suja).
+
+DECLARAÇÃO HONESTA (§12): em Python puro não há isolamento de
+sistema de arquivos nem de rede (sem seccomp/container aqui). Os
+muros são processo + CPU + memória + tempo. Camada de container/jail
+do SO é aditiva e fica documentada como recomendação de deploy.
+
+Bateria V16-V21 (PASS): paridade isolado==em-processo (resposta,
+unidades, trace_hash — 50 residuais); BUDGET/STEP LIMIT no filho com
+motivo explícito; RLIMIT de memória derruba alocação de 192MB; muro
+de tempo mata o dorminhoco; 142 residuais end-to-end no runtime com
+veredito == cpu_exact e cross-check OK; det pleno => RuntimeRefusal.
