@@ -57,6 +57,8 @@ def main(argv=None):
     print("INPUT_HASH  %s" % cert["INPUT_HASH"])
     print("CERT_HASH   %s" % cert["CERT_HASH"])
     print("INDEP CHECK %s" % receipt["independent_check"][1])
+    if "pq_protect" in receipt:
+        print("PQ PROTECT  %s" % receipt["pq_protect"][1])
     if "standby" in receipt:
         print("QPU         %s (§12) — decisão clássica exata ATIVA"
               % receipt["standby"]["STATUS"])

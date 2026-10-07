@@ -46,6 +46,10 @@ receipt, ok = gateway(open("examples/separable.zeph").read(),
                       sdk="cirq")
 ```
 
+## PQ-PROTECT (autoprotecao pos-quantica)
+
+Assinatura hash-based Lamport (familia FIPS 205) no certificado, selo SHA-256 dos proprios arquivos, nucleo puro encapsulado (sem rede/I/O/processo) — verificado na bateria 20 com bloqueios ativos e adulteracao pega em DUAS camadas.
+
 ## Honestidade (§12)
 
 1. Zero unidades QPU: o critério analítico ELIMINA o caminho do SDK

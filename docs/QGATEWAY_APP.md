@@ -188,3 +188,27 @@ computação quântica.
 
 CLI: `zephirum-q <arquivo> --standby` · `zephirum-q --qpu-probe`.
 Bateria: `test_standby.py` (19ª da conformidade).
+
+## PQ-PROTECT — autoprotecao pos-quantica (direcao do dono, 2026-10-07)
+
+"Hibrido quantico" + "criptografia quantica de protecao pra ele
+mesmo" + "encapsular contra qualquer ataque" — entregue em CAMADAS
+verificaveis (v0.5.0, 20a bateria):
+
+  1. ASSINATURA HASH-BASED no certificado (Lamport 1979, 64 bits,
+     SHA-256 — a familia que o NIST padronizou como SPHINCS+,
+     FIPS 205): imune ao algoritmo de Shor (nao depende de
+     fatoracao nem log discreto). Chave publica VIAJA no certificado.
+  2. SELO DE INTEGRIDADE: manifesto SHA-256 dos proprios arquivos
+     do pacote — um byte adulterado e detectado.
+  3. ENCAPSULAMENTO: nucleo da decisao = FUNCAO PURA (sem rede, sem
+     I/O, sem processo, sem eval) — provado com bloqueios ativos na
+     bateria; a camada de selo, separada, so LE os proprios
+     arquivos (declarado).
+  4. ENTRADAS HOSTIS: injecao, unicode, volume — flag, ValueError
+     ou MURO de passos com recibo (S12); zero crash escondido.
+
+S12 DECLARADO (a bateria imprime): "contra QUALQUER ataque" absoluto
+nao existe em engenharia; QKD real exige hardware fisico. Camadas
+verificaveis + honestidade — adulterar precisa quebrar DUAS camadas
+independentes (CERT_HASH reproduzido + assinatura Lamport).

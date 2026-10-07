@@ -89,6 +89,7 @@ def certify(ev):
     cert = {
         "PLUGIN": "zephirum-quantum-plugin",
         "ALGORITHM": "ZEPHIRUM BYTECODE: SCHMIDT_DET_CRITERION",
+        "ENCAPSULATION": "função pura: sem rede, sem I/O, sem eval — superfície mínima (S12)",
         "INPUT_HASH": input_hash,
         "QUESTION": ev["question"],
         "ANSWER": ev["answer"],
@@ -102,7 +103,8 @@ def certify(ev):
     }
     cert["CERT_HASH"] = hashlib.sha256(
         json.dumps(cert, sort_keys=True).encode()).hexdigest()
-    return cert
+    from .pqprotect import pq_protect
+    return pq_protect(cert)
 
 
 def verify(src, cert):
@@ -137,7 +139,11 @@ def verify(src, cert):
         return False, "selo CERT_HASH não confere (adulteração)"
     if rebuilt["INPUT_HASH"] != cert.get("INPUT_HASH"):
         return False, "INPUT_HASH não confere (entrada trocada)"
-    return True, "decisão reproduzida e selo confere"
+    from .pqprotect import pq_verify
+    okq, whyq = pq_verify(cert)
+    if not okq:
+        return False, whyq
+    return True, "decisão reproduzida, selo e assinatura pós-quântica conferem"
 
 
 def gateway(src, sdk=None, sdk_check=None):
@@ -156,6 +162,7 @@ def gateway(src, sdk=None, sdk_check=None):
         }, False
     cert = certify(ev)
     ok, why = verify(src, cert)
+    from .pqprotect import pq_verify
     receipt = {
         "routed": True,
         "status": cert["STATUS"],
@@ -163,6 +170,7 @@ def gateway(src, sdk=None, sdk_check=None):
         "concurrence_exact": ev["concurrence"],
         "cert": cert,
         "independent_check": (ok, why),
+        "pq_protect": pq_verify(cert),
         "qpu_units_billed": 0,
     }
     if sdk:
