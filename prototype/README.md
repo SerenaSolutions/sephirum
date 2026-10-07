@@ -11,6 +11,7 @@ python3 zephirum.py explain example.zeph
 python3 zephirum.py compile example.zeph
 python3 zephirum.py verify example.zeph.cert.json example.zeph
 python3 zephirum.py benchmark 500000
+python3 zephirum.py simulate example.zeph
 ```
 
 ## Baterias (todas exit 0)
@@ -26,6 +27,7 @@ python3 test_zephirum_lang.py              # linguagem: 50k equivalência
 python3 test_zephirum_ir.py                # IR transversal
 python3 stress_test.py 500000              # benchmark + soundness
 python3 ai_layer.py                       # camada consultiva (nunca decisória)
+python3 test_simulator.py                # gêmeo adversarial: 20k diferenciais
 ```
 
 ## Módulos
@@ -38,3 +40,4 @@ python3 ai_layer.py                       # camada consultiva (nunca decisória)
 | verify_certificate.py | verificador independente (não-confiança) |
 | zephirum_lexer.py / zephirum_transpiler.py / zephirum_repl.py | linguagem (Fase 2) |
 | zephirum_ir.py | IR transversal (Fase 2) |
+| zephirum_simulator.py | Fase 4: execução plena independente (gêmeo adversarial) |

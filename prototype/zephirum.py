@@ -95,6 +95,9 @@ def cli(argv=None):
     c.add_argument("file")
 
     c = sub.add_parser("benchmark", help="executa o benchmark (default 500000)")
+
+    c = sub.add_parser("simulate", help="kernel vs execução plena independente")
+    c.add_argument("file")
     c.add_argument("n", nargs="?", type=int, default=500000)
 
     a = ap.parse_args(argv)
@@ -166,6 +169,22 @@ def cli(argv=None):
             print("  %s  (hash %s...)" % ("VALID" if ok else "INVALID",
                                          res["certificate"]["CERT_HASH"][:16]))
             return 0 if ok else 1
+
+        if a.cmd == "simulate":
+            from zephirum_simulator import compare
+            blocks = _cli_load(a.file)
+            cc = compare(blocks, "cli")
+            res, sim = cc["result"], cc["sim"]
+            print("KERNEL:    ", "Z (UNKNOWN)" if res["answer"] is None
+                  else res["answer"], "(%s)" % res["status"])
+            print("SIMULATOR: ", sim["detail"], "->",
+                  "UNDERDETERMINED" if sim["status"] != "DECIDED" else sim["answer"],
+                  "| %d units" % sim["units"])
+            print("VERDICT:   ", cc["verdict"].upper(), "| certificate:",
+                  "VALID" if cc["cert_ok"] else "INVALID")
+            print("COMPUTATION AVOIDED: %d of %d units"
+                  % (cc["avoided_units"], cc["sim_units"]))
+            return 0 if cc["verdict"] != "MISMATCH" and cc["cert_ok"] else 1
 
         if a.cmd == "benchmark":
             r = subprocess.run([sys.executable, "stress_test.py", str(a.n)])

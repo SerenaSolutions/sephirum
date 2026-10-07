@@ -216,6 +216,25 @@ para provar, em famílias de problemas formalmente suportadas, quando uma
 resposta pode ser determinada sem executar a computação completa, e para
 declarar UNKNOWN quando essa prova não está disponível."
 
+## Fase 4 — Simulator: o gêmeo adversarial
+
+O pilar SIMULATOR executa a computação COMPLETA que a escada eliminou,
+por caminho aritmético independente (Fraction em ordem reversa, Laplace
+vs diagonal, loop vs forma fechada, float64 vs exato), para provar por
+construção que a eliminação era certa (`docs/PHASE_4.md`):
+
+- **20.000 casos diferenciais: 0 MISMATCH** — kernel == execução plena
+- **171.422 unidades simuladas, 136.130 evitadas de fato (79,41%)** —
+  o eliminado foi executado mesmo assim e a resposta não mudou
+- UNKNOWN honesto: toda Z confirmada como subdeterminada na execução plena
+- comparação de modelos computacionais: o float64 erraria na armadilha
+  1e16 onde o modelo exato acerta — por isso a aritmética é exata
+
+```bash
+python3 prototype/zephirum.py simulate prog.zeph   # kernel vs plena
+python3 prototype/test_simulator.py                # bateria 20k
+```
+
 ## The four pillars / Os quatro pilares
 
 ```
