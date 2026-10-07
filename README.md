@@ -4,6 +4,8 @@
 
 > **ASK FIRST. PROVE NEXT. COMPUTE LAST.**
 
+<p align="center"><img src="assets/demo_repl.gif" width="820" alt="ZEPHIRUM terminal demo: the naive 12-term truncation answers TRUE (wrong at any length); the certified identity decides FALSE in 2 units — the certificate is the answer"></p>
+
 ZEPHIRUM is a **necessity compiler**: given a question about a computation
 (stated in the **ZEPHIRUM** language), it tries to prove that **no computation is
 needed** — and only executes what remains, with a verifiable certificate.
@@ -57,6 +59,7 @@ python3 prototype/stress_test.py 500000   # 500k problems, ~14 s
 python3 prototype/ai_layer.py      # advisory AI layer
 python3 prototype/zephirum_repl.py     # REPL: type ZEPHIRUM programs
 cat prog.zeph | python3 prototype/zephirum_transpiler.py  # standalone Python output
+python3 prototype/zephirum_decide.py examples/geometric.zeph  # one decision, full receipt (the GIF above)
 python3 prototype/test_zephirum_lang.py  # language equivalence (Phase 2)
 ```
 

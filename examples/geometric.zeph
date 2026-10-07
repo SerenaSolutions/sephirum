@@ -1,0 +1,8 @@
+ASK:
+    question: sum_inf < 2
+CONTRACT:
+    absolute_error: 0
+MODEL:
+    type: geometric_inf
+    a: 1
+    r: 1/2
