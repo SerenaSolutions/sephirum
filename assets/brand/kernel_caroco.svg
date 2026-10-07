@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <!-- DECISION KERNEL — O CAROÇO · o produto do SCA
+       kernel = caroço em inglês. Da computação inteira só o kernel sobrevive:
+       a casca (hexágono) é o certificado, a semente (diamante) é a resposta. -->
+  <rect width="512" height="512" rx="96" fill="#0A1A3C"/>
+  <!-- a casca: o certificado -->
+  <polygon points="408.4,344 256,432 103.6,344 103.6,168 256,80 408.4,168"
+           fill="none" stroke="#22D3EE" stroke-width="3" opacity=".22"/>
+  <polygon points="385.9,331 256,406 126.1,331 126.1,181 256,106 385.9,181"
+           fill="none" stroke="#22D3EE" stroke-width="7" opacity=".85" stroke-linejoin="round"/>
+  <!-- haste fantasma do 1 -->
+  <line x1="256" y1="186" x2="256" y2="344" stroke="#22D3EE" stroke-width="3" opacity=".25"/>
+  <!-- a semente: a resposta -->
+  <g stroke="#E8F6FF" stroke-width="3.2" stroke-linecap="round">
+    <line x1="256" y1="216" x2="256" y2="296"/>
+    <line x1="216" y1="256" x2="296" y2="256"/>
+    <line x1="234" y1="234" x2="278" y2="278"/>
+    <line x1="234" y1="278" x2="278" y2="234"/>
+  </g>
+  <circle cx="256" cy="256" r="7" fill="#E8F6FF"/>
+  <text x="60" y="48" font-family="Helvetica, Arial, sans-serif" font-size="10" fill="#7FA8D9">a computação inteira entra</text>
+  <text x="452" y="442" text-anchor="end" font-family="Helvetica, Arial, sans-serif" font-size="10.5" fill="#22D3EE">só o kernel sai</text>
+</svg>

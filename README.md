@@ -1,8 +1,8 @@
-<p align="center"><img src="assets/logo/sifr_logo_dark.png" width="140" alt="SIFR — monograma ZERUM: o Z feito de 0 e 1"></p>
+<p align="center"><img src="assets/brand/sifr_bloch_z_dark.png" width="140" alt="SIFR — monograma ZERUM: o Z feito de 0 e 1"></p>
 
 # ZERUM — A Computação Antes da Execução
 
-<p align="center"><img src="assets/logo/sifr_logo_dark.png" width="140" alt="SIFR — monograma ZERUM: o Z feito de 0 e 1"></p>
+<p align="center"><img src="assets/brand/sifr_bloch_z_dark.png" width="140" alt="SIFR — monograma ZERUM: o Z feito de 0 e 1"></p>
 
 > **PERGUNTE PRIMEIRO. PROVE DEPOIS. COMPUTE POR ÚLTIMO.**
 
@@ -85,7 +85,7 @@ Python 3 puro. Sem dependências. Sem LLM. Sem nuvem.
 
 # ZERUM — Computation Before Execution
 
-<p align="center"><img src="assets/logo/sifr_logo_dark.png" width="140" alt="SIFR — monograma ZERUM: o Z feito de 0 e 1"></p>
+<p align="center"><img src="assets/brand/sifr_bloch_z_dark.png" width="140" alt="SIFR — monograma ZERUM: o Z feito de 0 e 1"></p>
 
 > **ASK FIRST. PROVE NEXT. COMPUTE LAST.**
 
@@ -152,6 +152,26 @@ Pure Python 3. No dependencies. No LLM. No cloud.
 - AI never decides: the charter requires a heuristic generator + an
   **independent verifier**. The AI layer is advisory by construction.
 
+
+## Brand marks / Marcas
+
+| Mark | Product |
+|---|---|
+| ![SIFR](assets/brand/sifr_bloch_z_dark.png) | **SIFR** — the language (Bloch-Z: the state vector pinned to the equator, neither \|0⟩ nor \|1⟩) |
+| ![SCA](assets/brand/sca_escada_dark.png) | **SCA** — the commercial algorithm (the certified ladder: stops at the first rung that decides) |
+| ![Kernel](assets/brand/kernel_caroco_dark.png) | **Decision Kernel** — the product (only the kernel survives; shell = certificate, seed = answer) |
+
+Full spec: `docs/BRAND_IDENTITY.md`. Z is an epistemic decision state; the
+Bloch-sphere analogy is iconographic, never a physical claim.
+
+| Marca | Produto |
+|---|---|
+| ![SIFR](assets/brand/sifr_bloch_z_dark.png) | **SIFR** — a linguagem (Bloch-Z: o vetor no equador, nem \|0⟩ nem \|1⟩ = Z) |
+| ![SCA](assets/brand/sca_escada_dark.png) | **SCA** — o algoritmo comercial (a escada certificada: para no primeiro degrau que decide) |
+| ![Caroço](assets/brand/kernel_caroco_dark.png) | **Decision Kernel** — o produto (só o caroço sobrevive; casca = certificado, semente = resposta) |
+
+Especificação completa: `docs/BRAND_IDENTITY.md`. Z é estado de decisão
+epistêmico; a analogia com a esfera de Bloch é iconográfica, nunca alegação física.
 
 ## The four pillars / Os quatro pilares
 
