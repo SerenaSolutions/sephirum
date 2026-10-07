@@ -1,0 +1,23 @@
+cff-version: 1.2.0
+message: "If you use this project, cite it as below."
+title: "ZERUM — A Computação Antes da Execução"
+authors:
+  - name: "AUŠRA Quantinum"
+date-released: "2026-10-06"
+version: "0.1.0"
+repository-code: "https://github.com/SerenaSolutions/zerum"
+abstract: >-
+  Certified necessity compiler: answers questions about computations before
+  running them. SIFR language, SCA elimination ladder, trivalent logic with
+  the numeral Z (zerum), independent verification. 0 wrong answers in 500,000
+  randomized problems; 500,000/500000 certificates verified; 20/20 forged
+  certificates rejected; 76.5% of demanded computation units eliminated.
+keywords:
+  - certified computation
+  - domain-specific language
+  - partial evaluation
+  - interval arithmetic
+  - proof-carrying certificates
+  - trivalent logic
+  - computation avoidance
+license: MIT
