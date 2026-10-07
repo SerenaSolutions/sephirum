@@ -32,6 +32,7 @@ python3 test_simulator.py                # gêmeo adversarial: 20k diferenciais
 python3 test_contracts.py                 # contrato como máquina (3 camadas)
 python3 test_models.py                   # modelos: exact vs float64 (10k+armadilhas)
 python3 test_runtime.py                 # runtime: 20k recibos, gate, backends
+python3 test_vm.py                      # VM: orçamento como lei (V1-V6)
 ```
 
 ## Módulos
@@ -46,3 +47,4 @@ python3 test_runtime.py                 # runtime: 20k recibos, gate, backends
 | zephirum_ir.py | IR transversal (Fase 2) |
 | zephirum_simulator.py | Fase 4: execução plena independente (gêmeo adversarial) |
 | zephirum_runtime.py | Fase 5: gate + execução do residual + recibo |
+| zephirum_vm.py | Fase 6: bytecode orçamentado (interna ao Runtime) |

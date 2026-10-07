@@ -263,6 +263,24 @@ executa apenas as unidades certificadas e emite recibo
 python3 prototype/zephirum.py run prog.zeph [--backend cpu_exact|float64]
 ```
 
+## Fase 6 — VM própria (interna ao Runtime)
+
+Bytecode determinístico e ORÇAMENTADO: o certificado autoriza N
+unidades e a VM não consegue gastar mais — programa forjado com 8
+unidades sob certificado de 3 **para na 3ª** (`docs/PHASE_6.md`):
+
+- 4.072 residuais em bytecode: todos conferem com o certificado,
+  contabilidade fechada (unidades == orçamento) em cada recibo
+- trace determinístico COM operando: adulterar o dado acessado muda o
+  trace_hash
+- zero-execução => programa vazio (HALT): a resposta é o certificado
+- escopo honesto: famílias de soma nesta fatia; o resto recusa
+  explicitamente (VMNotEncodable)
+
+```bash
+python3 prototype/zephirum.py run prog.zeph --backend vm
+```
+
 ## The four pillars / Os quatro pilares
 
 ```

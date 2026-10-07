@@ -28,7 +28,7 @@ from nexa_core import NCA, _parse_unknown, cmp, parse_list, parse_question
 from verify_certificate import verify
 from zephirum_simulator import MODELS, ModelNotAvailable, simulate_full
 
-BACKENDS = ("cpu_exact", "float64", "gpu", "hpc", "qpu")
+BACKENDS = ("cpu_exact", "float64", "vm", "gpu", "hpc", "qpu")
 
 
 class RuntimeRefusal(Exception):
@@ -55,6 +55,16 @@ def execute_residual(blocks, res, backend):
     if backend in ("gpu", "hpc", "qpu"):
         raise ModelNotAvailable("backend %r registered, not implemented "
                                 "(§12: refusing to fake it)" % backend)
+
+    if backend == "vm":
+        from zephirum_vm import VMNotEncodable, vm_execute
+        try:
+            r = vm_execute(blocks, res)
+        except VMNotEncodable as e:
+            raise RuntimeRefusal(str(e))
+        return (r["answer"], r["units"],
+                "VM bytecode, orçamento %d/%d, trace %s..."
+                % (r["units"], r["budget"], r["trace_hash"][:16]))
 
     if backend == "float64":
         # executa o residual em float64: permitido, mas o recibo registra
