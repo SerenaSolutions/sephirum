@@ -66,5 +66,7 @@ def certify(cert):
 def check_hash(cert):
     """True se o CERT_HASH casa com a recomputação canônica do corpo."""
     stored = cert.get("CERT_HASH")
-    body = {k: v for k, v in cert.items() if k != "CERT_HASH"}
+    # Passo 7: ISSUER/SIGNATURE são envelope de confiança, não payload
+    body = {k: v for k, v in cert.items()
+            if k not in ("CERT_HASH", "ISSUER", "SIGNATURE")}
     return stored == digest(body)

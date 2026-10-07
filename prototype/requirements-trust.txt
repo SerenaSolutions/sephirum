@@ -1,0 +1,5 @@
+# dependências OPCIONAIS do Passo 7 (assinatura Ed25519 de emitente)
+# sem nenhuma delas: geração/verificação de assinatura falha
+# EXPLICITAMENTE (TrustNotAvailable) — nunca fingimento (§12)
+cryptography>=42
+pynacl>=1.5   # contraprova independente (bateria T1)

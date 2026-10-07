@@ -311,6 +311,26 @@ pennylane` — sem eles, SKIP explícito):
   (det float "não", pureza "sim" por ruído, ρ_A "puro") — o
   certificado ZEPHIRUM é o único veredicto estável
 
+## Passo 7 — Trust: assinatura Ed25519 de emitente
+
+O ciclo de confiança fecha: integridade (CERT_HASH, Fase 3) +
+autenticidade (SIGNATURE Ed25519 + registro de emitentes
+`trusted_issuers.txt`) — `docs/PHASE_7_TRUST.md`:
+
+- adulterar QUALQUER campo de um certificado assinado quebra a
+  assinatura (T3, 5/5 campos testados)
+- emitente forjado (chave própria) fica fora do registro (T4);
+  ISSUER roubado sem a chave não assina (T4)
+- contraprova independente: cryptography e PyNaCl produzem a MESMA
+  assinatura e verificam uma à outra (T1) — nenhuma fonte única
+- camada aditiva: certificado não assinado segue verificável (T5)
+
+```bash
+zephirum.py trust gen-key --out issuer_key.txt
+zephirum.py trust allow <pubkey>
+zephirum.py trust sign prog.zeph.cert.json issuer_key.txt
+```
+
 ## The four pillars / Os quatro pilares
 
 ```

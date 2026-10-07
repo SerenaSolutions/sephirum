@@ -104,6 +104,18 @@ def cli(argv=None):
     c.add_argument("--backend", default="cpu_exact")
     c.add_argument("n", nargs="?", type=int, default=500000)
 
+    t = sub.add_parser("trust", help="Passo 7: emitentes e assinaturas")
+    ts = t.add_subparsers(dest="trust_cmd", required=True)
+    g = ts.add_parser("gen-key", help="gera chave de emitente (sk, pk)")
+    g.add_argument("--out", help="grava sk hex no arquivo (guardar em sigilo)")
+    sg = ts.add_parser("sign", help="assina um certificado .cert.json")
+    sg.add_argument("cert")
+    sg.add_argument("key", help="arquivo ou hex com a chave privada")
+    sg.add_argument("--out", help="certificado assinado de saída")
+    al = ts.add_parser("allow", help="adiciona emitente ao registro")
+    al.add_argument("pubkey")
+    ls = ts.add_parser("list", help="lista emitentes confiáveis")
+
     a = ap.parse_args(argv)
     try:
         if a.cmd == "check":
@@ -118,6 +130,43 @@ def cli(argv=None):
             print("EXECUTION:", "NOT REQUIRED" if req == 0 else
                   "REQUIRED (%d units)" % req)
             return 0 if ok else 1
+
+        if a.cmd == "trust":
+            import zephirum_trust as trust
+            if a.trust_cmd == "gen-key":
+                sk, pk = trust.gen_issuer()
+                if a.out:
+                    Path(a.out).write_text(sk + "\n")
+                print("PUBKEY:", pk)
+                print("PRIVATE KEY:", "written to %s" % a.out if a.out
+                      else sk)
+                print("registry: zephirum.py trust allow %s" % pk)
+                return 0
+            if a.trust_cmd == "sign":
+                kp = Path(a.key)
+                sk = kp.read_text().strip() if kp.exists() else a.key
+                cert = json.loads(Path(a.cert).read_text())
+                signed = trust.sign_certificate(cert, sk)
+                out = Path(a.out or (a.cert + ".signed.json"))
+                out.write_text(json.dumps(signed, indent=1, sort_keys=True,
+                                           default=str))
+                print("ISSUER:", signed["ISSUER"])
+                print("SIGNED:", out)
+                return 0
+            if a.trust_cmd == "allow":
+                reg = Path(trust.TRUSTED_FILE)
+                pk = a.pubkey.strip()
+                cur = trust.load_trusted()
+                cur.add(pk)
+                reg.write_text("\n".join(sorted(cur)) + "\n")
+                print("TRUSTED ISSUERS:", len(cur))
+                return 0
+            if a.trust_cmd == "list":
+                cur = trust.load_trusted()
+                for pk in sorted(cur):
+                    print(pk)
+                print("(%d emitentes confiáveis)" % len(cur))
+                return 0
 
         if a.cmd == "compile":
             blocks, res = _cli_compile(a.file)

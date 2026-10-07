@@ -18,12 +18,20 @@ from nexa_core import (
 )
 
 
-def verify(blocks, cert):
+def verify(blocks, cert, trusted_issuers=None):
     """Return (ok: bool, reason: str).
 
     §12: um certificado malformado/adulterado é REJEITADO explicitamente —
-    o verificador nunca quebra e nunca aceita por acidente estrutural."""
+    o verificador nunca quebra e nunca aceita por acidente estrutural.
+    Passo 7: se o certificado é ASSINADO (ISSUER/SIGNATURE presentes), a
+    assinatura Ed25519 tem que ser válida E o emitente estar no registro
+    de confiança — autenticidade antes de qualquer análise semântica."""
     try:
+        if "SIGNATURE" in cert or "ISSUER" in cert:
+            from zephirum_trust import verify_trust
+            ok_t, reason_t = verify_trust(cert, trusted_issuers)
+            if not ok_t:
+                return False, reason_t
         return _verify_core(blocks, cert)
     except (ValueError, KeyError, IndexError, ZeroDivisionError,
             AttributeError, TypeError) as e:

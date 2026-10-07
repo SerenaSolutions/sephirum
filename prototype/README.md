@@ -33,7 +33,8 @@ python3 test_contracts.py                 # contrato como máquina (3 camadas)
 python3 test_models.py                   # modelos: exact vs float64 (10k+armadilhas)
 python3 test_runtime.py                 # runtime: 20k recibos, gate, backends
 python3 test_vm.py                      # VM: orçamento como lei (V1-V6)
-python3 test_qinterop.py               # ZEPHIRUM x Qiskit (SKIP honesto sem pip install qiskit)
+python3 test_qinterop.py               # ZEPHIRUM x Qiskit/Cirq/PennyLane (SKIP honesto sem SDKs)
+python3 test_trust.py                   # Passo 7: Ed25519 de emitente (SKIP honesto sem cryptography/pynacl)
 ```
 
 ## Módulos
