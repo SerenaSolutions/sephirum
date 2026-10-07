@@ -1,6 +1,0 @@
-
-[cirq]
-cirq
-
-[qiskit]
-qiskit

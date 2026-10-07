@@ -1,2 +1,0 @@
-[console_scripts]
-zephirum-q = zephirum_quantum_plugin.cli:main
