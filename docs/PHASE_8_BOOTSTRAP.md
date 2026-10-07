@@ -67,7 +67,7 @@ Resistência B2 (`stress_b2.py`, ST1-ST6): 10.000 casos geométricos com
 materializado acima de 5.000 — eliminação pura); 4 ataques de
 falsificação rejeitados; muros STEP_LIMIT/CALL_DEPTH/stack firmes;
 racionais de 10^30 exatos; 500 casos x 2 execuções com traços idênticos.
-| B3 | lexer/parser em ZEPHIRUM | **FATIA 1 CONCLUÍDA** (2026-10-07: lexer de assinatura em bytecode, sobre a memória e o bit do B4); restam tokens como DADOS e o parser |
+| B3 | lexer/parser em ZEPHIRUM | **FATIA 1+2 CONCLUÍDAS** (2026-10-07: lexer de assinatura + parser de dados do certificado, ambos em bytecode); restam tokens endereçáveis e sinais |
 | B4 | SHA-256 do certificado em bytecode | **CONCLUÍDA** (2026-10-07, fatia de bit: AND/OR/XOR/SHL/SHR/MOD/STORE/FETCH) |
 | B5 | VM escrita em ZEPHIRUM | exige modelo de memória; fronteira declarada |
 
@@ -207,3 +207,34 @@ operador (números reais: próxima fatia) e não há parser/árvore —
 tokens viram assinatura, não estrutura. Restam de B3: tokens como
 dados e o parser; e a fronteira B5 (VM completa) segue dependendo
 dessas fatias.
+
+
+## MARCO B3.2 — o PARSER de dados NA LINGUAGEM (2026-10-07)
+
+Seguindo o B3.1, o segundo estágio léxico caiu:
+`zephirum_parse_lang.py` INTERPRETA a própria entrada de dados do
+certificado em bytecode — inteiros, frações n/d (DIV exata) e
+decimais ((N*10^K+F)/10^K via POW, exato), empurrando VALORES
+Fraction na pilha com uma máquina de estados de fase (inteiro,
+denominador, decimal) por máscaras 0/1 branchless e push condicional
+via JMPZ (frente, sem POP na ISA).
+
+Gramática declarada (o programa é a norma): VALOR := INT ('/' INT)?
+| INT '.' INT+; separadores '|' e ','; EOF fecha; erros por FLAG
+(VALID=0), nunca crash: '1/0' é veredito inválido, não exceção — o
+DG do guarda elimina a divisão por zero; barra/ponto fora de
+contexto, separador órfão, alfabeto fora, denominador/decimal vazios
+— tudo flag.
+
+Bateria `test_parse_in_lang.py` (PASS): 19 textos de dados —
+valores idênticos entre VM Python, zvm C e referência independente
+(p/q, UNITS == comprimento, TRACE_HASH); recibo à mão (SP1) que
+inclusive PEGOU um bug de máscara que máquina e referência
+compartilhavam (bad_close fora do fecho) — o recibo antes do traço
+funcionou como desenho; 7/7 inválidas por flag nos dois motores.
+
+Declarado (§12): tokens endereçáveis (tabela) exigem memória
+indexada (B5); sinais negativos ficam para a próxima fatia;
+codificação texto->inteiros no hospedeiro. A linguagem agora LÊ e
+INTERPRETA a própria entrada — o B5 (VM completa) perdeu mais uma
+fronteira declarada.
