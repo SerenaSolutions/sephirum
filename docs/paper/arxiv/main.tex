@@ -1,0 +1,173 @@
+\documentclass[11pt,a4paper]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage{amsmath,amssymb}
+\usepackage{booktabs}
+\usepackage[T1]{fontenc}
+\usepackage[utf8]{inputenc}
+\usepackage{lmodern}
+\usepackage[colorlinks=true,linkcolor=blue,citecolor=blue,urlcolor=blue]{hyperref}
+
+\title{ZEPHIRUM --- Computation Before Execution:\\
+A Certified Necessity Compiler with a\\ Trivalent Decision Logic}
+
+\author{AU\v{S}RA Quantinum\\
+\small SerenaSolutions --- \texttt{github.com/SerenaSolutions/zephirum}}
+\date{7 October 2026}
+
+\begin{document}
+\maketitle
+
+\begin{abstract}
+We present ZEPHIRUM, a system that answers questions \emph{about} computations
+before running them. Problems are stated in ZEPHIRUM, a small language in which
+the user declares a question (e.g., ``is the sum above a threshold?''), a
+contract (tolerance, budget, assumptions) and a model. The Zephirum Compilation
+Algorithm (ZCA) searches an \emph{elimination ladder} of increasingly expensive
+techniques --- identity, simplification, reduction, interval bounding,
+closed-form evaluation, certified approximation, classical execution --- and
+returns one of five explicit states: decided without execution, decided by
+reduction, residual computation required, full execution required, or UNKNOWN.
+Every decision is emitted with a certificate that an independent verifier
+re-derives from the original source. We introduce the numeral Z (zephirum), the
+third truth value of ZEPHIRUM logic, which remains whenever neither necessity
+nor unnecessity can be proven. On 500{,}000 randomized problems across four
+families, the system made zero wrong decisions, all 500{,}000 certificates
+passed independent verification, 20/20 forged certificates were rejected, and
+76.5\% of the demanded computation units were eliminated by certificate. The
+decision layer has been re-implemented and cross-checked in independent C, the
+same source transpiles to autonomous Python, C, Java and C\# programs with
+identical verdicts and certificates, and the elimination kernels of three
+families are self-hosted in the language itself, executed by a budgeted
+virtual machine. We claim no quantum capability; the architecture is
+deliberately quantum-last.
+\end{abstract}
+
+\section{Introduction}
+Computation exists to answer questions, yet the standard pipeline --- pick an
+algorithm, run it, then interpret --- pays for execution before asking whether
+execution is needed. ZEPHIRUM inverts this order: PROOF $\rightarrow$ COMPUTE.
+Given a problem $P$, a question $Q$ and a contract $C$ (tolerance $\epsilon$,
+budget $B$, model $M$), the compiler searches for a \emph{decision kernel}: a
+certified procedure sufficient to decide $Q$ under $C$ at minimal justified
+cost. The design principle is stated in the project charter: the generator may
+be heuristic or AI-based; the verifier must be independent.
+
+\section{Prior art (recorded honestly)}
+The system composes known techniques. Partial evaluation and program
+specialization justify eliminating unreachable work. Interval arithmetic
+supplies the bounding rungs. Proof-carrying code and certified computation
+supply the certificate/verifier separation. Cost models in query optimization
+predate the idea of deciding before executing. This report claims a
+\emph{composition} --- an elimination ladder with cost-ordered rungs, a
+trivalent decision logic with an explicit UNKNOWN state, and a composite
+certificate with ledger --- not the invention of any constituent technique. An
+exhaustive equivalence search (e.g., against quantum resource-estimation
+toolkits) remains future work and is recorded as an open verification in the
+charter.
+
+\section{Architecture}
+\textbf{ZEPHIRUM} (from Arabic \emph{\c{s}ifr}, the etymological root of
+``zero'') declares ASK (the question), CONTRACT (tolerance, error model), and
+MODEL (computation family, assumptions, unknowns with optional bounds). The
+ZCA ladder is ordered by cost: rung attempts are cheap first; the first
+certified success decides the question and emits a certificate; exhaustion of
+the ladder justifies execution. Five states are explicit; in particular,
+UNKNOWN is a first-class result, never a failure.
+
+\textbf{The numeral Z (zephirum).} ZEPHIRUM logic is trivalent: 0
+(false/eliminated), 1 (true/necessary), and Z --- the question not yet
+collapsed. The decision kernel is the collapse operator $Z \to 0|1$, always
+accompanied by a verifiable certificate. In quantum notation the concept is
+named by the plus state $Z \equiv (|0\rangle+|1\rangle)/\sqrt{2}$; we stress
+that this is a \emph{naming}, not new mathematics, and the current
+implementation is classical. The name ZEPHIRUM comes from the medieval Latin
+\emph{zephirum} --- the form in which Fibonacci recorded the numeral in the
+\emph{Liber Abaci} (1202), the step that became ``zero'' in Europe.
+
+\textbf{Certificates.} Each certificate carries the deciding rung, its
+evidence (witness sums, bounds, evaluated values), and the eliminated units.
+The verifier re-derives every number from the original source, using a method
+different from the engine's where possible, and rejects any inconsistency.
+
+\section{Experiments}
+All experiments are reproducible from the reference repository with a fixed
+seed (stdlib-only Python); an executable conformance suite of ten batteries
+defines the current standard (v0.3) and must pass in full for any
+implementation to claim the name.
+
+\textbf{Falsification battery.} 500{,}000 randomized problems in four
+families (threshold sums with declared monotonicity; sums with an unknown under
+optional bounds with an oracle; unknowns without oracle where UNKNOWN is the
+only correct outcome; partial means with five unknowns, bounds present or
+absent). Ground truth was computed by brute force independently of the engine.
+Results: zero wrong answers in 468{,}582 decisions; 500{,}000/500{,}000
+certificates verified; 31{,}418 honest UNKNOWNs (6.3\%); 76.5\% of 3{,}714{,}285
+demanded units eliminated by certificate.
+
+\textbf{Soundness attack.} Twenty valid certificates were tampered with
+(witness sums, base sums, bounds, evaluated values incremented). The
+independent verifier rejected 20/20.
+
+\textbf{Advisory layer.} A Naive Bayes classifier over cheap metadata
+(family, size, threshold ratio) trained on 40{,}000 ledger entries predicts the
+final state before analysis: 95.67\% accuracy on 10{,}000 held-out cases
+(majority baseline 53.05\%); recall 100\% for full-execution outcomes, 90\% for
+UNKNOWN, 0\% for the rare residual class (0.5\% of corpus) --- a recorded
+limitation. The layer is advisory by construction: predictions reorder
+attention but never produce decisions or certificates.
+
+\textbf{Cross-language verification.} The reference verifier has been
+re-implemented in pure C11 (independent SHA-256, \_\_int128 cross-multiplied
+exact comparisons). Across 520 certificate cases spanning four bootstrapped
+families (Gauss sums, infinite geometric series, arithmetic means, finite
+geometric series), the C verifier agrees with the Python reference on
+520/520 verdicts, input hashes and normative unit costs, and rejects 8/8
+deliberately forged certificates (flipped verdicts, swapped sources, broken
+budgets, identity degeneracies presented as legitimate).
+
+\textbf{Multi-target transpilation.} A single ZEPHIRUM source transpiles to
+autonomous programs in Python, C, Java and C\#: identical verdict, identical
+input hash, identical certified units on 90/90 sources; the C target is
+executed natively (gcc), the Java and C\# targets are generated with declared
+verification status.
+
+\textbf{Self-hosting.} Three elimination kernels are written in the language
+itself and executed by a budgeted virtual machine in which the certificate
+authorizes a hard number of data units: the Gauss sum $n(n+1)/2$ (2 units),
+the infinite geometric series $a/(1-r)$ (2 units), the arithmetic mean
+$(n+1)/2$ (1 unit), and --- with stack opcodes DUP/SWAP/POW added to the ISA
+--- the finite geometric series $(r^{n+1}-1)/(r-1)$ (2 units, independently
+cross-checked against a naive summation on 120 randomized cases plus the C
+verifier). A forged program cannot spend beyond its certificate: budget,
+step, call-depth and exponent walls stop it with explicit faults.
+
+\textbf{Q-SIM Gateway.} A first product layer routes entanglement-family
+questions in front of quantum SDKs (Qiskit, Cirq, PennyLane): the question is
+decided analytically at the gate with zero billed QPU units and a certificate;
+only the residual is routed. Where all three SDKs break by
+catastrophic cancellation (the $2^{53}$ precision frontier), the exact
+certificate is the only stable verdict --- measured, not claimed.
+
+\textbf{Negative results, reported with equal weight.} Cases requiring full
+execution and UNKNOWN outcomes carry negative net benefit (analysis cost
+unpaid); the aggregate figures include them. A latent generator defect found
+during integration was fixed and all published numbers regenerated to match
+the fixed code exactly.
+
+\section{Limitations}
+The families tested have exploitable algebraic structure by construction; the
+76.5\% figure does not generalize to arbitrary domains. The analysis cost is
+negligible here but may not remain so when rungs require expensive proofs. No
+quantum backend exists; the final rung is future work. Prior-art equivalence
+has not been exhaustively established.
+
+\section{Conclusion}
+ZEPHIRUM demonstrates, in a controlled but fully reproducible setting, that a
+question-first compiler with independent verification can eliminate most
+demanded computation while remaining unable to lie: zero wrong answers, all
+certificates verified, all forgeries rejected --- in two independent
+implementations and four transpiled targets. The deeper claim is
+methodological: before asking machines to compute more, ask whether they need
+to compute at all.
+
+\end{document}
