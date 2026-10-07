@@ -12,23 +12,37 @@ Filosofia: o hardware tradicional cobra por tudo o que roda. A VM do
 ZEPHIRUM cobra apenas o que o certificado autorizou — e recusa o resto
 na unidade de microexecução.
 
-ISA (mínima, sem fluxo de controle nesta fatia — desdobramento em
-compile-time):
+ISA (fatia 2: fluxo de controle ORÇADO):
   PUSH v     empilha constante exata (Fraction)      [custo 0]
   LOAD i     empilha dado i (terms/oráculo)          [custo 1 unidade]
+  LOADSEQ    empilha o próximo dado em sequência     [custo 1 unidade]
   ADD        soma o topo do stack                    [custo 0]
   MUL        multiplica o topo                        [custo 0]
-  CMPT op t  compara o topo com (op, t) => resposta   [custo 0]
+  CMP op t   compara o topo com (op, t) => 1/0        [custo 0]
+  CMPT op t  compara e FIXA a resposta                [custo 0]
+  LABEL L    marcador (alvo de desvio)               [custo 0]
+  JMPZ L     desvia SE o topo == 0 (só PARA FRENTE)  [custo 0]
+  LOOP n     inicia laço com n LITERAL                [custo 0]
+  ENDLOOP    fim do corpo; repete enquanto restar    [custo 0]
   HALT       fim
+
+Leis do fluxo de controle (soundness-first):
+  1. laço só com contagem LITERAL: laço infinito NÃO é codificável;
+  2. JMPZ só para frente: retroceder exige a estrutura LOOP;
+  3. cada LOADSEQ consome 1 unidade do orçamento certificado;
+  4. muro mecânico declarado (§12): STEP_LIMIT de passos totais —
+     laço forjado de aritmética PURA (que não consome dados) bate
+     no muro de passos; o laço que consome dados bate no BUDGET.
 
 Unidade = dado consumido (LOAD/PUSH de valor de entrada). O orçamento
 vem do certificado (required_terms). A aritmética é exata (Fraction).
 
 Limitações desta fatia (declaradas, §12):
   - cobre resíduos das famílias de soma (testemunha, oráculo, soma
-    plena) e séries desdobradas; mediana/determinante/emaranhado NÃO
-    são codificáveis ainda (VMNotEncodable — recusa explícita);
-  - sem fluxo de controle: laços são desdobrados em compile-time;
+    plena, séries longas em laço); mediana/determinante/emaranhado
+    NÃO são codificáveis ainda (VMNotEncodable — recusa explícita);
+  - desvio condicional é frente-only; não existe chamada de
+    sub-rotina (sem return address) nesta fatia;
   - a base certificada (base_sum do residual) é reutilizada da
     EVIDÊNCIA do certificado — que o verificador independente já
     re-deriva; a VM só combina o oráculo com ela.
@@ -57,17 +71,82 @@ class ZephirumVM:
         self.units = 0              # unidades gastas
         self.trace = []             # opcodes executados (determinístico)
 
+    STEP_LIMIT = 65536   # muro mecânico (§12): passos TOTAIS de máquina
+
     def run(self, program):
         stack = []
         answer = None
-        for pc, ins in enumerate(program):
+        labels = {}                       # LABEL L -> pc (pré-varredura)
+        for i, ins in enumerate(program):
+            if ins[0] == "LABEL":
+                if ins[1] in labels:
+                    raise VMFault("label duplicado %r" % ins[1])
+                labels[ins[1]] = i
+        pc = 0
+        seq = 0                           # cursor do LOADSEQ
+        loop_stack = []                   # (restantes, corpo_pc)
+        steps = 0
+        while pc < len(program):
+            ins = program[pc]
             op = ins[0]
+            steps += 1
+            if steps > self.STEP_LIMIT:
+                raise VMFault("STEP LIMIT: %d passos — laço forjado sem "
+                              "consumo de dado não escapa do muro (§12)"
+                              % self.STEP_LIMIT)
             # fingerprint COMPLETO da execução: opcode + operando — trocar
             # o índice de um LOAD adultera o dado acessado e MUDA o hash
-            self.trace.append(op if len(ins) == 1 else "%s:%s" % (op, ins[1]))
+            if op != "LOADSEQ":     # LOADSEQ registra índice no branch
+                self.trace.append(op if len(ins) == 1
+                                  else "%s:%s" % (op, ins[1]))
             if op == "PUSH":
                 stack.append(Fraction(str(ins[1])) if isinstance(ins[1], float)
                               else Fraction(ins[1]))
+            elif op == "LOADSEQ":
+                if seq >= len(self.data):
+                    raise VMFault("LOADSEQ fora dos dados (pc=%d)" % pc)
+                if self.units >= self.budget:
+                    raise VMFault("BUDGET EXCEEDED: %d/%d unidades — o "
+                                  "certificado não autoriza mais execução"
+                                  % (self.units, self.budget))
+                v = self.data[seq]
+                self.trace.append("LOADSEQ:%d" % seq)
+                seq += 1
+                stack.append(Fraction(str(v)) if isinstance(v, float)
+                              else Fraction(v))
+                self.units += 1
+                pc += 1
+                continue
+            elif op == "CMP":
+                v = stack.pop()
+                o, t = ins[1], ins[2]
+                t = Fraction(str(t)) if isinstance(t, float) else Fraction(t)
+                stack.append(Fraction(1 if {">": v > t, "<": v < t,
+                    ">=": v >= t, "<=": v <= t, "==": v == t}[o] else 0))
+            elif op == "LABEL":
+                pass                       # marcador: custo 0, traço 0
+            elif op == "JMPZ":
+                target = labels.get(ins[1])
+                if target is None:
+                    raise VMFault("JMPZ para label inexistente %r" % ins[1])
+                if target <= pc:
+                    raise VMFault("JMPZ para TRÁS (pc=%d -> %d): retroceder "
+                                  "exige LOOP (§soundness)" % (pc, target))
+                v = stack.pop()
+                if v == 0:
+                    pc = target
+                    continue
+            elif op == "LOOP":
+                loop_stack.append([ins[1], pc + 1])
+            elif op == "ENDLOOP":
+                if not loop_stack:
+                    raise VMFault("ENDLOOP sem LOOP (pc=%d)" % pc)
+                ctx = loop_stack[-1]
+                ctx[0] -= 1
+                if ctx[0] > 0:
+                    pc = ctx[1]
+                    continue
+                loop_stack.pop()
             elif op == "LOAD":
                 i = ins[1]
                 if i < 0 or i >= len(self.data):
@@ -100,6 +179,7 @@ class ZephirumVM:
                 raise VMFault("opcode desconhecido %r (pc=%d)" % (op, pc))
             if len(stack) > 1024:
                 raise VMFault("stack overflow (pc=%d)" % pc)
+            pc += 1
         return answer, self.units, self.trace_hash()
 
     def trace_hash(self):
@@ -140,11 +220,18 @@ def compile_program(blocks, res):
 
     if status == "FULL_EXECUTION_REQUIRED" and model.get("type") == "threshold_sum":
         terms = parse_list(model["terms"])
-        prog = [("LOAD", 0)]
-        for i in range(1, len(terms)):
-            prog.append(("LOAD", i))
-            prog.append(("ADD",))
-        prog += [("CMPT", op, thr), ("HALT",)]
+        if len(terms) >= 8:
+            # série longa: bytecode em LAÇO — tamanho independente de n,
+            # cada LOADSEQ consome 1 unidade => orçamento = len(terms)
+            prog = [("PUSH", 0), ("LOOP", len(terms)),
+                    ("LOADSEQ",), ("ADD",), ("ENDLOOP",),
+                    ("CMPT", op, thr), ("HALT",)]
+        else:
+            prog = [("LOAD", 0)]
+            for i in range(1, len(terms)):
+                prog.append(("LOAD", i))
+                prog.append(("ADD",))
+            prog += [("CMPT", op, thr), ("HALT",)]
         return (prog, terms, len(terms))
 
     raise VMNotEncodable(

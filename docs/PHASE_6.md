@@ -56,3 +56,44 @@ Família não codificável => RuntimeRefusal com o motivo.
 
 PASS — fatia 1 da VM: orçamento como lei de microexecução, bytecode
 determinístico com fingerprint de execução.
+
+
+## FATIA 2 — Fluxo de controle ORÇADO (2026-10-07, v0.6.1)
+
+A VM deixa de ser linha reta. Nova ISA: LOADSEQ (consumo sequencial,
+custo 1 unidade), CMP (comparação -> 0/1), LABEL, JMPZ (desvio
+condicional), LOOP n / ENDLOOP (laço com contagem LITERAL).
+
+Leis do fluxo de controle (soundness-first):
+1. LAÇO SÓ COM CONTAGEM LITERAL — laço infinito não é codificável;
+2. JMPZ SÓ PARA FRENTE — retroceder exige a estrutura LOOP
+   (VMFault explícito em salto para trás ou label inexistente);
+3. cada LOADSEQ consome 1 unidade do orçamento certificado — série de
+   64 termos vira bytecode de 7 instruções que gasta exatamente
+   64/64 unidades (V7);
+4. MURO MECÂNICO DECLARADO (§12): STEP_LIMIT de 65.536 passos totais
+   — laço forjado de aritmética PURA (que não consome dado) bate no
+   muro de passos (V10); o que consome dado bate no BUDGET (V9). O
+   orçamento é lei; o muro é parede.
+
+Fronteira honesta do trace_hash (V12, declarada): o traço é impressão
+digital da EXECUÇÃO (opcodes, operandos, padrão de acesso, fluxo) —
+valor de DADO não está no traço. Quem protege o dado é o INPUT_HASH do
+certificado: certificado de fonte trocada => REJECT na verificação.
+
+Bateria V7-V12 (PASS):
+- V7 laço: 64 termos => 7 instruções, 64/64 unidades, veredito ==
+  referência exata (Fraction)
+- V8 desvio: JMPZ frente-only, dois ramos corretos, caminhos
+  distintos => trace_hash distinto
+- V9 laço forjado: contagem inflada além do orçamento => BUDGET
+  EXCEEDED no meio do laço
+- V10 spin forjado: 1.000.000 de iterações sem consumo => STEP LIMIT
+- V11 JMPZ para trás / label inexistente => VMFault explícito
+- V12 determinismo: mesma execução => mesmo hash; contagem/operando
+  adulterados => hash muda; valor de dado => INPUT_HASH responde
+
+Limitações da fatia 2 (declaradas): sem chamada de sub-rotina (sem
+return address); desvio só para frente; LOOP exige contagem em tempo
+de compilação (não pode depender de dado); mediana/determinante/
+emaranhado seguem VMNotEncodable.

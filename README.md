@@ -331,6 +331,15 @@ zephirum.py trust allow <pubkey>
 zephirum.py trust sign prog.zeph.cert.json issuer_key.txt
 ```
 
+## Fase 6, fatia 2: fluxo de controle ORÇADO na VM
+
+A VM ganha desvio e laço sem perder a lei: laço só com contagem
+LITERAL (laço infinito não é codificável), JMPZ só para frente, cada
+LOADSEQ custa 1 unidade certificada, e um muro mecânico de passos
+(STEP_LIMIT, §12) pára laços forjados que não consomem dado. Série de
+64 termos: 7 instruções, 64/64 unidades (`docs/PHASE_6.md`,
+`test_vm.py` V7-V12).
+
 ## The four pillars / Os quatro pilares
 
 ```

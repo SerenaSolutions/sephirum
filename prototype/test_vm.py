@@ -16,6 +16,14 @@ Propriedades (uma violação = FAIL):
      certificado
   V6 escopo honesto: mediana/determinante/emaranhado =>
      VMNotEncodable explícito (nunca fallback silencioso)
+
+Fatia 2 — fluxo de controle ORÇADO:
+  V7 LAÇO: série de 64 termos em LOOP — bytecode compacto, 64 unidades
+  V8 DESVIO: JMPZ frente-only, dois ramos, traces distintos
+  V9 LAÇO FORJADO: contagem inflada => BUDGET EXCEEDED
+  V10 MURO MECÂNICO: laço de aritmética pura => STEP LIMIT (§12)
+  V11 JMPZ para trás / label inexistente => VMFault
+  V12 DETERMINISMO do laço + dado adulterado muda o trace_hash
 """
 import sys
 
@@ -105,6 +113,107 @@ def main():
         assert "não codificável" in str(e)
     print("V6 escopo honesto: mediana => VMNotEncodable explícito "
           "(nunca silêncio, nunca fingimento)")
+
+    # ================= Fatia 2: fluxo de controle ORÇADO ================
+    from fractions import Fraction
+
+    # V7: série longa em LAÇO
+    terms = ",".join(str(i) for i in range(1, 65))
+    blocks = parse_nexa(
+        "ASK:\n    question: sum > 2048\nMODEL:\n    type: threshold_sum\n"
+        "    terms: %s\n    threshold: 2048\n" % terms)
+    res = NCA(blocks, "loop64").compile()
+    r = vm_execute(blocks, res)
+    ref = sum(Fraction(i) for i in range(1, 65))
+    assert r["answer"] == (ref > 2048) and r["units"] == 64 == r["budget"]
+    assert r["program_size"] == 7
+    print("V7 laço: 64 termos => 7 instruções, 64/64 unidades, veredito "
+          "== referência exata")
+
+    # V8: desvio condicional (JMPZ frente-only) — os dois ramos
+    prog = [("LOAD", 0), ("CMP", ">", 0),
+            ("JMPZ", "neg"),
+            ("PUSH", 1), ("CMPT", ">", 0), ("HALT",),
+            ("LABEL", "neg"), ("PUSH", -1), ("CMPT", "<", 0), ("HALT",)]
+    for x in (5, -3):
+        vm = ZephirumVM([x], 1)
+        ans, units, th = vm.run(prog)
+        assert ans is True and units == 1, (x, ans, units)
+    t_pos = ZephirumVM([5], 1).run(prog)[2]
+    t_neg = ZephirumVM([-3], 1).run(prog)[2]
+    assert t_pos != t_neg
+    print("V8 desvio: JMPZ frente-only, dois ramos corretos; caminhos "
+          "distintos => trace_hash distinto")
+
+    # V9: laço forjado — contagem inflada além do orçamento
+    forged = [("PUSH", 0), ("LOOP", 1000), ("LOADSEQ",), ("ADD",),
+              ("ENDLOOP",), ("CMPT", ">", 0), ("HALT",)]
+    try:
+        ZephirumVM([1, 2, 3, 4, 5, 6, 7, 8], 3).run(forged)
+        raise AssertionError("laço forjado executou?! (V9)")
+    except VMFault as e:
+        assert "BUDGET EXCEEDED" in str(e)
+    print("V9 laço forjado: contagem inflada => BUDGET EXCEEDED no meio "
+          "do laço (3/3 unidades)")
+
+    # V10: muro mecânico — laço de aritmética PURA (não consome dado)
+    spin = [("PUSH", 0), ("LOOP", 1000000), ("PUSH", 1), ("ADD",),
+            ("ENDLOOP",), ("HALT",)]
+    try:
+        ZephirumVM([], 0).run(spin)
+        raise AssertionError("spin executou?! (V10)")
+    except VMFault as e:
+        assert "STEP LIMIT" in str(e)
+    print("V10 muro mecânico: laço forjado sem consumo de dado => STEP "
+          "LIMIT (§12) — o orçamento é lei, o muro é parede")
+
+    # V11: JMPZ para trás / label inexistente => VMFault explícito
+    for bad, why in [
+            ([("LABEL", "top"), ("PUSH", 0), ("JMPZ", "top"),
+              ("HALT",)], "backward"),
+            ([("PUSH", 0), ("JMPZ", "ghost"), ("HALT",)], "ghost")]:
+        try:
+            ZephirumVM([], 0).run(bad)
+            raise AssertionError("desvio ilegal aceito?! (V11)")
+        except VMFault as e:
+            assert ("TRÁS" if why == "backward" else "inexistente") in str(e)
+    print("V11 desvio ilegal: JMPZ para trás => VMFault; label inexistente "
+          "=> VMFault — retroceder exige LOOP")
+
+    # V12: determinismo do laço + FRONTeira honesta do traço
+    data64 = list(range(1, 65))
+    loop_prog = [("PUSH", 0), ("LOOP", 64), ("LOADSEQ",), ("ADD",),
+                 ("ENDLOOP",), ("CMPT", ">", 2048), ("HALT",)]
+    t1 = ZephirumVM(data64, 64).run(loop_prog)[2]
+    t2 = ZephirumVM(data64, 64).run(loop_prog)[2]
+    assert t1 == t2                      # determinismo: mesmo hash
+    t_count = ZephirumVM(data64, 64).run(
+        [("PUSH", 0), ("LOOP", 63), ("LOADSEQ",), ("ADD",),
+         ("ENDLOOP",), ("CMPT", ">", 2048), ("HALT",)])[2]
+    assert t_count != t1, "contagem do laço adulterada, traço idêntico?!"
+    t_push = ZephirumVM(data64, 64).run(
+        [("PUSH", 7), ("LOOP", 64), ("LOADSEQ",), ("ADD",),
+         ("ENDLOOP",), ("CMPT", ">", 2048), ("HALT",)])[2]
+    assert t_push != t1, "operando adulterado, traço idêntico?!"
+    # FRONTEIRA DECLARADA: valor de DADO não está no traço (o traço é da
+    # EXECUÇÃO: opcodes + padrão de acesso + fluxo). Quem protege o dado
+    # é o INPUT_HASH do certificado — mudar a fonte invalida o cert.
+    t_value = ZephirumVM([99] + data64[1:], 64).run(loop_prog)[2]
+    assert t_value == t1, "valor de dado NO traço?! fronteira mentiu"
+    tampered_blocks = parse_nexa(
+        "ASK:\n    question: sum > 2048\nMODEL:\n    type: threshold_sum\n"
+        "    terms: %s\n    threshold: 2048\n"
+        % ",".join(str(i) for i in [99] + list(range(2, 65))))
+    tres = NCA(tampered_blocks, "loop65").compile()
+    from verify_certificate import verify
+    ok, reason = verify(tampered_blocks, tres["certificate"])
+    assert ok          # fonte nova compila cert NOVO (consistente)
+    ok2, _ = verify(blocks, tres["certificate"])
+    assert not ok2, "cert de outra fonte aceito?! INPUT_HASH falhou"
+    print("V12 determinismo: laço => mesmo trace_hash; contagem e operando "
+          "adulterados => hash muda; FRONTEIRA: valor de dado NÃO está no "
+          "traço — quem protege o dado é o INPUT_HASH (cert de fonte "
+          "trocada => REJECT)")
 
     print("RESULTADO: PASS — a VM gasta exatamente o que o certificado "
           "autoriza, nem uma unidade a mais")
