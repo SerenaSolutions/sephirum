@@ -98,6 +98,10 @@ def cli(argv=None):
 
     c = sub.add_parser("simulate", help="kernel vs execução plena independente")
     c.add_argument("file")
+
+    c = sub.add_parser("run", help="executa SOMENTE o que sobreviveu (recibo)")
+    c.add_argument("file")
+    c.add_argument("--backend", default="cpu_exact")
     c.add_argument("n", nargs="?", type=int, default=500000)
 
     a = ap.parse_args(argv)
@@ -187,6 +191,25 @@ def cli(argv=None):
             print("COMPUTATION AVOIDED: %d of %d units"
                   % (cc["avoided_units"], cc["sim_units"]))
             return 0 if cc["verdict"] != "MISMATCH" and cc["cert_ok"] else 1
+
+        if a.cmd == "run":
+            from zephirum_runtime import run as _rt, RuntimeRefusal
+            blocks = _cli_load(a.file)
+            try:
+                r = _rt(blocks, "cli", backend=a.backend)
+            except RuntimeRefusal as e:
+                print("REFUSED:", e)
+                return 1
+            print("ANSWER:   ", "Z (UNKNOWN)" if r["answer"] is None
+                  else r["answer"])
+            print("STATUS:    ", r["status"], "| backend:", r["backend"])
+            print("EXECUTED:  ", "%d units (%s)" % (r["units_executed"],
+                                                    r["detail"]))
+            print("ELIMINATED:", "%d of %d units" % (r["units_eliminated"],
+                                                     r["units_original"]))
+            print("CROSS-CHECK:", r["cross_check"], "| CERT:",
+                  r["cert_hash"][:16] + "...")
+            return 0 if not r["refused"] else 1
 
         if a.cmd == "benchmark":
             r = subprocess.run([sys.executable, "stress_test.py", str(a.n)])

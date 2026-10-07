@@ -12,6 +12,7 @@ python3 zephirum.py compile example.zeph
 python3 zephirum.py verify example.zeph.cert.json example.zeph
 python3 zephirum.py benchmark 500000
 python3 zephirum.py simulate example.zeph
+python3 zephirum.py run example.zeph
 ```
 
 ## Baterias (todas exit 0)
@@ -30,6 +31,7 @@ python3 ai_layer.py                       # camada consultiva (nunca decisória)
 python3 test_simulator.py                # gêmeo adversarial: 20k diferenciais
 python3 test_contracts.py                 # contrato como máquina (3 camadas)
 python3 test_models.py                   # modelos: exact vs float64 (10k+armadilhas)
+python3 test_runtime.py                 # runtime: 20k recibos, gate, backends
 ```
 
 ## Módulos
@@ -43,3 +45,4 @@ python3 test_models.py                   # modelos: exact vs float64 (10k+armadi
 | zephirum_lexer.py / zephirum_transpiler.py / zephirum_repl.py | linguagem (Fase 2) |
 | zephirum_ir.py | IR transversal (Fase 2) |
 | zephirum_simulator.py | Fase 4: execução plena independente (gêmeo adversarial) |
+| zephirum_runtime.py | Fase 5: gate + execução do residual + recibo |

@@ -245,6 +245,24 @@ declarada. Modelos computacionais múltiplos: `exact` (Fraction) e
 float64 erra onde o exato acerta — medida, não promessa. `gpu`/`hpc`/
 `qpu` registrados e honestos: falham explicitamente até existirem.
 
+## Fase 5 — Runtime: só executa o que sobreviveu
+
+O pilar RUNTIME conferencia o certificado ANTES de qualquer execução,
+executa apenas as unidades certificadas e emite recibo
+(`docs/PHASE_5.md`):
+
+- certificado inválido => recusa e ZERO unidades executadas
+- decisão certificada sem execução => entrega com ZERO unidades
+  (o certificado é a resposta)
+- residual executado no backend, conferido contra o certificado
+  (cross-check); divergência => entrega RECUSADA
+- 20.000 recibos: contabilidade fechada; **119.876/155.168 unidades
+  eliminadas (77,26%)**; 11.896 casos com execução ZERO
+
+```bash
+python3 prototype/zephirum.py run prog.zeph [--backend cpu_exact|float64]
+```
+
 ## The four pillars / Os quatro pilares
 
 ```
