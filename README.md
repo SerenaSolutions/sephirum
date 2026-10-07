@@ -146,6 +146,23 @@ Pure Python 3. No dependencies. No LLM. No cloud.
 - AI never decides: the charter requires a heuristic generator + an
   **independent verifier**. The AI layer is advisory by construction.
 
+
+## The four pillars / Os quatro pilares
+
+```
+LANGUAGE (SIFR) → COMPILER (NCA + Decision Kernel) → SIMULATOR → RUNTIME
+                        │
+              CERTIFICATE + RESIDUAL + SIFR-IR (transversal)
+```
+
+EN: The transpiler to Python is a provisional RUNTIME backend, not the
+product. The VM will be built INSIDE the Runtime (Phase 6). Full spec:
+`docs/SIFR_ARCHITECTURE.md`. Roadmap: Phase 3 = COMPILER CORE.
+
+PT: O transpiler para Python é um backend provisório do RUNTIME, não o
+produto. A VM será construída DENTRO do Runtime (Fase 6). Especificação
+completa: `docs/SIFR_ARCHITECTURE.md`. Roadmap: Fase 3 = COMPILER CORE.
+
 ## Licenses
 
 - Code: MIT

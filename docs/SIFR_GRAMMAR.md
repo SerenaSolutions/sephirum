@@ -84,4 +84,6 @@ com expressões próprias (recursive descent, zero `ast`); `test_sifr_lang.py`
 prova equivalência com a Fase 1 em 50.000 programas, iguala o avaliador de
 expressões em 20.000 expressões aleatórias, rejeita fonte inválida e valida o
 transpilador SIFR→Python em 500 casos. O REPL já usa o lexer próprio.
-O que ainda vem emprestado do Python: a VM de execução (fase 3).
+O que ainda vem emprestado do Python: a VM de execução — que pertence ao
+pilar RUNTIME e só chega na Fase 6, DEPOIS de COMPILER CORE (Fase 3),
+SIMULATOR (Fase 4) e RUNTIME (Fase 5).
