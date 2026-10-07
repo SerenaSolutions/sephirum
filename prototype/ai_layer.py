@@ -116,7 +116,7 @@ def main():
            "per_class_recall": {k: round(100.0 * per_class[k] / per_class_total[k], 1)
                                 for k in per_class_total}}
     with open("ai_layer_results.json", "w") as f:
-        json.dump(out, f, indent=2)
+        json.dump(out, f, indent=2, default=str)
     ok = acc > baseline + 10
     print("\nVEREDICTO:", "camada de IA aprendeu sinal util (>%s%% sobre baseline)"
           % (baseline + 10) if ok else "sinal fraco: manter como conselho, sem controle")

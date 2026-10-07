@@ -357,6 +357,13 @@ limpa (RuntimeRefusal). Backend `vm_isolated` na CLI e no runtime.
 Limites declarados: sem sandbox de filesystem/rede em Python puro
 (§12) — container do SO é camada de deploy. `test_isolate.py` V16-V21.
 
+## §EXACT (v0.7.0): decimais são Fraction, não float
+
+`0.1` é 1/10 em TODO o sistema (parse, decisão, evidência, VM,
+transpilado). Onde float64 perde o dígito que decide (0.1x10, 2^53,
+média 1e16), o runtime RECUSA a entrega. Bateria `test_hardmath.py`
+confere contra juiz independente (decimal.Decimal, Bareiss).
+
 ## The four pillars / Os quatro pilares
 
 ```

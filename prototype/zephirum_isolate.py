@@ -23,6 +23,7 @@ API:
   IsolationFault                                -> filho morreu (motivo)
 """
 import json
+from fractions import Fraction
 import os
 import resource
 import subprocess
@@ -57,8 +58,11 @@ def run_isolated(prog, data, budget, timeout=10.0):
     data  -> valores carregáveis
     budget-> unidades autorizadas pelo certificado
     """
-    job = {"program": [list(i) for i in prog], "data": data,
-           "budget": budget}
+    def _j(v):
+        return str(v) if isinstance(v, Fraction) else v
+
+    job = {"program": [[_j(x) for x in i] for i in prog],
+           "data": [_j(x) for x in data], "budget": int(budget)}
     with tempfile.TemporaryDirectory() as jail:      # cwd sem nada útil
         try:
             proc = subprocess.Popen(

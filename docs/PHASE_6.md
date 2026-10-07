@@ -144,3 +144,32 @@ unidades, trace_hash — 50 residuais); BUDGET/STEP LIMIT no filho com
 motivo explícito; RLIMIT de memória derruba alocação de 192MB; muro
 de tempo mata o dorminhoco; 142 residuais end-to-end no runtime com
 veredito == cpu_exact e cross-check OK; det pleno => RuntimeRefusal.
+
+
+## §EXACT — EXATIDÃO DECIMAL DE PONTA A PONTA (2026-10-07, v0.7.0)
+
+Lacuna fechada: decimais entravam no sistema como float binário
+(0.1 != 1/10 em float64). Agora o PARSE é decimal exato: '_num'
+produz Fraction para decimais em TODAS as camadas (motor,
+verificador, transpilador, lexer, runtime, VM, isolamento).
+
+Provas (bateria test_hardmath.py, H1-H9, juiz independente):
+- 0.1x10 == 1 => True (float64 diria False; runtime RECUSA a
+  entrega do float64 em divergência — cross=MISMATCH);
+- 0.1+0.2 == 0.3 no fold, lexer e transpilado;
+- 28-50 dígitos somados exatos; fronteira 2^53 visível;
+- emaranhado com amplitudes 10^40 e 10^-40, quase-separável
+  por 1e-24 (float64 cegaria), C == limiar decimal exato;
+- det 8x8 de 20 dígitos == Bareiss independente;
+- medianas de 201 valores de 25 dígitos; média exata no par;
+- armadilha 1e16 da média vencida por Fraction;
+- fuzz 300 casos decimais contra juiz decimal.Decimal;
+- round-trip disco->RAM: cert JSON re-verifica idêntico
+  (normalizador _eq em 11 pontos do verificador).
+
+Bugs achados pela bateria: divisão int/int virava float no
+caminho exato (corrigido: Fraction(x)/N em 4 camadas) e o
+import de Fraction no código transpilado vinha depois de THR
+(com limiar decimal o módulo explodia). A bateria também
+confirmou a semântica declarada da progressão (r^0..r^n,
+n+1 termos), re-derivada por somatório ingênuo independente.

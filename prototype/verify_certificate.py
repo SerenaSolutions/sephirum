@@ -61,6 +61,34 @@ _EV_WHITELIST = {
 }
 
 
+def _xs(v):
+    """Normalização EXATA para comparação de evidência.
+    Fraction(3,10), '3/10', int, float e decimal-string representam a
+    MESMA verdade numérica => canônico 'str(Fraction)'.
+    Certificados persistidos em JSON (Fraction -> '3/10') verificam
+    idênticos aos em memória — sem aresta entre disco e RAM."""
+    if isinstance(v, Fraction):
+        return str(v)
+    if isinstance(v, bool):
+        return v
+    if isinstance(v, int):
+        return str(Fraction(v))
+    if isinstance(v, float):
+        return str(Fraction(str(v)))
+    if isinstance(v, str):
+        try:
+            return str(Fraction(v))
+        except (ValueError, ZeroDivisionError):
+            return v
+    if isinstance(v, (list, tuple)):
+        return [_xs(x) for x in v]
+    return v
+
+
+def _eq(a, b):
+    return _xs(a) == _xs(b)
+
+
 def _verify_core(blocks, cert):
     # 0. integrity: certificate must refer to this exact source
     h = hashlib.sha256(json.dumps(blocks, sort_keys=True).encode()).hexdigest()
@@ -124,7 +152,7 @@ def _verify_core(blocks, cert):
             val = safe_eval(model["expr"])
         except Exception:
             return False, "REJECT: expression not independently foldable"
-        if val != ev.get("value"):
+        if not _eq(val, ev.get("value")):
             return False, "REJECT: folded value mismatch"
         if cmp(val, op, thr) != answer:
             return False, "REJECT: answer inconsistent with recomputed value"
@@ -138,7 +166,7 @@ def _verify_core(blocks, cert):
         if w != terms[:len(w)]:
             return False, "REJECT: witness is not a prefix of the declared terms"
         s = sum(w)
-        if s != ev.get("witness_sum"):
+        if not _eq(s, ev.get("witness_sum")):
             return False, "REJECT: witness sum mismatch"
         if not cmp(s, op, thr):
             return False, "REJECT: witness sum does not satisfy the question"
@@ -155,7 +183,7 @@ def _verify_core(blocks, cert):
                 return False, "REJECT: no unknown declared"
             name, lo, hi = _parse_unknown(model["unknown"])
             base = sum(terms)
-            if ev.get("base_sum") != base or ev.get("bounds") != [lo, hi]:
+            if not _eq(ev.get("base_sum"), base) or not _eq(ev.get("bounds"), [lo, hi]):
                 return False, "REJECT: bound evidence mismatch"
             if answer is True:
                 if not base + lo > thr:
@@ -174,12 +202,10 @@ def _verify_core(blocks, cert):
             lo, hi = [ _num(x) for x in model["bounds"].split("..") ]
             tot = sum(known)
             N = len(known) + u
-            mean_lo = (tot + u * lo) / N
-            mean_hi = (tot + u * hi) / N
-            if ev.get("mean_lo") != mean_lo or ev.get("mean_hi") != mean_hi:
+            exact_lo = Fraction(tot + u * lo) / N
+            exact_hi = Fraction(tot + u * hi) / N
+            if not _eq(ev.get("mean_lo"), exact_lo) or not _eq(ev.get("mean_hi"), exact_hi):
                 return False, "REJECT: mean interval mismatch"
-            exact_lo = Fraction(tot + u * lo, N)
-            exact_hi = Fraction(tot + u * hi, N)
             if answer is True and not exact_lo > thr:
                 return False, "REJECT: lower mean bound does not decide (exact arithmetic)"
             if answer is False and not exact_hi <= thr:
@@ -191,7 +217,7 @@ def _verify_core(blocks, cert):
         terms = parse_list(model["terms"])
         name, lo, hi = _parse_unknown(model["unknown"])
         base = sum(terms)
-        if ev.get("base_sum") != base or ev.get("bounds") != [lo, hi]:
+        if not _eq(ev.get("base_sum"), base) or not _eq(ev.get("bounds"), [lo, hi]):
             return False, "REJECT: residual evidence mismatch"
         # residual must be JUSTIFIED: bounds straddle, so evaluation was unavoidable
         if not (base + lo <= thr and base + hi > thr):
@@ -199,10 +225,10 @@ def _verify_core(blocks, cert):
         if "unknown_value" not in model:
             return False, "REJECT: residual evaluation not declared in source"
         x = _num(model["unknown_value"])
-        if ev.get("evaluated_value") != x:
+        if not _eq(ev.get("evaluated_value"), x):
             return False, "REJECT: evaluated value mismatch"
         s = base + x
-        if ev.get("final_sum") != s:
+        if not _eq(ev.get("final_sum"), s):
             return False, "REJECT: final sum mismatch"
         if cmp(s, op, thr) != answer or status != "RESIDUAL_COMPUTATION_REQUIRED":
             return False, "REJECT: bad answer/status for residual"
@@ -218,7 +244,7 @@ def _verify_core(blocks, cert):
         d = 1
         for i in range(n):
             d *= M[i][i]
-        if d != ev.get("det") or cmp(d, op, thr) != answer:
+        if not _eq(d, ev.get("det")) or cmp(d, op, thr) != answer:
             return False, "REJECT: determinant mismatch"
         if ev.get("triangular_kind") not in ("upper", "lower"):
             return False, "REJECT: triangular kind not declared"
@@ -229,7 +255,7 @@ def _verify_core(blocks, cert):
         n = int(_num(model["n"]))
         # independent method: naive summation (engine used the closed form)
         s = sum(r ** i for i in range(n + 1))
-        if s != ev.get("closed_form"):
+        if not _eq(s, ev.get("closed_form")):
             return False, "REJECT: closed form disagrees with naive summation"
         if cmp(s, op, thr) != answer:
             return False, "REJECT: answer inconsistent"
@@ -238,7 +264,7 @@ def _verify_core(blocks, cert):
     if k == "FULL_SUM":
         terms = parse_list(model["terms"])
         s = sum(terms)
-        if s != ev.get("full_sum") or cmp(s, op, thr) != answer:
+        if not _eq(s, ev.get("full_sum")) or cmp(s, op, thr) != answer:
             return False, "REJECT: full sum mismatch"
         if status != "FULL_EXECUTION_REQUIRED":
             return False, "REJECT: full execution must not claim elimination"
@@ -255,7 +281,7 @@ def _verify_core(blocks, cert):
                        lap([row[:j] + row[j + 1:] for row in A[1:]])
                        for j in range(m))
         d = lap(M)
-        if d != ev.get("det") or cmp(d, op, thr) != answer:
+        if not _eq(d, ev.get("det")) or cmp(d, op, thr) != answer:
             return False, "REJECT: determinant mismatch"
         return True, "ok: determinant recomputed independently"
 
@@ -264,7 +290,7 @@ def _verify_core(blocks, cert):
         s = sorted(data)
         m = len(s)
         med = s[m // 2] if m % 2 else (s[m // 2 - 1] + s[m // 2]) / 2
-        if med != ev.get("median") or cmp(med, op, thr) != answer:
+        if not _eq(med, ev.get("median")) or cmp(med, op, thr) != answer:
             return False, "REJECT: median mismatch"
         return True, "ok: median recomputed independently"
 

@@ -11,6 +11,7 @@ Pipeline Fase 2: ZEPHIRUM source -> LEXER -> TOKENS -> PARSER -> blocks IR
 (igual ao da Fase 1) -> NCA (inalterado).
 """
 import re
+from fractions import Fraction
 
 # ── Tokens ──────────────────────────────────────────────────────────
 BLOCK_KEYWORDS = ("ASK", "CONTRACT", "MODEL", "BUDGET", "REQUIRE")
@@ -151,7 +152,8 @@ class ExprParser:
                 if not m:
                     raise ZephirumSyntaxError("número malformado em %r" % text)
                 s = m.group()
-                self.toks.append(("num", float(s) if "." in s else int(s)))
+                # §EXACT: decimal vira Fraction ('0.1' -> 1/10), não float
+                self.toks.append(("num", Fraction(s) if "." in s else int(s)))
                 pos += len(s)
                 continue
             if ch in "+-*/%()":

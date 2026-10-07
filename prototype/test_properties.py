@@ -171,7 +171,7 @@ def robustness():
     must_raise("ASK:\n    question: value > 5\nMODEL:\n    type: expression\n"
                "    expr: a + 1\n", "not foldable")
     must_raise("ASK:\n    question: sum > 5\nMODEL:\n    type: threshold_sum\n"
-               "    terms: um, dois\n", "could not convert")  # não numérico
+               "    terms: um, dois\n", "not allowed")  # não numérico (§EXACT)
     # certificado incompleto: rejeitado, nunca aceito
     blocks = parse_nexa(src_sum([5, 5], 7))
     res = NCA(blocks, "inc").compile()

@@ -126,11 +126,11 @@ def validate(ir):
 def ir_hash(ir):
     """Hash canônico do IR (ordem estável de chaves)."""
     return hashlib.sha256(
-        json.dumps(ir, sort_keys=True).encode()).hexdigest()
+        json.dumps(ir, sort_keys=True, default=str).encode()).hexdigest()
 
 
 def to_json(ir):
-    return json.dumps(ir, sort_keys=True, indent=1)
+    return json.dumps(ir, sort_keys=True, indent=1, default=str)
 
 
 def from_json(text):

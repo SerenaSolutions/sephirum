@@ -35,7 +35,10 @@ def safe_eval(expr):
     """Whitelisted arithmetic constant folding (no names, no calls)."""
     def ev(n):
         if isinstance(n, ast.Constant) and isinstance(n.value, (int, float)):
-            return n.value
+            v = n.value
+            # §EXACT: str(float) devolve o literal decimal curto:
+            # 0.1 -> '0.1' -> Fraction(1, 10). O fold fica exato.
+            return Fraction(str(v)) if isinstance(v, float) else v
         if isinstance(n, ast.BinOp) and type(n.op) in _BIN:
             return _BIN[type(n.op)](ev(n.left), ev(n.right))
         if isinstance(n, ast.UnaryOp) and isinstance(n.op, (ast.UAdd, ast.USub)):
@@ -46,14 +49,19 @@ def safe_eval(expr):
 
 
 def _num(s):
+    """§EXACT: inteiros ficam int; DECIMAIS viram Fraction (semântica
+    decimal exata: '0.1' é 1/10, não o float binário). Não-numéricos
+    e infinitos falham explicitamente (§12)."""
     s = s.strip()
     try:
         return int(s)
     except ValueError:
-        v = float(s)  # §12: valores não numéricos/infinitos falham explicitamente
-        if not math.isfinite(v):
-            raise ValueError("non-finite numeric value not allowed: %r" % s)
-        return v
+        pass
+    try:
+        return Fraction(s)
+    except (ValueError, ZeroDivisionError):
+        raise ValueError("non-finite/invalid numeric value not "
+                         "allowed: %r" % s)
 
 
 def parse_list(s):
@@ -350,15 +358,15 @@ class NCA:
             # FALSIFICACAO 2026-10-06: float perde o dígito que decide em
             # magnitudes ~1e16. A decisão é por Fraction exata; o float
             # permanece apenas como valor de exibição no certificado.
-            exact_lo = Fraction(tot + u * lo, N)
-            exact_hi = Fraction(tot + u * hi, N)
+            exact_lo = Fraction(tot + u * lo) / N
+            exact_hi = Fraction(tot + u * hi) / N
             self.log("LIMIT", "EXECUTED",
                      "interval arithmetic on %d unknowns in [%s, %s]" % (u, lo, hi))
             if exact_lo > thr:
                 self.log("LIMIT", "ELIMINATED",
                          "mean_lo = %s > %s: decided without any evaluation" % (mean_lo, thr))
                 ev = {"known_sum": tot, "unknown_count": u, "bounds": [lo, hi],
-                      "mean_lo": mean_lo, "mean_hi": mean_hi,
+                      "mean_lo": exact_lo, "mean_hi": exact_hi,
                       "op": op, "threshold": thr, "mode": "positive"}
                 return self._finish("DECIDED_WITHOUT_EXECUTION", True,
                                     "INTERVAL_BOUND", "LIMIT", ev,
@@ -367,7 +375,7 @@ class NCA:
                 self.log("LIMIT", "ELIMINATED",
                          "mean_hi = %s <= %s: refuted without evaluation" % (mean_hi, thr))
                 ev = {"known_sum": tot, "unknown_count": u, "bounds": [lo, hi],
-                      "mean_lo": mean_lo, "mean_hi": mean_hi,
+                      "mean_lo": exact_lo, "mean_hi": exact_hi,
                       "op": op, "threshold": thr, "mode": "negative"}
                 return self._finish("DECIDED_WITHOUT_EXECUTION", False,
                                     "INTERVAL_BOUND", "LIMIT", ev,

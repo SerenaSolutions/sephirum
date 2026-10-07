@@ -148,8 +148,7 @@ def cli(argv=None):
                 cert = json.loads(Path(a.cert).read_text())
                 signed = trust.sign_certificate(cert, sk)
                 out = Path(a.out or (a.cert + ".signed.json"))
-                out.write_text(json.dumps(signed, indent=1, sort_keys=True,
-                                           default=str))
+                out.write_text(json.dumps(signed, indent=1, sort_keys=True, default=str))
                 print("ISSUER:", signed["ISSUER"])
                 print("SIGNED:", out)
                 return 0

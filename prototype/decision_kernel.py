@@ -30,7 +30,7 @@ from zephirum import STATUS_TO_TRIT
 def canonical(obj):
     """Serialização canônica: determinística e independente de ordem."""
     return json.dumps(obj, sort_keys=True, ensure_ascii=True,
-                      separators=(",", ":"))
+                      separators=(",", ":"), default=str)  # Fraction -> "3/10"
 
 
 def digest(obj):

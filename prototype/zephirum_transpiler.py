@@ -21,11 +21,11 @@ from zephirum_lexer import eval_expr
 TEMPLATE = '''#!/usr/bin/env python3
 # Gerado automaticamente pelo transpilador ZEPHIRUM (Fase 2).
 # Pergunta original: {question!r}
+from fractions import Fraction  # §EXACT: no TOPO — THR pode ser Fraction(a, b)
+
 QUESTION = {question!r}
 OP = {op!r}
 THR = {thr!r}
-
-from fractions import Fraction  # decisao exata: o motor decide por Fraction
 
 
 def cmp(a, op, b):
@@ -86,10 +86,11 @@ def transpile(blocks):
         body.append("    known = %r" % known)
         body.append("    n = %d" % n)
         if bounds and bounds != "none":
-            lo, hi = (int(v) for v in bounds.split(".."))  # formato "a..b"
+            from fractions import Fraction as _F
+            lo, hi = (_F(v) for v in bounds.split(".."))  # "a..b" exato
             body.append("    lo, hi = %r, %r" % (lo, hi))
-            body.append("    a_lo = cmp(Fraction(sum(known) + %d * lo, n), OP, THR)" % ucnt)
-            body.append("    a_hi = cmp(Fraction(sum(known) + %d * hi, n), OP, THR)" % ucnt)
+            body.append("    a_lo = cmp(Fraction(sum(known) + %d * lo) / n, OP, THR)" % ucnt)
+            body.append("    a_hi = cmp(Fraction(sum(known) + %d * hi) / n, OP, THR)" % ucnt)
             body.append("    if a_lo == a_hi:")
             body.append("        a = a_lo")
             body.append("    else:")
@@ -103,11 +104,13 @@ def transpile(blocks):
 
 
 def _num(s):
+    """§EXACT: decimal vira Fraction (repr emite Fraction(a, b) válido)."""
+    from fractions import Fraction
     s = str(s).strip()
     try:
         return int(s)
     except ValueError:
-        return float(s)
+        return Fraction(s)
 
 
 if __name__ == "__main__":

@@ -137,8 +137,8 @@ def simulate_full(blocks, model="exact"):
         b = md.get("bounds", "none")
         if b and b != "none":
             lo, hi = (int(v) for v in b.split(".."))
-            lo_a = cmp(Fraction(s + u * lo, n), op, thr)
-            hi_a = cmp(Fraction(s + u * hi, n), op, thr)
+            lo_a = cmp(Fraction(s + u * lo) / n, op, thr)
+            hi_a = cmp(Fraction(s + u * hi) / n, op, thr)
             units += 2
             if lo_a == hi_a:
                 return {"status": "DECIDED", "answer": lo_a, "units": units,
