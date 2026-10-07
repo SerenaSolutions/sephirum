@@ -1,0 +1,49 @@
+{
+  "seed": 42,
+  "bateria": "STRESS B2",
+  "resultado": "PASS",
+  "eixos": {
+    "st1": {
+      "casos": 10000,
+      "erros": 0,
+      "resamples": 105,
+      "unidades_evitadas": 100000,
+      "taxa_pct": 83.33
+    },
+    "st2": {
+      "escalas_n": [
+        10,
+        100,
+        1000,
+        2000,
+        10000,
+        100000,
+        1000000,
+        1000000000
+      ],
+      "unidades_boot": 1,
+      "naive_executado_ate": 2000,
+      "maior_n_decidido": 1000000000
+    },
+    "st3": {
+      "ataques": 4,
+      "rejeitados": 4
+    },
+    "st4": {
+      "step_limit": 65536,
+      "call_depth": 64,
+      "stack": 1024,
+      "resultado": "muros firmando"
+    },
+    "st5": {
+      "a_num": 1000000000000000000000000000007,
+      "r_den": 1000000000000000000000000000000,
+      "exato": true
+    },
+    "st6": {
+      "casos": 500,
+      "traces_repetidos": "idênticos",
+      "traces_distintos": 366
+    }
+  }
+}

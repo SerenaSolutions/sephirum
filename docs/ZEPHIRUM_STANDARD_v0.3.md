@@ -1,0 +1,93 @@
+# ZEPHIRUM — PADRÃO EXECUTÁVEL v0.3
+
+**Estado:** normativo · **Data:** 2026-10-07 · **Moto:** *evidence before velocity*
+**Conformidade:** uma implementação só pode afirmar "ZEPHIRUM v0.3" se passar
+integralmente a suíte executável §6. O padrão NÃO é este documento — é a
+suíte que o executa. Este documento é o mapa.
+
+## §1 Escopo
+
+ZEPHIRUM é um compilador de necessidade: dada uma pergunta sobre uma
+computação, procura PROVAR que não é preciso computar — e só executa o
+resíduo, com certificado verificável. Uma implementação v0.3 fornece:
+
+1. lógica trivalente exata (verdadeiro, falso, **Z** = desconhecido honesto);
+2. lexer/parser próprio da linguagem ZEPHIRUM (blocos ASK/CONTRACT/MODEL);
+3. VM de bytecode ORÇAMENTADA conforme §4;
+4. degraus de eliminação conforme §5;
+5. certificado conforme §3;
+6. PASS na suíte de conformidade §6.
+
+## §2 Núcleo normativo
+
+- Aritmética EXATA (Fraction ou equivalente); `DIV` por zero é FALTA, não
+  infinito.
+- Desconhecimento é resposta legítima: `Z` nunca vira palpite.
+- Determinismo total: mesma entrada → mesmo traço → mesmo veredito.
+
+## §3 Certificado (campos normativos)
+
+| Campo | Semântica |
+|-------|-----------|
+| `INPUT_HASH` | SHA-256 canônico dos dados consumidos; trocar a fonte muda o hash |
+| `budget` | teto mecânico de unidades; exceder é `VMFault BUDGET EXCEEDED` |
+| `units` | unidades EFETIVAMENTE gastas (contabilidade aberta) |
+| `trace_hash` | SHA-256 do traço de opcodes executados |
+| `answer` | veredito fixado por `CMPT` (ou recusa explícita) |
+
+Certificado forjado = rejeitado (baterias G4/M3/B3 verificam o muro).
+
+## §4 ISA da VM — custos NORMATIVOS por unidade
+
+| Opcode | Custo | Lei |
+|--------|-------|-----|
+| `PUSH v`, `ADD`, `MUL`, `DIV`, `CMP`, `CMPT`, `MEDIAN`, `LABEL`, `JMPZ`, `LOOP n`, `ENDLOOP`, `CALL L`, `RET` | **0** | aritmética e fluxo são grátis — o custo mora no DADO |
+| `LOAD i`, `LOADSEQ` | **1** | unidade = dado consumido do mundo |
+
+Muros mecânicos (§12, declarados): `STEP_LIMIT` 65536 passos totais;
+`CALL_DEPTH` 64; `JMPZ`/`CALL` somente PARA FRENTE; laço só com contagem
+LITERAL (laço infinito não é codificável); `stack` máx 1024.
+
+## §5 Degraus de eliminação (a escada, v0.3)
+
+| Família | Identidade | Unidades certificadas | Escada honesta |
+|---------|-----------|----------------------|----------------|
+| `gauss_series` | n(n+1)/2 | 2 | n ≤ 2: kernel EXECUTA |
+| `geometric_inf` | a/(1−r), \|r\| < 1 | 2 | evidência mínima = (a, r); \|r\| ≥ 1 recusado em DOIS níveis (compilador e VM) |
+| `arithmetic_mean` | (n+1)/2 | 1 | n = 1 é empate (1 = 1): kernel EXECUTA |
+
+A eliminação é medida em unidades certificadas (dado consumido), não em
+ideologia: a bateria exige `units_boot < units_naive` nos casos eliminados
+e gêmeos concordantes (boot == naive == juiz independente).
+
+## §6 Suíte executável de conformidade (O padrão)
+
+Executar `python3 prototype/conformance_v03.py`. PASS integral exige:
+
+| Battery | O que prova |
+|---------|-------------|
+| `zephirum_boot.py` B1–B6 | degrau de Gauss na linguagem; orçamento-muro; DIV; determinismo |
+| `zephirum_boot_b2.py` G1–G6, M1–M4 | geométrico infinito e média na linguagem; recusa de divergência; forjados; determinismo |
+| `stress_b2.py` ST1–ST6 | resistência: 10k casos, escala 10^9, falsificação, muros, exatidão 10^30, determinismo em massa |
+| `test_vm.py` | ISA, muros e faltas da VM |
+| `test_zephirum_lang.py` | equivalência linguagem ↔ núcleo (Fase 2) |
+| `run_tests.py` | soundness do motor ZCA |
+| `stress_test.py 5000` | escala com veredito verificável por semente |
+
+## §7 Versionamento
+
+- MAIOR: quebra de certificado ou de ISA; MENOR: degrau novo (B-fatias);
+  PATCH: bateria/bug sem mudança semântica.
+- Cada versão do padrão declara suas §12 na tabela de limitações.
+
+## §8 Limitações declaradas (§12)
+
+- A VM é interpretada em Python — a DECISÃO vive na linguagem; a máquina,
+  ainda não (B5 exige modelo de memória).
+- O geométrico FINITO (r^(n+1)−r)/(r−1) exige `DUP`/`SWAP`/`POW` na ISA
+  (laço com re-LOAD custa n unidades — eliminação falsa, proibida).
+- Lexer/parser em ZEPHIRUM (B3) exige strings/tokens como dados.
+- SHA-256 em bytecode (B4) exige operações de bit.
+
+O desconhecido é dito com Z. O impossível é dito com VMFault. O feito é
+provado com bateria.

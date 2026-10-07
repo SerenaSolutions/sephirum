@@ -56,7 +56,18 @@ opcode `DIV` (exato, Fraction; divisor zero recusado).
 | Etapa | Conteúdo | Estado |
 |-------|----------|--------|
 | B1 | degrau de Gauss na linguagem (esta fatia) | **CONCLUÍDA** |
-| B2 | degraus geométrico (`S = (r^(n+1)-r)/(r-1)`) e de média em linguagem | pendente |
+| B2 | degraus geométrico (`geometric_inf`: a/(1-r), \|r\|<1) e de média (`arithmetic_mean`: (n+1)/2) em linguagem | **CONCLUÍDA** |
+
+O geométrico FINITO (r^(n+1)-r)/(r-1) exige DUP/SWAP/POW na ISA — laço
+com re-LOAD custa n unidades (eliminação falsa, §12). O degrau entregue é
+o geométrico INFINITO: 2 unidades onde a truncação de 12 termos NUNCA
+alcança a soma exata (bateria: cauda presente em 100/100 casos).
+
+Resistência B2 (`stress_b2.py`, ST1-ST6): 10.000 casos geométricos com
+0 erros; média decidida em 1 unidade até n = 10^9 (ingênuo não
+materializado acima de 5.000 — eliminação pura); 4 ataques de
+falsificação rejeitados; muros STEP_LIMIT/CALL_DEPTH/stack firmes;
+racionais de 10^30 exatos; 500 casos x 2 execuções com traços idênticos.
 | B3 | lexer/parser em ZEPHIRUM | exige strings/tokens como dados (ISA futura) |
 | B4 | SHA-256 do certificado em bytecode | exige operações de bit (ISA futura) |
 | B5 | VM escrita em ZEPHIRUM | exige modelo de memória; fronteira declarada |
@@ -67,5 +78,6 @@ opcode `DIV` (exato, Fraction; divisor zero recusado).
   mudou: a DECISÃO (o degrau de eliminação) agora vive na linguagem.
 - Bootstrap completo (B5) não é promessa de roadmap: é fronteira
   declarada, com os pré-requisitos de ISA explícitos acima.
-- A bateria cobre a família gauss_series; generalização para as outras
-  famílias é trabalho das fatias B2+.
+- A bateria cobre gauss_series + geometric_inf + arithmetic_mean (B2);
+  o padrão executável v0.3 (docs/ZEPHIRUM_STANDARD_v0.3.md +
+  conformance_v03.py) consolida as baterias como conformidade.
