@@ -1,0 +1,3 @@
+# dependência OPCIONAL da interoperabilidade quântica (test_qinterop)
+# sem ela o teste sai com SKIP explícito — nunca falha em silêncio
+qiskit>=2.0

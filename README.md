@@ -281,6 +281,22 @@ unidades sob certificado de 3 **para na 3ª** (`docs/PHASE_6.md`):
 python3 prototype/zephirum.py run prog.zeph --backend vm
 ```
 
+## Interoperabilidade quântica: ZEPHIRUM × Qiskit
+
+O par antitético trabalhando JUNTO (`docs/QINTEROP.md`,
+`test_qinterop.py`, dependência opcional `pip install qiskit`):
+ZEPHIRUM decide (Schmidt exato, zero execução, certificado); o SDK
+executa o que foi eliminado, como gêmeo adversarial.
+
+- **300/300 estados aleatórios concordam** — o exato e o numérico
+  validam um ao outro na faixa comum
+- Estados produto: ZEPHIRUM certifica C = 0 EXATO; o SDK devolve ruído
+  float (e NAN em 11/48 casos — instabilidade documentada da rota
+  sqrt(2(1−pureza)))
+- Fronteira 2^53: **o SDK se contradiz** (det float diz não,
+  concurrence diz sim por ruído, ρ_A diz puro) — o certificado exato é
+  o único veredicto estável
+
 ## The four pillars / Os quatro pilares
 
 ```

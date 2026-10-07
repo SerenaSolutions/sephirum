@@ -33,6 +33,7 @@ python3 test_contracts.py                 # contrato como máquina (3 camadas)
 python3 test_models.py                   # modelos: exact vs float64 (10k+armadilhas)
 python3 test_runtime.py                 # runtime: 20k recibos, gate, backends
 python3 test_vm.py                      # VM: orçamento como lei (V1-V6)
+python3 test_qinterop.py               # ZEPHIRUM x Qiskit (SKIP honesto sem pip install qiskit)
 ```
 
 ## Módulos
