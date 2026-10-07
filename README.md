@@ -1,97 +1,6 @@
-<p align="center"><img src="assets/brand/zephirum_bloch_z_dark.png" width="140" alt="ZEPHIRUM — monograma ZEPHIRUM: o Z feito de 0 e 1"></p>
-
-# ZEPHIRUM — A Computação Antes da Execução
-
-<p align="center"><img src="assets/brand/zephirum_bloch_z_dark.png" width="140" alt="ZEPHIRUM — monograma ZEPHIRUM: o Z feito de 0 e 1"></p>
-
-> **PERGUNTE PRIMEIRO. PROVE DEPOIS. COMPUTE POR ÚLTIMO.**
-
-ZEPHIRUM é um **compilador de necessidade**: dada uma pergunta sobre uma computação
-(via linguagem **ZEPHIRUM**), ele procura provar que **não é preciso computar** — e só
-executa o que sobrar, com certificado verificável.
-
-O paradigma se inverte: de `ALGORITHM → COMPUTE` para `PROOF → COMPUTE`.
-
-- **Linguagem:** ZEPHIRUM (do latim *zephirum*, a forma que Fibonacci
-  registrou no *Liber Abaci*, 1202)
-- **Algoritmo:** ZCA — Zephirum Compilation Algorithm (escada de eliminação)
-- **Numeral:** ZEPHIRUM (Z) — o dígito que é 0 e 1 ao mesmo tempo; o terceiro
-  valor de verdade (UNKNOWN) da lógica ZEPHIRUM — o numeral **Z**.
-- **Livro:** *ZEPHIRUM — A Computação Antes da Execução* (PT/EN/AR, em produção)
-
-## Resultados medidos (reproduzíveis)
-
-| Métrica | Valor |
-|---|---|
-| Problemas aleatórios testados | 500.000 (14 s, stdlib pura) |
-| Respostas erradas | **0** |
-| Certificados verificados independentemente | 500.000/500.000 |
-| Certificados forjados rejeitados | 20/20 |
-| Computação eliminada com certificado | **76,5%** |
-| UNKNOWN honesto (não inventou resposta) | 31.418 (6,3%) |
-| Camada de IA consultiva (advisory) | 95,67% acurácia vs 53,05% baseline |
-
-## Estrutura
-
-```
-prototype/   Lexer/parser ZEPHIRUM próprios (Fase 2: zero ast/eval), motor ZCA,
-             verificador independente, REPL, transpilador ZEPHIRUM→Python
-             (run_tests.py = soundness; stress_test.py = 500k casos;
-              test_zephirum_lang.py = equivalência da linguagem; zephirum_repl.py = REPL;
-              ai_layer.py = previsão consultiva; zephirum.py = lógica trivalente)
-book/        O livro (PT mestre → EN → AR), estrutura e figuras
-results/     Resultados JSON das baterias (reproduzíveis por semente)
-docs/        Charter do projeto, paper (arXiv-ready), roteiro INPI
-```
-
-## Rodar
-
-```bash
-python3 prototype/zephirum_boot.py   # BOOTSTRAP fatia 1: Gauss na linguagem
-python3 prototype/zephirum_boot_b2.py  # fatia 2: geométrico infinito + média na linguagem
-python3 prototype/stress_b2.py       # resistência B2 (ST1-ST6, 10k casos)
-python3 prototype/conformance_v03.py # PADRÃO EXECUTÁVEL v0.3 (conformidade)
-python3 prototype/verifier_indep/test_verificador_c.py  # verificador independente em C
-python3 prototype/test_transpiler_multi.py   # transpilador multi-alvo (Python/C/Java/C#)
-python3 prototype/run_tests.py      # bateria de soundness; exit 0 = ok
-python3 prototype/stress_test.py 500000   # 500k problemas, ~14 s
-python3 prototype/ai_layer.py      # camada de IA consultiva
-python3 prototype/zephirum_repl.py     # REPL: digite programas ZEPHIRUM
-cat prog.zeph | python3 prototype/zephirum_transpiler.py  # gera Python autônomo
-python3 prototype/test_zephirum_lang.py  # equivalência da linguagem (Fase 2)
-```
-
-Python 3 puro. Sem dependências. Sem LLM. Sem nuvem.
-
-## Honestidade por projeto
-
-- O que existe: DSL funcional + composição testada de técnicas conhecidas
-  (partial evaluation, aritmética de intervalos, certificados verificáveis).
-- Possível contribuição: a **composição** — escada de eliminação por custo
-  crescente + estados trivalentes + certificado composto + ledger.
-- O que NÃO existe aqui: computação quântica (o degrau final é futuro),
-  prova de originalidade formal (busca de anterioridade pendente),
-  generalização das taxas para domínios arbitrários.
-- IA nunca decide: o charter exige gerador heurístico + **verificador
-  independente**. A camada de IA é consultiva por construção.
-
-## Licenças
-
-- Código: MIT
-- Livro e textos: CC BY-NC-ND 4.0
-- Charter e conceito: publicados aqui para anterioridade pública (2026-10-06)
-
-© 2026 AUŠRA Quantinum. Autoria e datas comprováveis pelo histórico Git.
-
----
-
-[🇧🇷 Português](#zephirum--a-computação-antes-da-execução) | [🇺🇸 English](#zephirum--computation-before-execution)
-
----
+<p align="center"><img src="assets/brand/zephirum_bloch_z_dark.png" width="140" alt="ZEPHIRUM — monogram: the Z made of 0 and 1"></p>
 
 # ZEPHIRUM — Computation Before Execution
-
-<p align="center"><img src="assets/brand/zephirum_bloch_z_dark.png" width="140" alt="ZEPHIRUM — monograma ZEPHIRUM: o Z feito de 0 e 1"></p>
 
 > **ASK FIRST. PROVE NEXT. COMPUTE LAST.**
 
@@ -101,7 +10,7 @@ needed** — and only executes what remains, with a verifiable certificate.
 
 The paradigm inverts: from `ALGORITHM → COMPUTE` to `PROOF → COMPUTE`.
 
-- **Language:** ZEPHIRUM (from Latin *zephirum*, as recorded by Fibonacci
+- **Language:** ZEPHIRUM (from Latin *zephirum*, the form recorded by Fibonacci
   in *Liber Abaci*, 1202)
 - **Algorithm:** ZCA — Zephirum Compilation Algorithm (elimination ladder)
 - **Numeral:** ZEPHIRUM (Z) — the digit that is 0 and 1 at the same time; the
@@ -112,7 +21,7 @@ The paradigm inverts: from `ALGORITHM → COMPUTE` to `PROOF → COMPUTE`.
 
 | Metric | Value |
 |---|---|
-| Randomized problems tested | 500,000 (14 s, pure stdlib) |
+| Randomised problems tested | 500,000 (14 s, pure stdlib) |
 | Wrong answers | **0** |
 | Certificates independently verified | 500,000/500,000 |
 | Forged certificates rejected | 20/20 |
@@ -124,7 +33,8 @@ The paradigm inverts: from `ALGORITHM → COMPUTE` to `PROOF → COMPUTE`.
 
 ```
 prototype/   Own ZEPHIRUM lexer/parser (Phase 2: zero ast/eval), ZCA engine,
-             independent verifier, REPL, ZEPHIRUM→Python transpiler
+             independent verifier (Python and C), REPL, multi-target
+             transpiler (ZEPHIRUM → Python/C/Java/C#)
              (run_tests.py = soundness; stress_test.py = 500k cases;
               test_zephirum_lang.py = language equivalence; zephirum_repl.py = REPL;
               ai_layer.py = advisory prediction; zephirum.py = trivalent logic)
@@ -137,6 +47,11 @@ docs/        Project charter, arXiv-ready paper, INPI roadmap
 
 ```bash
 python3 prototype/zephirum_boot.py   # BOOTSTRAP slice 1: Gauss in the language
+python3 prototype/zephirum_boot_b2.py  # slice 2: infinite geometric + mean in the language
+python3 prototype/stress_b2.py       # B2 resistance (ST1-ST6, 10k cases)
+python3 prototype/conformance_v03.py # EXECUTABLE STANDARD v0.3 (conformance)
+python3 prototype/verifier_indep/test_verificador_c.py  # independent C verifier
+python3 prototype/test_transpiler_multi.py   # multi-target transpiler (Python/C/Java/C#)
 python3 prototype/run_tests.py      # soundness battery; exit 0 = ok
 python3 prototype/stress_test.py 500000   # 500k problems, ~14 s
 python3 prototype/ai_layer.py      # advisory AI layer
@@ -155,12 +70,11 @@ Pure Python 3. No dependencies. No LLM. No cloud.
   ladder + trivalent states + composite certificate + ledger.
 - What does NOT exist here: quantum computing (the final rung is future
   work), formal proof of originality (prior-art search pending),
-  generalization of the rates to arbitrary domains.
+  generalisation of the rates to arbitrary domains.
 - AI never decides: the charter requires a heuristic generator + an
   **independent verifier**. The AI layer is advisory by construction.
 
-
-## Brand marks / Marcas
+## Brand marks
 
 | Mark | Product |
 |---|---|
@@ -171,166 +85,158 @@ Pure Python 3. No dependencies. No LLM. No cloud.
 Full spec: `docs/BRAND_IDENTITY.md`. Z is an epistemic decision state; the
 Bloch-sphere analogy is iconographic, never a physical claim.
 
-| Marca | Produto |
-|---|---|
-| ![ZEPHIRUM](assets/brand/zephirum_bloch_z_dark.png) | **ZEPHIRUM** — a linguagem (Bloch-Z: o vetor no equador, nem \|0⟩ nem \|1⟩ = Z) |
-| ![ZCA](assets/brand/zca_escada_dark.png) | **ZCA** — o algoritmo comercial (a escada certificada: para no primeiro degrau que decide) |
-| ![Caroço](assets/brand/kernel_caroco_dark.png) | **Decision Kernel** — o produto (só o caroço sobrevive; casca = certificado, semente = resposta) |
+## Phase 3 — Compiler Core: decision → certificate → independent verification
 
-Especificação completa: `docs/BRAND_IDENTITY.md`. Z é estado de decisão
-epistêmico; a analogia com a esfera de Bloch é iconográfica, nunca alegação física.
+Complete and verifiable pipeline (technical details: `docs/PHASE_3.md`):
 
-## Fase 3 — Compiler Core: decisão → certificado → verificação independente
-
-Pipeline completo e verificável (detalhes técnicos: `docs/PHASE_3.md`):
-
-    ZEPHIRUM → parser → IR → escada de eliminação → decisão trivalente
-      → Decision Kernel de primeira classe → certificado (CERT_HASH SHA-256)
-      → verificador INDEPENDENTE → resultado
+    ZEPHIRUM → parser → IR → elimination ladder → trivalent decision
+      → first-class Decision Kernel → certificate (CERT_HASH SHA-256)
+      → INDEPENDENT verifier → result
 
 - **Decision Kernel**: {id, verdict 0/1/Z, rung, method, justification,
-  scope, residual} — cidadão de primeira classe.
-- **CERT_HASH**: SHA-256 canônico do certificado inteiro — integridade;
-  adulteração de um dígito quebra o hash.
-- **Princípio de não-confiança**: o verificador re-deriva a decisão da
-  FONTE (método diferente do motor), com schema estrito de evidência por
-  kernel; certificado malformado é rejeitado explicitamente, nunca aceito.
-- **Erros estruturais explícitos** (nunca UNKNOWN silencioso): modelo
-  desconhecido, intervalo invertido, inf/nan, estado-zero.
-- **Família EMARANHADO** (2 qubits puros): perguntas sobre concurrence e
-  emaranhamento decididas pelo critério fechado de Schmidt — exato por
-  frações, sem simular o vetor de estado. Quantum é a família do
-  problema; o mecanismo decisório é clássico e exato.
+  scope, residual} — a first-class citizen.
+- **CERT_HASH**: canonical SHA-256 of the whole certificate — integrity;
+  tampering with a single digit breaks the hash.
+- **Principle of no trust**: the verifier re-derives the decision from the
+  SOURCE (a method different from the engine), with a strict per-kernel
+  evidence schema; malformed certificates are rejected explicitly, never
+  accepted.
+- **Explicit structural errors** (never a silent UNKNOWN): unknown model,
+  inverted interval, inf/nan, zero-state.
+- **ENTANGLEMENT family** (2 pure qubits): questions about concurrence and
+  entanglement decided by the closed Schmidt criterion — exact via
+  fractions, without simulating the state vector. Quantum is the problem
+  family; the decision mechanism is classical and exact.
 
 CLI:
 
 ```bash
 python3 prototype/zephirum.py check prog.zeph      # RESULT/STATUS/CERTIFICATE/EXECUTION
-python3 prototype/zephirum.py explain prog.zeph    # pergunta, escada, decisão
-python3 prototype/zephirum.py compile prog.zeph     # grava prog.zeph.cert.json
-python3 prototype/zephirum.py verify cert.json prog.zeph   # verificação completa
-python3 prototype/zephirum.py benchmark 500000     # benchmark completo
+python3 prototype/zephirum.py explain prog.zeph    # question, ladder, decision
+python3 prototype/zephirum.py compile prog.zeph     # writes prog.zeph.cert.json
+python3 prototype/zephirum.py verify cert.json prog.zeph   # full verification
+python3 prototype/zephirum.py benchmark 500000     # full benchmark
 ```
 
-Baterias da Fase 3 (todas PASS): adulteração de certificados (RAW 107/107,
-REHASH 83/83 obrigatórios), property tests (987+10), equivalência tripla
-motor/verificador/transpilado (10.000/10.000), emaranhado (35, forja
-rejeitada 3/3), falsificação 200 (0 certificados falsos), stress 500.000
-(0 erradas, certificate_valid_rate 1.0, eliminação 76,51%).
+Phase 3 batteries (all PASS): certificate tampering (RAW 107/107,
+mandatory REHASH 83/83), property tests (987+10), triple equivalence
+engine/verifier/transpiled (10,000/10,000), entanglement (35, forgery
+rejected 3/3), falsification 200 (0 false certificates), stress 500,000
+(0 wrong, certificate_valid_rate 1.0, elimination 76.51%).
 
-Formulação científica: "ZEPHIRUM implementa uma infraestrutura verificável
-para provar, em famílias de problemas formalmente suportadas, quando uma
-resposta pode ser determinada sem executar a computação completa, e para
-declarar UNKNOWN quando essa prova não está disponível."
+Scientific formulation: "ZEPHIRUM implements a verifiable infrastructure
+to prove, in formally supported problem families, when an answer can be
+determined without executing the full computation, and to declare UNKNOWN
+when that proof is unavailable."
 
-## Fase 4 — Simulator: o gêmeo adversarial
+## Phase 4 — Simulator: the adversarial twin
 
-O pilar SIMULATOR executa a computação COMPLETA que a escada eliminou,
-por caminho aritmético independente (Fraction em ordem reversa, Laplace
-vs diagonal, loop vs forma fechada, float64 vs exato), para provar por
-construção que a eliminação era certa (`docs/PHASE_4.md`):
+The SIMULATOR pillar executes the FULL computation that the ladder
+eliminated, via an independent arithmetic path (Fraction in reverse order,
+Laplace vs diagonal, loop vs closed form, float64 vs exact), to prove by
+construction that the elimination was right (`docs/PHASE_4.md`):
 
-- **20.000 casos diferenciais: 0 MISMATCH** — kernel == execução plena
-- **171.422 unidades simuladas, 136.130 evitadas de fato (79,41%)** —
-  o eliminado foi executado mesmo assim e a resposta não mudou
-- UNKNOWN honesto: toda Z confirmada como subdeterminada na execução plena
-- comparação de modelos computacionais: o float64 erraria na armadilha
-  1e16 onde o modelo exato acerta — por isso a aritmética é exata
+- **20,000 differential cases: 0 MISMATCH** — kernel == full execution
+- **171,422 units simulated, 136,130 genuinely avoided (79.41%)** — what
+  was eliminated was executed anyway and the answer did not change
+- Honest UNKNOWN: every Z was confirmed as underdetermined in full execution
+- computational-model comparison: float64 would fail the 1e16 trap where
+  the exact model succeeds — which is why the arithmetic is exact
 
 ```bash
-python3 prototype/zephirum.py simulate prog.zeph   # kernel vs plena + contratos
-python3 prototype/test_simulator.py                # bateria 20k
-python3 prototype/test_contracts.py                # contrato: 3 camadas independentes
-python3 prototype/test_models.py                   # modelos: exact vs float64
+python3 prototype/zephirum.py simulate prog.zeph   # kernel vs full + contracts
+python3 prototype/test_simulator.py                # 20k battery
+python3 prototype/test_contracts.py                # contracts: 3 independent layers
+python3 prototype/test_models.py                   # models: exact vs float64
 ```
 
-**Fatia 2** — contratos são máquinas: o motor rejeita contrato
-não-suportado explicitamente (§12), o simulator confere suposições
-contra os dados, o checker rejeita testemunha que contraria a suposição
-declarada. Modelos computacionais múltiplos: `exact` (Fraction) e
-`float64` concordam na faixa comum (10.000/10.000); na zona 2^53+ o
-float64 erra onde o exato acerta — medida, não promessa. `gpu`/`hpc`/
-`qpu` registrados e honestos: falham explicitamente até existirem.
+**Slice 2** — contracts are machines: the engine rejects unsupported
+contracts explicitly (§12), the simulator checks assumptions against the
+data, the checker rejects a witness that contradicts the declared
+assumption. Multiple computational models: `exact` (Fraction) and
+`float64` agree in the common range (10,000/10,000); in the 2^53+ zone
+float64 is wrong where the exact model is right — measured, not promised.
+`gpu`/`hpc`/`qpu` are registered and honest: they fail explicitly until
+they exist.
 
-## Fase 5 — Runtime: só executa o que sobreviveu
+## Phase 5 — Runtime: only what survived gets executed
 
-O pilar RUNTIME conferencia o certificado ANTES de qualquer execução,
-executa apenas as unidades certificadas e emite recibo
-(`docs/PHASE_5.md`):
+The RUNTIME pillar checks the certificate BEFORE any execution, executes
+only the certified units and issues a receipt (`docs/PHASE_5.md`):
 
-- certificado inválido => recusa e ZERO unidades executadas
-- decisão certificada sem execução => entrega com ZERO unidades
-  (o certificado é a resposta)
-- residual executado no backend, conferido contra o certificado
-  (cross-check); divergência => entrega RECUSADA
-- 20.000 recibos: contabilidade fechada; **119.876/155.168 unidades
-  eliminadas (77,26%)**; 11.896 casos com execução ZERO
+- invalid certificate => refusal and ZERO units executed
+- certified decision without execution => delivery with ZERO units
+  (the certificate is the answer)
+- residual executed on the backend, cross-checked against the certificate;
+  divergence => delivery REFUSED
+- 20,000 receipts: closed accounting; **119,876/155,168 units eliminated
+  (77.26%)**; 11,896 cases with ZERO execution
 
 ```bash
 python3 prototype/zephirum.py run prog.zeph [--backend cpu_exact|float64]
 ```
 
-## Fase 6 — VM própria (interna ao Runtime)
+## Phase 6 — Own VM (internal to the Runtime)
 
-Bytecode determinístico e ORÇAMENTADO: o certificado autoriza N
-unidades e a VM não consegue gastar mais — programa forjado com 8
-unidades sob certificado de 3 **para na 3ª** (`docs/PHASE_6.md`):
+Deterministic and BUDGETED bytecode: the certificate authorises N units
+and the VM cannot spend more — a forged program with 8 units under a
+certificate of 3 **stops at the 3rd** (`docs/PHASE_6.md`):
 
-- 4.072 residuais em bytecode: todos conferem com o certificado,
-  contabilidade fechada (unidades == orçamento) em cada recibo
-- trace determinístico COM operando: adulterar o dado acessado muda o
-  trace_hash
-- zero-execução => programa vazio (HALT): a resposta é o certificado
-- escopo honesto: famílias de soma nesta fatia; o resto recusa
-  explicitamente (VMNotEncodable)
+- 4,072 residuals in bytecode: all match the certificate, closed
+  accounting (units == budget) on every receipt
+- deterministic trace WITH operand: tampering with the accessed data
+  changes the trace_hash
+- zero-execution => empty program (HALT): the answer is the certificate
+- honest scope: sum families in this slice; everything else is refused
+  explicitly (VMNotEncodable)
 
 ```bash
 python3 prototype/zephirum.py run prog.zeph --backend vm
 ```
 
-## Interoperabilidade quântica: ZEPHIRUM × Qiskit
+## Quantum interoperability: ZEPHIRUM × Qiskit
 
-O par antitético trabalhando JUNTO (`docs/QINTEROP.md`,
-`test_qinterop.py`, dependência opcional `pip install qiskit`):
-ZEPHIRUM decide (Schmidt exato, zero execução, certificado); o SDK
-executa o que foi eliminado, como gêmeo adversarial.
+The antithetical pair working TOGETHER (`docs/QINTEROP.md`,
+`test_qinterop.py`, optional dependency `pip install qiskit`):
+ZEPHIRUM decides (exact Schmidt, zero execution, certificate); the SDK
+executes what was eliminated, as an adversarial twin.
 
-- **300/300 estados aleatórios concordam** — o exato e o numérico
-  validam um ao outro na faixa comum
-- Estados produto: ZEPHIRUM certifica C = 0 EXATO; o SDK devolve ruído
-  float (e NAN em 11/48 casos — instabilidade documentada da rota
-  sqrt(2(1−pureza)))
-- Fronteira 2^53: **o SDK se contradiz** (det float diz não,
-  concurrence diz sim por ruído, ρ_A diz puro) — o certificado exato é
-  o único veredicto estável
+- **300/300 random states agree** — the exact and the numerical validate
+  one another in the common range
+- Product states: ZEPHIRUM certifies C = 0 EXACT; the SDK returns float
+  noise (and NAN in 11/48 cases — documented instability of the
+  sqrt(2(1−purity)) route)
+- 2^53 boundary: **the SDK contradicts itself** (float det says no,
+  concurrence says yes by noise, ρ_A says pure) — the exact certificate
+  is the only stable verdict
 
-## Confronto quântico triplo: ZEPHIRUM × Qiskit × Cirq × PennyLane
+## Triple quantum confrontation: ZEPHIRUM × Qiskit × Cirq × PennyLane
 
-O ciclo fechado: os três SDKs quânticos atuais enfrentaram o ZEPHIRUM
+The closed cycle: all three current quantum SDKs faced ZEPHIRUM
 (`docs/QINTEROP.md`, `test_qinterop.py`, `pip install qiskit cirq
-pennylane` — sem eles, SKIP explícito):
+pennylane` — without them, explicit SKIP):
 
-- **A1 (300 estados)**: os três concordam com o certificado onde
-  conseguem responder — 7-8 NaN cada; ZEPHIRUM respondeu os 346
-- **A2 (46 estados produto)**: ZEPHIRUM C = 0 EXATO; os três: ruído
-  3.0e-08 e 11-12 NaN cada
-- **A3 (fronteira 2^53, det = 1 exato)**: **os três se contradizem**
-  (det float "não", pureza "sim" por ruído, ρ_A "puro") — o
-  certificado ZEPHIRUM é o único veredicto estável
+- **A1 (300 states)**: all three agree with the certificate wherever they
+  can answer — 7-8 NaN each; ZEPHIRUM answered all 346
+- **A2 (46 product states)**: ZEPHIRUM C = 0 EXACT; the three: noise of
+  3.0e-08 and 11-12 NaN each
+- **A3 (2^53 boundary, det = 1 exact)**: **all three contradict
+  themselves** (float det "no", purity "yes" by noise, ρ_A "pure") — the
+  ZEPHIRUM certificate is the only stable verdict
 
-## Passo 7 — Trust: assinatura Ed25519 de emitente
+## Step 7 — Trust: Ed25519 issuer signature
 
-O ciclo de confiança fecha: integridade (CERT_HASH, Fase 3) +
-autenticidade (SIGNATURE Ed25519 + registro de emitentes
-`trusted_issuers.txt`) — `docs/PHASE_7_TRUST.md`:
+The trust cycle closes: integrity (CERT_HASH, Phase 3) + authenticity
+(SIGNATURE Ed25519 + issuer registry `trusted_issuers.txt`) —
+`docs/PHASE_7_TRUST.md`:
 
-- adulterar QUALQUER campo de um certificado assinado quebra a
-  assinatura (T3, 5/5 campos testados)
-- emitente forjado (chave própria) fica fora do registro (T4);
-  ISSUER roubado sem a chave não assina (T4)
-- contraprova independente: cryptography e PyNaCl produzem a MESMA
-  assinatura e verificam uma à outra (T1) — nenhuma fonte única
-- camada aditiva: certificado não assinado segue verificável (T5)
+- tampering with ANY field of a signed certificate breaks the signature
+  (T3, 5/5 fields tested)
+- a forged issuer (own key) stays outside the registry (T4); a stolen
+  ISSUER without the key cannot sign (T4)
+- independent counter-proof: cryptography and PyNaCl produce the SAME
+  signature and verify one another (T1) — no single source
+- additive layer: an unsigned certificate remains verifiable (T5)
 
 ```bash
 zephirum.py trust gen-key --out issuer_key.txt
@@ -338,67 +244,96 @@ zephirum.py trust allow <pubkey>
 zephirum.py trust sign prog.zeph.cert.json issuer_key.txt
 ```
 
-## Fase 6, fatia 2: fluxo de controle ORÇADO na VM
+## Phase 6, slice 2: BUDGETED control flow in the VM
 
-A VM ganha desvio e laço sem perder a lei: laço só com contagem
-LITERAL (laço infinito não é codificável), JMPZ só para frente, cada
-LOADSEQ custa 1 unidade certificada, e um muro mecânico de passos
-(STEP_LIMIT, §12) pára laços forjados que não consomem dado. Série de
-64 termos: 7 instruções, 64/64 unidades (`docs/PHASE_6.md`,
+The VM gains branching and loops without losing the law: a loop only with
+a LITERAL count (an infinite loop is not encodable), JMPZ only forwards,
+every LOADSEQ costs 1 certified unit, and a mechanical step wall
+(STEP_LIMIT, §12) stops forged loops that consume no data. A 64-term
+series: 7 instructions, 64/64 units (`docs/PHASE_6.md`,
 `test_vm.py` V7-V12).
 
-## Fase 6, fatia 3: famílias extras na VM
+## Phase 6, slice 3: extra families in the VM
 
-Mediana codifica (sort clássico em bytecode, m/m unidades, fuzz de
-200 casos); emaranhado codifica como HALT — eliminado analiticamente,
-quem responde é o certificado; determinante pleno recusa com MOTIVO
-explícito: unidade certificada n! != dado consumido (§12).
-`docs/PHASE_6.md`, `test_vm.py` V1-V15.
+Median encodes (classical sort in bytecode, m/m units, 200-case fuzz);
+entanglement encodes as HALT — eliminated analytically, the certificate
+answers; the full determinant refuses with an explicit REASON: certified
+unit n! != consumed data (§12). `docs/PHASE_6.md`, `test_vm.py` V1-V15.
 
+## Phase 8 — Bootstrap: the kernel in the language itself
 
-## Fase 8 — Bootstrap: o kernel na própria linguagem
+Self-hosting has begun: the Gauss elimination rung (`n(n+1)/2`) is
+written IN the ZEPHIRUM language (`MODEL: type: gauss_series`), compiled
+to the VM's own bytecode and deciding with 2 certified units where naive
+execution spends n. Battery: 2,000 cases, 0 errors, 98.69% of units
+avoided; exact `DIV` opcode (zero divisor => VMFault). For n <= 2 the
+ladder chooses execution — elimination is arithmetic of units, not
+ideology. Regressions 17/17. Details: `docs/PHASE_8_BOOTSTRAP.md`.
 
-Self-hosting começou: o degrau de eliminação de Gauss (`n(n+1)/2`) está
-escrito NA linguagem ZEPHIRUM (`MODEL: type: gauss_series`), compilado
-para bytecode da própria VM e decidindo com 2 unidades certificadas onde
-a execução ingênua gasta n. Bateria: 2.000 casos, 0 erros, 98,69% das
-unidades evitadas; opcode `DIV` exato (divisor zero => VMFault). Para
-n <= 2 a escada escolhe a execução — eliminação é aritmética de
-unidades, não ideologia. Regressões 17/17. Detalhes: `docs/PHASE_8_BOOTSTRAP.md`.
+**Slice 2 (B2)** — infinite geometric (`geometric_inf`: a/(1-r), 2
+certified units where the truncated sum never reaches the exact value;
+|r| >= 1 refused at two levels) and mean (`arithmetic_mean`: (n+1)/2,
+1 unit, decided up to n = 10^9 with the naive program deliberately not
+materialised above 5,000 terms — pure elimination). Resistance
+(`stress_b2.py`): 10,000 geometric cases, 0 errors; 4 forged certificates
+rejected; STEP_LIMIT/CALL_DEPTH/stack walls firm; 10^30-exact fractions;
+500×2 identical traces.
 
-## Isolamento de processo (v0.6.3)
+## Executable standard v0.3 + independence across languages
 
-A VM roda enjaulada em processo filho descartável: muros de CPU
-(RLIMIT 5s), memória (128 MB), tempo (relógio do pai) e cwd vazio.
-Laço forjado, crash ou estouro morrem NO FILHO — o runtime entrega
-limpa (RuntimeRefusal). Backend `vm_isolated` na CLI e no runtime.
-Limites declarados: sem sandbox de filesystem/rede em Python puro
-(§12) — container do SO é camada de deploy. `test_isolate.py` V16-V21.
+The standard is not a document that describes the system — it is a suite
+that runs it (`docs/ZEPHIRUM_STANDARD_v0.3.md`, `conformance_v03.py`):
+8 batteries + scale, full PASS, executed in MORE THAN ONE language.
 
-## §EXACT (v0.7.0): decimais são Fraction, não float
+- **Independent verifier in C** (`verifier_indep/zverify.c`): zero code
+  imported from the Python reference; re-derives verdicts with its own
+  exact __int128 arithmetic, recomputes every INPUT_HASH with its own
+  SHA-256 (FIPS 180-4) and audits the normative unit costs (§5) —
+  400/400 honest cases with full Python↔C agreement, 5/5 forged
+  certificates rejected.
+- **Multi-target transpiler** (`zephirum_transpiler_multi.py`): ONE
+  ZEPHIRUM source generates autonomous programs in Python, C, Java and
+  C# — same verdict, same INPUT_HASH, same units (90/90 executed paths:
+  kernel, standalone Python, native C binary; Java/C# generated and
+  structurally verified, execution wherever a toolchain exists — §12
+  declared). Honest refusal travels too: |r| >= 1 is refused BEFORE any
+  program is generated, in every target.
 
-`0.1` é 1/10 em TODO o sistema (parse, decisão, evidência, VM,
-transpilado). Onde float64 perde o dígito que decide (0.1x10, 2^53,
-média 1e16), o runtime RECUSA a entrega. Bateria `test_hardmath.py`
-confere contra juiz independente (decimal.Decimal, Bareiss).
+A specification that must be reproducible by different languages, on
+different machines, in different eras — that is how a standard crosses
+borders of place, time and platform.
 
-## The four pillars / Os quatro pilares
+## Process isolation (v0.6.3)
+
+The VM runs jailed in a disposable child process: walls of CPU
+(RLIMIT 5 s), memory (128 MB), time (parent clock) and an empty cwd. A
+forged loop, crash or overflow dies IN THE CHILD — the runtime delivers a
+clean refusal (RuntimeRefusal). `vm_isolated` backend in the CLI and the
+runtime. Declared limits: no filesystem/network sandbox in pure Python
+(§12) — the OS container is the deployment layer. `test_isolate.py`
+V16-V21.
+
+## §EXACT (v0.7.0): decimals are Fractions, not floats
+
+`0.1` is 1/10 throughout the system (parse, decision, evidence, VM,
+transpiled output). Where float64 loses the digit that decides (0.1x10,
+2^53, the mean of 1e16), the runtime REFUSES delivery. The
+`test_hardmath.py` battery checks against an independent judge
+(decimal.Decimal, Bareiss).
+
+## The four pillars
 
 ```
-LANGUAGE (ZEPHIRUM) → COMPILER (NCA + Decision Kernel) → SIMULATOR → RUNTIME
+LANGUAGE (ZEPHIRUM) → COMPILER (ZCA + Decision Kernel) → SIMULATOR → RUNTIME
                         │
               CERTIFICATE + RESIDUAL + ZEPHIRUM-IR (transversal)
 ```
 
-EN: The transpiler to Python is a provisional RUNTIME backend, not the
-product. The VM will be built INSIDE the Runtime (Phase 6). Full spec:
-`docs/SIFR_ARCHITECTURE.md`. Roadmap: Phase 3 = COMPILER CORE.
+The transpiler to Python is a provisional RUNTIME backend, not the
+product. The VM was built INSIDE the Runtime (Phase 6). Full spec:
+`docs/ZEPHIRUM_ARCHITECTURE.md`. Roadmap: Phase 3 = COMPILER CORE.
 
-PT: O transpiler para Python é um backend provisório do RUNTIME, não o
-produto. A VM será construída DENTRO do Runtime (Fase 6). Especificação
-completa: `docs/SIFR_ARCHITECTURE.md`. Roadmap: Fase 3 = COMPILER CORE.
-
-## Licenses
+## Licences
 
 - Code: MIT
 - Book and texts: CC BY-NC-ND 4.0
