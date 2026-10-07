@@ -8,6 +8,7 @@ The engine never audits itself. Tampered evidence must be rejected.
 """
 import hashlib
 import json
+from fractions import Fraction
 
 from nexa_core import (
     parse_list, parse_matrix, parse_question, cmp, safe_eval, _num,
@@ -92,10 +93,12 @@ def verify(blocks, cert):
             mean_hi = (tot + u * hi) / N
             if ev.get("mean_lo") != mean_lo or ev.get("mean_hi") != mean_hi:
                 return False, "REJECT: mean interval mismatch"
-            if answer is True and not mean_lo > thr:
-                return False, "REJECT: lower mean bound does not decide"
-            if answer is False and not mean_hi <= thr:
-                return False, "REJECT: upper mean bound does not refute"
+            exact_lo = Fraction(tot + u * lo, N)
+            exact_hi = Fraction(tot + u * hi, N)
+            if answer is True and not exact_lo > thr:
+                return False, "REJECT: lower mean bound does not decide (exact arithmetic)"
+            if answer is False and not exact_hi <= thr:
+                return False, "REJECT: upper mean bound does not refute (exact arithmetic)"
             return True, "ok: mean interval independently recomputed"
         return False, "REJECT: INTERVAL_BOUND on unexpected model type"
 

@@ -11,6 +11,7 @@ Pipeline: NEXA source -> PARSER -> NEXA-IR (blocks) -> NECESSITY COMPILER
 import ast
 import hashlib
 import json
+from fractions import Fraction
 import operator as _O
 
 STATUSES = (
@@ -242,6 +243,13 @@ class NCA:
         if unk:
             name, lo, hi = _parse_unknown(unk)
             base = sum(terms)
+            if op != ">":
+                # FALSIFICACAO 2026-10-06: decidir ignorando a incognita era
+                # certificado FALSO. Soundness-first: recusar e permanecer Z.
+                return self._unknown(
+                    "unknown present with unsupported op '%s': refuse to "
+                    "decide from partial information" % op,
+                    original=n + 1, analysis_cost=0.15)
             if op == ">":
                 if base + lo > thr:
                     self.log("LIMIT", "ELIMINATED",
@@ -299,9 +307,14 @@ class NCA:
             lo, hi = _num(lo), _num(hi)
             mean_lo = (tot + u * lo) / N
             mean_hi = (tot + u * hi) / N
+            # FALSIFICACAO 2026-10-06: float perde o dígito que decide em
+            # magnitudes ~1e16. A decisão é por Fraction exata; o float
+            # permanece apenas como valor de exibição no certificado.
+            exact_lo = Fraction(tot + u * lo, N)
+            exact_hi = Fraction(tot + u * hi, N)
             self.log("LIMIT", "EXECUTED",
                      "interval arithmetic on %d unknowns in [%s, %s]" % (u, lo, hi))
-            if mean_lo > thr:
+            if exact_lo > thr:
                 self.log("LIMIT", "ELIMINATED",
                          "mean_lo = %s > %s: decided without any evaluation" % (mean_lo, thr))
                 ev = {"known_sum": tot, "unknown_count": u, "bounds": [lo, hi],
@@ -310,7 +323,7 @@ class NCA:
                 return self._finish("DECIDED_WITHOUT_EXECUTION", True,
                                     "INTERVAL_BOUND", "LIMIT", ev,
                                     original=u, required=0, analysis_cost=0.05)
-            if mean_hi <= thr:
+            if exact_hi <= thr:
                 self.log("LIMIT", "ELIMINATED",
                          "mean_hi = %s <= %s: refuted without evaluation" % (mean_hi, thr))
                 ev = {"known_sum": tot, "unknown_count": u, "bounds": [lo, hi],

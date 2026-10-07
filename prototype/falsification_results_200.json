@@ -1,0 +1,90 @@
+{
+ "per_family": {
+  "threshold_sum": {
+   "n": 50,
+   "wrong": 0,
+   "false_neg": 2,
+   "caught": 1,
+   "unknown_ok": 8
+  },
+  "mean_partial": {
+   "n": 50,
+   "wrong": 0,
+   "false_neg": 7,
+   "caught": 0,
+   "unknown_ok": 14
+  },
+  "triangular_det": {
+   "n": 50,
+   "wrong": 0,
+   "false_neg": 0,
+   "caught": 0,
+   "unknown_ok": 0
+  },
+  "geo": {
+   "n": 50,
+   "wrong": 0,
+   "false_neg": 0,
+   "caught": 0,
+   "unknown_ok": 0
+  }
+ },
+ "wrong": [],
+ "false_negatives": [
+  [
+   "geq_unk_negx",
+   "threshold_sum",
+   "UNKNOWN"
+  ],
+  [
+   "geq_unk_decide_T",
+   "threshold_sum",
+   "UNKNOWN"
+  ],
+  [
+   "hi_eq_thr",
+   "mean_partial",
+   "UNKNOWN"
+  ],
+  [
+   "hi_eq_thr_neg",
+   "mean_partial",
+   "UNKNOWN"
+  ],
+  [
+   "u0_mean",
+   "mean_partial",
+   "UNKNOWN"
+  ],
+  [
+   "u0_eq",
+   "mean_partial",
+   "UNKNOWN"
+  ],
+  [
+   "geq_decidable",
+   "mean_partial",
+   "UNKNOWN"
+  ],
+  [
+   "geq_refutable",
+   "mean_partial",
+   "UNKNOWN"
+  ],
+  [
+   "b5",
+   "mean_partial",
+   "UNKNOWN"
+  ]
+ ],
+ "caught_by_checker": [
+  [
+   "lying_assumption",
+   "threshold_sum",
+   "REJECT: monotonicity broken (negative eliminated term)"
+  ]
+ ],
+ "certs_verified": 199,
+ "certs_rejected": 1,
+ "elimination_pct": 83.45
+}
