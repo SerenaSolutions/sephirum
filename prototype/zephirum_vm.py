@@ -22,6 +22,12 @@ ISA (fatia 2: fluxo de controle ORÇADO):
   ADD        soma o topo do stack                    [custo 0]
   MUL        multiplica o topo                        [custo 0]
   DIV        divide exato o topo (b != 0)             [custo 0]
+  DUP        duplica o valor do topo                [custo 0]
+  SWAP       troca os dois valores do topo          [custo 0]
+  POW        b^e exato: e = topo, inteiro >= 0     [custo 0]
+             (muro POW_EXPONENT_LIMIT: expoente > 65536 => FALTA
+              declarada §12 — a aritmética gratuita não escapa
+              dos passos de máquina sem parede própria)
   CMP op t   compara o topo com (op, t) => 1/0        [custo 0]
   CMPT op t  compara e FIXA a resposta                [custo 0]
   LABEL L    marcador (alvo de desvio)               [custo 0]
@@ -84,6 +90,10 @@ class ZephirumVM:
 
     STEP_LIMIT = 65536   # muro mecânico (§12): passos TOTAIS de máquina
     CALL_DEPTH = 64      # muro (§12): profundidade de chamada
+    POW_EXPONENT_LIMIT = 65536  # muro (§12): expoente de POW —
+    # b**e cresce sem custo de unidade; sem este muro, um
+    # expoente forjado transformaria aritmética gratuita em
+    # moenda infinita DENTRO de uma única instrução
 
     def run(self, program):
         stack = []
@@ -217,6 +227,26 @@ class ZephirumVM:
                     raise VMFault("DIV por zero (pc=%d): sem infinito na "
                                   "máquina — recusa explícita (§12)" % pc)
                 stack.append(a / b)
+            elif op == "DUP":
+                if not stack:
+                    raise VMFault("DUP com stack vazio (pc=%d)" % pc)
+                stack.append(stack[-1])
+            elif op == "SWAP":
+                if len(stack) < 2:
+                    raise VMFault("SWAP com menos de 2 valores (pc=%d)" % pc)
+                stack[-1], stack[-2] = stack[-2], stack[-1]
+            elif op == "POW":
+                e = stack.pop()
+                b = stack.pop()
+                if e.denominator != 1 or e < 0:
+                    raise VMFault("POW: expoente %s não é inteiro >= 0 — "
+                                  "recusa explícita (§12)" % e)
+                if e.numerator > self.POW_EXPONENT_LIMIT:
+                    raise VMFault("POW EXPONENT LIMIT: %d > %d — "
+                                  "aritmética gratuita tem parede "
+                                  "declarada (§12)"
+                                  % (e.numerator, self.POW_EXPONENT_LIMIT))
+                stack.append(b ** e.numerator)
             elif op == "CMPT":
                 v = stack.pop()
                 o, t = ins[1], ins[2]

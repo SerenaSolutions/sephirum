@@ -58,9 +58,8 @@ opcode `DIV` (exato, Fraction; divisor zero recusado).
 | B1 | degrau de Gauss na linguagem (esta fatia) | **CONCLUÍDA** |
 | B2 | degraus geométrico (`geometric_inf`: a/(1-r), \|r\|<1) e de média (`arithmetic_mean`: (n+1)/2) em linguagem | **CONCLUÍDA** |
 
-O geométrico FINITO (r^(n+1)-r)/(r-1) exige DUP/SWAP/POW na ISA — laço
-com re-LOAD custa n unidades (eliminação falsa, §12). O degrau entregue é
-o geométrico INFINITO: 2 unidades onde a truncação de 12 termos NUNCA
+O geométrico FINITO foi entregue na fatia geofin (v0.8.1) com DUP/SWAP/POW
+murados — ver acima. O degrau do B2 permanece o geométrico INFINITO: 2 unidades onde a truncação de 12 termos NUNCA
 alcança a soma exata (bateria: cauda presente em 100/100 casos).
 
 Resistência B2 (`stress_b2.py`, ST1-ST6): 10.000 casos geométricos com
@@ -72,12 +71,47 @@ racionais de 10^30 exatos; 500 casos x 2 execuções com traços idênticos.
 | B4 | SHA-256 do certificado em bytecode | exige operações de bit (ISA futura) |
 | B5 | VM escrita em ZEPHIRUM | exige modelo de memória; fronteira declarada |
 
+## FATIA geofin — o geométrico FINITO na linguagem (2026-10-07, v0.8.1)
+
+A última exclusão declarada do B2 deixa de existir. `DUP`/`SWAP`/`POW`
+entram na ISA (custo 0 — o custo mora no DADO) e a série geométrica
+FINITA `r^0..r^n` é decidida por `(r^(n+1)−1)/(r−1)` em bytecode:
+`LOAD r, DUP, LOAD n, PUSH 1, ADD, POW, PUSH -1, ADD, SWAP, PUSH -1,
+ADD, DIV, CMPT` — 2 unidades certificadas. O DUP é o ponto da fatia:
+a evidência é carregada UMA vez (r, n) e o segundo uso de r é
+aritmética, não unidade.
+
+Muros novos (§12): `POW` exige expoente inteiro ≥ 0 e limitado a
+`POW_EXPONENT_LIMIT` 65536 — aritmética gratuita não vira moenda
+infinita dentro de uma instrução. Expoente fracionário/negativo é
+recusado (raiz não é fechada em racionais).
+
+Escada honesta: n = 0 → o ingênuo é mais barato (1 < 2), EXECUTA;
+n = 1 → empate (2 = 2), EXECUTA; n ≥ 2 → elimina (2 fixas vs n+1).
+r = 1 → recusa explícita (a soma é identidade n+1; DIV por zero
+nunca é caminho).
+
+Evidência (bateria GF1–GF6, PASS):
+- GF1: 120 casos, boot == naive == juiz (somatório INDEPENDENTE),
+  0 erros — r em [−3,3]\{1} incluindo |r| > 1, n de 2 a 60;
+- GF2: boot gasta 2 unidades sempre; 3.632 unidades evitadas nos
+  120 casos; fronteiras n=0/n=1 EXECUTAM;
+- GF3: terceira leitura além do certificado => BUDGET EXCEEDED;
+- GF4: expoente −1, 3/2 e 10^9 => VMFault explícita; (3/2)^12
+  decide certo com 0 unidades;
+- GF5: r=1, n<0 e família trocada => recusa, nunca silêncio;
+- GF6: mesma execução => mesmo trace_hash; adulteração responde.
+- Verificador C estendido com a família `geofin` (produtos cruzados
+  __int128, transborno declarado): 520/520 honestos, 8/8 forjados.
+- Conformidade v0.3 integral: 10 batteries + escala, PASS.
+
 ## Limitações honestas (§12)
 
 - A VM que executa o bytecode AINDA é interpretada em Python. O que
   mudou: a DECISÃO (o degrau de eliminação) agora vive na linguagem.
 - Bootstrap completo (B5) não é promessa de roadmap: é fronteira
   declarada, com os pré-requisitos de ISA explícitos acima.
-- A bateria cobre gauss_series + geometric_inf + arithmetic_mean (B2);
+- A bateria cobre gauss_series + geometric_inf + arithmetic_mean (B2)
+  + geometric_fin (geofin v0.8.1);
   o padrão executável v0.3 (docs/ZEPHIRUM_STANDARD_v0.3.md +
   conformance_v03.py) consolida as baterias como conformidade.

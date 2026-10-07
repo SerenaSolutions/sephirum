@@ -22,6 +22,8 @@ BATTERIES = [
     ("zephirum_boot.py",       "degrau de Gauss na linguagem (B1-B6)"),
     ("zephirum_boot_b2.py",    "geométrico e média na linguagem (G1-G6, M1-M4)"),
     ("stress_b2.py",           "resistência B2 (ST1-ST6)"),
+    ("zephirum_boot_geo_fin.py",
+     "geométrico finito na linguagem + ISA DUP/SWAP/POW (GF1-GF6)"),
     ("test_vm.py",             "ISA, muros e faltas da VM"),
     ("test_zephirum_lang.py",  "equivalência linguagem <-> núcleo"),
     ("run_tests.py",           "soundness do motor ZCA"),

@@ -24,6 +24,7 @@ python3 test_properties.py                  # §11 propriedades + §12 robustez
 python3 test_equivalence.py                # §10: tripla 10.000 casos
 python3 test_entanglement.py               # família emaranhado (Schmidt)
 python3 falsification_200.py               # 200 adversariais: 0 falsos
+python3 zephirum_boot_geo_fin.py          # geofin: geométrico finito + DUP/SWAP/POW (GF1-GF6)
 python3 test_zephirum_lang.py              # linguagem: 50k equivalência
 python3 test_zephirum_ir.py                # IR transversal
 python3 stress_test.py 500000              # benchmark + soundness
@@ -50,4 +51,5 @@ python3 test_isolate.py                 # isolamento de processo: muros CPU/mem/
 | zephirum_ir.py | IR transversal (Fase 2) |
 | zephirum_simulator.py | Fase 4: execução plena independente (gêmeo adversarial) |
 | zephirum_runtime.py | Fase 5: gate + execução do residual + recibo |
+| zephirum_boot_geo_fin.py | v0.8.1: geométrico finito na linguagem (DUP/SWAP/POW murados) |
 | zephirum_vm.py | Fase 6: bytecode orçamentado (interna ao Runtime) |

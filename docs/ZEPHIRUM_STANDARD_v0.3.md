@@ -44,12 +44,15 @@ Certificado forjado = rejeitado (baterias G4/M3/B3 verificam o muro).
 
 | Opcode | Custo | Lei |
 |--------|-------|-----|
-| `PUSH v`, `ADD`, `MUL`, `DIV`, `CMP`, `CMPT`, `MEDIAN`, `LABEL`, `JMPZ`, `LOOP n`, `ENDLOOP`, `CALL L`, `RET` | **0** | aritmética e fluxo são grátis — o custo mora no DADO |
+| `PUSH v`, `ADD`, `MUL`, `DIV`, `DUP`, `SWAP`, `POW`, `CMP`, `CMPT`, `MEDIAN`, `LABEL`, `JMPZ`, `LOOP n`, `ENDLOOP`, `CALL L`, `RET` | **0** | aritmética, stack e fluxo são grátis — o custo mora no DADO |
 | `LOAD i`, `LOADSEQ` | **1** | unidade = dado consumido do mundo |
 
 Muros mecânicos (§12, declarados): `STEP_LIMIT` 65536 passos totais;
 `CALL_DEPTH` 64; `JMPZ`/`CALL` somente PARA FRENTE; laço só com contagem
-LITERAL (laço infinito não é codificável); `stack` máx 1024.
+LITERAL (laço infinito não é codificável); `stack` máx 1024;
+`POW` exige expoente inteiro ≥ 0 e `POW_EXPONENT_LIMIT` 65536 —
+aritmética gratuita não vira moenda infinita DENTRO de uma
+instrução (além do muro: `VMFault` explícita).
 
 ## §5 Degraus de eliminação (a escada, v0.3)
 
@@ -58,6 +61,7 @@ LITERAL (laço infinito não é codificável); `stack` máx 1024.
 | `gauss_series` | n(n+1)/2 | 2 | n ≤ 2: kernel EXECUTA |
 | `geometric_inf` | a/(1−r), \|r\| < 1 | 2 | evidência mínima = (a, r); \|r\| ≥ 1 recusado em DOIS níveis (compilador e VM) |
 | `arithmetic_mean` | (n+1)/2 | 1 | n = 1 é empate (1 = 1): kernel EXECUTA |
+| `geometric_fin` | (r^(n+1)−1)/(r−1), r^0..r^n | 2 | n ≤ 1: kernel EXECUTA (1 < 2 e empate 2 = 2); r = 1: recusa (identidade n+1) |
 
 A eliminação é medida em unidades certificadas (dado consumido), não em
 ideologia: a bateria exige `units_boot < units_naive` nos casos eliminados
@@ -71,12 +75,13 @@ Executar `python3 prototype/conformance_v03.py`. PASS integral exige:
 |---------|-------------|
 | `zephirum_boot.py` B1–B6 | degrau de Gauss na linguagem; orçamento-muro; DIV; determinismo |
 | `zephirum_boot_b2.py` G1–G6, M1–M4 | geométrico infinito e média na linguagem; recusa de divergência; forjados; determinismo |
+| `zephirum_boot_geo_fin.py` GF1–GF6 | geométrico finito na linguagem: DUP/SWAP/POW murados, concordância tripla com somatório independente |
 | `stress_b2.py` ST1–ST6 | resistência: 10k casos, escala 10^9, falsificação, muros, exatidão 10^30, determinismo em massa |
 | `test_vm.py` | ISA, muros e faltas da VM |
 | `test_zephirum_lang.py` | equivalência linguagem ↔ núcleo (Fase 2) |
 | `run_tests.py` | soundness do motor ZCA |
 | `stress_test.py 5000` | escala com veredito verificável por semente |
-| `verifier_indep/zverify.c` | verificador INDEPENDENTE em C: re-deriva vereditos, recalcula `INPUT_HASH` (SHA-256 próprio) e audita custos §5 — concordância Python<->C 400/400, forjados 5/5 rejeitados |
+| `verifier_indep/zverify.c` | verificador INDEPENDENTE em C: re-deriva vereditos, recalcula `INPUT_HASH` (SHA-256 próprio) e audita custos §5 — concordância Python<->C 520/520 (inclui 120 geofin), forjados 8/8 rejeitados |
 | `zephirum_transpiler_multi.py` | UMA fonte ZEPHIRUM -> programas autônomos em Python, C, Java e C#: veredito, `INPUT_HASH` e unidades idênticos (90/90); recusa §12 preservada em todos os alvos |
 
 ## §7 Versionamento
@@ -84,13 +89,19 @@ Executar `python3 prototype/conformance_v03.py`. PASS integral exige:
 - MAIOR: quebra de certificado ou de ISA; MENOR: degrau novo (B-fatias);
   PATCH: bateria/bug sem mudança semântica.
 - Cada versão do padrão declara suas §12 na tabela de limitações.
+- v0.3 + fatia geofin (2026-10-07, v0.8.1): ISA `DUP`/`SWAP`/`POW` +
+  família `geometric_fin` — emenda aditiva, nenhum certificado existente
+  é quebrado.
 
 ## §8 Limitações declaradas (§12)
 
 - A VM é interpretada em Python — a DECISÃO vive na linguagem; a máquina,
   ainda não (B5 exige modelo de memória).
-- O geométrico FINITO (r^(n+1)−r)/(r−1) exige `DUP`/`SWAP`/`POW` na ISA
-  (laço com re-LOAD custa n unidades — eliminação falsa, proibida).
+- O geométrico FINITO foi ENTREGUE (v0.8.1): `DUP`/`SWAP`/`POW` na ISA,
+  (r^(n+1)−1)/(r−1) com 2 unidades certificadas. Segue declarado:
+  expoente fracionário/negativo não é fechado em racionais — a
+  máquina recusa (raiz é aproximação, e aproximação sem contrato é
+  fabricação, §12).
 - Lexer/parser em ZEPHIRUM (B3) exige strings/tokens como dados.
 - SHA-256 em bytecode (B4) exige operações de bit.
 

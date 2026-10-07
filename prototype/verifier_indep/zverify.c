@@ -14,15 +14,19 @@
  * Formato do caso (TAB-separado, um por linha):
  *   family  op  thr  p1  p2  lane  expected  input_hash  units  budget  data_string
  *
- *   family : gauss | geo | mean
+ *   family : gauss | geo | mean | geofin
  *   op     : > < >= <= ==
- *   p1/p2  : parâmetros (gauss/mean: p1 = n; geo: p1 = a=p/q, p2 = r=p/q)
+ *   p1/p2  : parâmetros (gauss/mean: p1 = n; geo: p1 = a=p/q, p2 = r=p/q;
+ *            geofin: p1 = r=p/q, p2 = n — série finita r^0..r^n)
  *   lane   : b (boot) | n (naive)
  *   expected: veredito declarado (1/0)
  *   input_hash: SHA-256 hex do data_string (64 hex)
  *   units/budget: contabilidade do certificado
  *   data_string : string canónica cuja hash deve bater
  *
+ * geofin: transbordo de P^(n+1)/Q^(n+1) além de 64 bits => OVERFLOW
+ *   (fora de escopo declarado; a referência Python mantém precisão
+ *   arbitrária). r = 1 => IDENTITY: recusa, não veredicto.
  * Falha declarada (§12 em C): cobertura de 64 bits/128 bits — racionais
  * fora de ±9,2e18 (p.e. os 10^30 da bateria Python) ficam fora do escopo
  * deste verificador; a referência Python mantém precisão arbitrária.
@@ -125,6 +129,44 @@ static int verdict_mean(long long n, const char *op, long long thr) {
            (strcmp(op,"==")==0 && c==0);
 }
 
+/* geofin: r=P/Q != 1, n >= 0; S = (r^(n+1) - 1)/(r - 1)
+ * Comparação exacta sem divisão: com x = P^(n+1), y = Q^(n+1),
+ *   S = Q*(x - y) / (y*(P - Q))
+ * S > thr  <=>  sinal(Q*(x-y) - thr*y*(P-Q)) concorda com sinal(y*(P-Q))
+ * (produtos cruzados em __int128; transbordo => fora de escopo declarado)
+ */
+static long long ipow64(long long b, long long e, int *ovf) {
+    __int128 r = 1;
+    *ovf = 0;
+    if (b == 0) return e == 0 ? 1 : 0;      /* 0^e: exato, sem laço */
+    for (long long i = 0; i < e; i++) {
+        r *= b;
+        if (r > LL(9223372036854775807LL) || r < LL(-9223372036854775807LL)) {
+            *ovf = 1; return 0;
+        }
+    }
+    return (long long)r;
+}
+
+static int verdict_geofin(long long P, long long Q, long long n,
+                         const char *op, long long thr, const char **reason) {
+    if (Q <= 0) { *reason = "FRAC"; return -1; }
+    if (P == Q) { *reason = "IDENTITY"; return -1; }   /* r = 1 (§12) */
+    if (n < 0)  { *reason = "NNEG"; return -1; }
+    if (n + 1 > 62) { *reason = "OVERFLOW"; return -1; } /* escopo 64 bits */
+    int ovf;
+    long long x = ipow64(P, n + 1, &ovf); if (ovf) { *reason = "OVERFLOW"; return -1; }
+    long long y = ipow64(Q, n + 1, &ovf); if (ovf) { *reason = "OVERFLOW"; return -1; }
+    long long qn = ipow64(Q, n, &ovf);     if (ovf) { *reason = "OVERFLOW"; return -1; }
+    i128 den = LL(qn) * LL(P - Q);          /* = Q^n * (r-1) em unidades Q */
+    if (den == 0) { *reason = "DIVZERO"; return -1; }
+    i128 lhs = LL(Q) * (LL(x) - LL(y)) - LL(thr) * LL(y) * LL(P - Q);
+    int c = den > 0 ? cmpv(lhs, 0) : -cmpv(lhs, 0);
+    return (strcmp(op,">")==0 && c>0) || (strcmp(op,"<")==0 && c<0) ||
+           (strcmp(op,">=")==0 && c>=0) || (strcmp(op,"<=")==0 && c<=0) ||
+           (strcmp(op,"==")==0 && c==0);
+}
+
 /* geo: a=A/B, r=P/Q, |r|<1 exigido; S = A*Q / (B*(Q-P)) vs thr */
 static int verdict_geo(long long A, long long B, long long P, long long Q,
                        const char *op, long long thr, const char **reason) {
@@ -179,6 +221,14 @@ int main(int argc, char **argv) {
                 printf("FAIL %d FRAC\n", ncase); nfail++; continue;
             }
             v = verdict_geo(A, B, P, Q, op, thr, &reason);
+            if (v < 0) { printf("FAIL %d %s\n", ncase, reason); nfail++; continue; }
+        } else if (strcmp(family, "geofin") == 0) {
+            long long P, Q, n;
+            if (!parse_frac(fld[3], &P, &Q)) {
+                printf("FAIL %d FRAC\n", ncase); nfail++; continue;
+            }
+            n = strtoll(fld[4], &rest, 10);
+            v = verdict_geofin(P, Q, n, op, thr, &reason);
             if (v < 0) { printf("FAIL %d %s\n", ncase, reason); nfail++; continue; }
         } else { printf("FAIL %d FAMILY\n", ncase); nfail++; continue; }
         /* 3) as três auditorias do certificado */

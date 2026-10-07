@@ -26,6 +26,7 @@ sys.path.insert(0, PROTO)
 from zephirum_boot import boot_decide            # gauss (fatia 1)
 from zephirum_boot_b2 import geo_decide, mean_decide  # fatia 2
 from zephirum_boot_b2 import _input_hash
+from zephirum_boot_geo_fin import geofin_decide   # fatia geofin (v0.8.1)
 
 BIN = os.path.join(HERE, "zverify")
 SRC = os.path.join(HERE, "zverify.c")
@@ -121,6 +122,28 @@ def main():
                           naive["units"], naive["budget"],
                           data_str(plan["naive"]["data"])))
 
+    # ---- 120 casos geométrico FINITO (boot + naive) de recibos REAIS
+    # escopo declarado do verificador C (64 bits): |r^(n+1)|, |Q^(n+1)|
+    # dentro de ±9,2e18 — o gerador fica no escopo; a referência Python
+    # mantém precisão arbitrária além dele (§12)
+    for i in range(120):
+        q = random.randint(1, 5)
+        p = random.choice([x for x in range(-15, 16) if x != q])
+        r = Fraction(p, q)
+        n = random.randint(2, 12)
+        S = sum(r ** k for k in range(n + 1))
+        thr = random.randint(int(S) - 6, int(S) + 6)
+        op = random.choice(OPS)
+        plan, boot, naive = geofin_decide(r, n, op, thr)
+        rec = boot if i % 3 else naive
+        lane = "b" if i % 3 else "n"
+        honest.append(tsv("geofin", op, thr,
+                          "%d/%d" % (r.numerator, r.denominator), str(n),
+                          lane, rec["answer"], rec["input_hash"],
+                          rec["units"], rec["budget"],
+                          data_str(plan[("boot" if lane == "b"
+                                         else "naive")]["data"])))
+
     honest_file = os.path.join(HERE, "casos_honestos.tsv")
     with open(honest_file, "w", encoding="utf-8") as fh:
         fh.write("\n".join(honest) + "\n")
@@ -152,6 +175,15 @@ def main():
         tsv("geo", ">", 1, "1/1", "3/2", "b", True,
             _input_hash([Fraction(1), Fraction(3, 2)]), 2, 2,
             "1|3/2"),
+         # geofin: r = 1 (identidade) apresentada como legítima
+        tsv("geofin", ">", 3, "1/1", "5", "b", True,
+            _input_hash([Fraction(1), 5]), 2, 2, "1|5"),
+        # geofin: veredito invertido (S = 665/32 > 3, declarado False)
+        tsv("geofin", ">", 3, "3/2", "5", "b", False,
+            _input_hash([Fraction(3, 2), 5]), 2, 2, "3/2|5"),
+        # geofin: custo normativo violado (3 unidades sob certificado de 2)
+        tsv("geofin", ">", 3, "3/2", "5", "b", True,
+            _input_hash([Fraction(3, 2), 5]), 3, 3, "3/2|5"),
     ]
     forge_file = os.path.join(HERE, "casos_forjados.tsv")
     with open(forge_file, "w", encoding="utf-8") as fh:
