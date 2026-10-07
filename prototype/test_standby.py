@@ -37,8 +37,8 @@ def main():
     assert pr["QPU_REAL"] is False, pr
     assert pr["STATUS"] == "AWAITING", pr
     assert "§12" in pr["MOTIVO"], pr
-    assert "SIMULADORES" in pr["MOTIVO"], pr
-    assert "sem mudar o caminho de certificado" in pr["PRONTO_PARA"], pr
+    assert "SIMULATORS" in pr["MOTIVO"], pr
+    assert "without changing the certificate path" in pr["PRONTO_PARA"], pr
     print("SB1: probe honesto — QPU REAL: FALSO, STATUS: AGUARDANDO, "
           "SDKs declarados SIMULADORES (§12), roteamento futuro sem "
           "mudar o caminho de certificado")
