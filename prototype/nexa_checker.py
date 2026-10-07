@@ -10,6 +10,8 @@ import hashlib
 import json
 from fractions import Fraction
 
+from decision_kernel import check_hash
+
 from nexa_core import (
     parse_list, parse_matrix, parse_question, cmp, safe_eval, _num,
     _parse_unknown,
@@ -23,12 +25,30 @@ def verify(blocks, cert):
     if h != cert.get("INPUT_HASH"):
         return False, "REJECT: input hash mismatch (certificate/source divergence)"
 
+    # 0.5 integridade criptográfica: o hash canônico sela o certificado
+    # inteiro (evidência, rastro, custos, status, resposta). Sem o hash, ou
+    # com hash quebrado, o certificado é rejeitado ANTES de qualquer análise.
+    if not check_hash(cert):
+        return False, "REJECT: certificate hash mismatch (tampered certificate)"
+
     target, op, thr = parse_question(blocks["ASK"]["question"])
     model = blocks["MODEL"]
     ev = cert.get("EVIDENCE", {})
     k = cert.get("KERNEL")
     answer = cert.get("ANSWER")
     status = cert.get("STATUS")
+    # 0.6 kernel de primeira classe: veredito trivalente consistente
+    dk = cert.get("DECISION_KERNEL", {})
+    from zerum import STATUS_TO_TRIT
+    if dk.get("method") != cert.get("KERNEL"):
+        return False, "REJECT: kernel method diverges from certificate kernel"
+    if dk.get("verdict") != STATUS_TO_TRIT.get(status, ("?",))[0]:
+        return False, "REJECT: kernel verdict inconsistent with status"
+    if dk.get("verdict") == "Z" and answer is not None:
+        return False, "REJECT: Z verdict must claim no answer"
+    if dk.get("verdict") in (0, 1) and not isinstance(answer, bool):
+        return False, "REJECT: collapsed verdict must carry a boolean answer"
+
 
     if k == "NONE":  # UNKNOWN claims nothing; nothing to verify
         return (status == "UNKNOWN" and answer is None), \

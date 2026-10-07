@@ -12,6 +12,8 @@ import ast
 import hashlib
 import json
 from fractions import Fraction
+
+from decision_kernel import make_kernel, certify
 import operator as _O
 
 STATUSES = (
@@ -168,11 +170,25 @@ class NCA:
                 "verification": 0.02,
             },
         }
+        # FASE 3 — COMPILER CORE: Decision Kernel de primeira classe
+        justification = (self.ledger[-1]["detail"] if self.ledger
+                         else "decided at %s rung" % rung)
+        kernel_obj = make_kernel(
+            name=self.name, question=self.b["ASK"]["question"],
+            status=status, answer=answer, rung=rung, method=kernel,
+            justification=justification,
+            scope={"assumption": self.model.get("assumption", ""),
+                   "contract": dict(self.contract) if self.contract else {},
+                   "question": self.b["ASK"]["question"]},
+            residual=0 if required is None else required)
+        cert["DECISION_KERNEL"] = kernel_obj
+        certify(cert)  # CERT_HASH: SHA-256 canônico sela o certificado inteiro
         return {
             "name": self.name, "status": status, "answer": answer,
             "kernel": kernel, "rung": rung, "original": original,
             "required": required, "eliminated": eliminated, "ratio": ratio,
             "net_benefit": net, "certificate": cert, "ledger": self.ledger,
+            "decision_kernel": kernel_obj,
         }
 
     def _unknown(self, why, original=1, analysis_cost=0.0):
