@@ -21,6 +21,7 @@ ISA (fatia 2: fluxo de controle ORÇADO):
   RET        retorna ao ponto da chamada              [custo 0]
   ADD        soma o topo do stack                    [custo 0]
   MUL        multiplica o topo                        [custo 0]
+  DIV        divide exato o topo (b != 0)             [custo 0]
   CMP op t   compara o topo com (op, t) => 1/0        [custo 0]
   CMPT op t  compara e FIXA a resposta                [custo 0]
   LABEL L    marcador (alvo de desvio)               [custo 0]
@@ -209,6 +210,13 @@ class ZephirumVM:
                 b = stack.pop()
                 a = stack.pop()
                 stack.append(a * b)
+            elif op == "DIV":
+                b = stack.pop()
+                a = stack.pop()
+                if b == 0:
+                    raise VMFault("DIV por zero (pc=%d): sem infinito na "
+                                  "máquina — recusa explícita (§12)" % pc)
+                stack.append(a / b)
             elif op == "CMPT":
                 v = stack.pop()
                 o, t = ins[1], ins[2]

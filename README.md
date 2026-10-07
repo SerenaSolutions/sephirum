@@ -47,6 +47,7 @@ docs/        Charter do projeto, paper (arXiv-ready), roteiro INPI
 ## Rodar
 
 ```bash
+python3 prototype/zephirum_boot.py   # BOOTSTRAP fatia 1: Gauss na linguagem
 python3 prototype/run_tests.py      # bateria de soundness; exit 0 = ok
 python3 prototype/stress_test.py 500000   # 500k problemas, ~14 s
 python3 prototype/ai_layer.py      # camada de IA consultiva
@@ -130,6 +131,7 @@ docs/        Project charter, arXiv-ready paper, INPI roadmap
 ## Run
 
 ```bash
+python3 prototype/zephirum_boot.py   # BOOTSTRAP slice 1: Gauss in the language
 python3 prototype/run_tests.py      # soundness battery; exit 0 = ok
 python3 prototype/stress_test.py 500000   # 500k problems, ~14 s
 python3 prototype/ai_layer.py      # advisory AI layer
@@ -347,6 +349,17 @@ Mediana codifica (sort clássico em bytecode, m/m unidades, fuzz de
 quem responde é o certificado; determinante pleno recusa com MOTIVO
 explícito: unidade certificada n! != dado consumido (§12).
 `docs/PHASE_6.md`, `test_vm.py` V1-V15.
+
+
+## Fase 8 — Bootstrap: o kernel na própria linguagem
+
+Self-hosting começou: o degrau de eliminação de Gauss (`n(n+1)/2`) está
+escrito NA linguagem ZEPHIRUM (`MODEL: type: gauss_series`), compilado
+para bytecode da própria VM e decidindo com 2 unidades certificadas onde
+a execução ingênua gasta n. Bateria: 2.000 casos, 0 erros, 98,69% das
+unidades evitadas; opcode `DIV` exato (divisor zero => VMFault). Para
+n <= 2 a escada escolhe a execução — eliminação é aritmética de
+unidades, não ideologia. Regressões 17/17. Detalhes: `docs/PHASE_8_BOOTSTRAP.md`.
 
 ## Isolamento de processo (v0.6.3)
 
