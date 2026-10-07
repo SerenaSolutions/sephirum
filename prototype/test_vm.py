@@ -30,6 +30,12 @@ Fatia 3 — famílias extras:
   V14 EMARANHADO codifica como HALT (eliminação analítica total)
   V15 mediana fuzz: 200 casos, contabilidade fechada
   (det pleno: recusa explícita com motivo — unidade n! != LOAD)
+
+Fatia 5 — sub-rotina (CALL/RET com endereço de retorno):
+  V22 CALL/RET: bloco reutilizável == inline == referência
+  V23 recursão: auto-CALL é call PARA TRÁS (proibida pela LEI);
+     cadeia FORWARD de 70 => muro CALL DEPTH 64 (§12)
+  V24 RET sem CALL / CALL para trás / label inexistente => VMFault
 """
 import sys
 
@@ -274,6 +280,59 @@ def main():
         assert r["units"] == m == r["budget"]
     print("V15 mediana fuzz: 200 casos aleatórios, unidades fechadas em "
           "TODOS, veredito == referência em TODOS")
+
+    # ===== Fatia 5: sub-rotina — CALL/RET com endereço de retorno =====
+    # V22: bloco reutilizável == inline == referência
+    data8 = [5, -3, 8, 1, 4, 9, 2, 7]
+    prog_sub = [("LOAD", i) for i in range(8)]
+    prog_sub += [("CALL", "sum8"), ("CMPT", ">", 30), ("HALT",),
+                 ("LABEL", "sum8")] + [("ADD",)] * 7 + [("RET",)]
+    prog_inl = [("LOAD", 0)]
+    for i in range(1, 8):
+        prog_inl += [("LOAD", i), ("ADD",)]
+    prog_inl += [("CMPT", ">", 30), ("HALT",)]
+    a1 = ZephirumVM(data8, 8).run(prog_sub)
+    a2 = ZephirumVM(data8, 8).run(prog_inl)
+    assert a1[0] == a2[0] == (sum(data8) > 30) and a1[1] == a2[1] == 8
+    assert ZephirumVM(data8, 8).run(prog_sub)[2] == \
+           ZephirumVM(data8, 8).run(prog_sub)[2]
+    print("V22 sub-rotina: CALL sum8 == inline == referência, 8/8 "
+          "unidades, traço determinístico")
+
+    # V23: recursão — a LEI proíbe antes do muro; o muro pega o resto
+    try:
+        ZephirumVM([], 0).run([("LABEL", "f"), ("CALL", "f"),
+                               ("HALT",)])
+        raise AssertionError("auto-recursão aceita?! (V23)")
+    except VMFault as e:
+        assert "para TRÁS" in str(e)
+    chain = []
+    for i in range(70):
+        chain.append(("LABEL", "f%d" % i))
+        if i < 69:
+            chain.append(("CALL", "f%d" % (i + 1)))
+    chain.append(("HALT",))
+    try:
+        ZephirumVM([], 0).run(chain)
+        raise AssertionError("cadeia de 70 passou do muro?! (V23)")
+    except VMFault as e:
+        assert "CALL DEPTH" in str(e)
+    print("V23 recursão: auto-CALL é PARA TRÁS (lei proíbe antes do muro); "
+          "cadeia FORWARD de 70 => muro CALL DEPTH 64 (§12)")
+
+    # V24: desvios ilegais da sub-rotina => VMFault explícito
+    for bad, want in [
+            ([("RET",), ("HALT",)], "RET sem CALL"),
+            ([("LABEL", "f"), ("PUSH", 0), ("CALL", "f"),
+              ("HALT",)], "para TRÁS"),
+            ([("CALL", "ghost"), ("HALT",)], "inexistente")]:
+        try:
+            ZephirumVM([], 0).run(bad)
+            raise AssertionError("ilegal aceito?! (V24)")
+        except VMFault as e:
+            assert want in str(e), (want, str(e))
+    print("V24 sub-rotina ilegal: RET órfão / CALL para trás / label "
+          "inexistente => VMFault explícito")
 
     print("RESULTADO: PASS — a VM gasta exatamente o que o certificado "
           "autoriza, nem uma unidade a mais")

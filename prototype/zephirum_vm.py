@@ -17,6 +17,8 @@ ISA (fatia 2: fluxo de controle ORÇADO):
   LOAD i     empilha dado i (terms/oráculo)          [custo 1 unidade]
   LOADSEQ    empilha o próximo dado em sequência     [custo 1 unidade]
   MEDIAN k   mediana exata dos k valores do topo     [custo 0]
+  CALL L     chama sub-rotina (só PARA FRENTE)        [custo 0]
+  RET        retorna ao ponto da chamada              [custo 0]
   ADD        soma o topo do stack                    [custo 0]
   MUL        multiplica o topo                        [custo 0]
   CMP op t   compara o topo com (op, t) => 1/0        [custo 0]
@@ -33,7 +35,10 @@ Leis do fluxo de controle (soundness-first):
   3. cada LOADSEQ consome 1 unidade do orçamento certificado;
   4. muro mecânico declarado (§12): STEP_LIMIT de passos totais —
      laço forjado de aritmética PURA (que não consome dados) bate
-     no muro de passos; o laço que consome dados bate no BUDGET.
+     no muro de passos; o laço que consome dados bate no BUDGET;
+  5. sub-rotina só PARA FRENTE (mesma lei do JMPZ) e profundidade
+     de chamada com muro: CALL_DEPTH 64 — recursão infinita bate no
+     muro e morre com motivo explícito (§12).
 
 Unidade = dado consumido (LOAD/PUSH de valor de entrada). O orçamento
 vem do certificado (required_terms). A aritmética é exata (Fraction).
@@ -77,6 +82,7 @@ class ZephirumVM:
         self.trace = []             # opcodes executados (determinístico)
 
     STEP_LIMIT = 65536   # muro mecânico (§12): passos TOTAIS de máquina
+    CALL_DEPTH = 64      # muro (§12): profundidade de chamada
 
     def run(self, program):
         stack = []
@@ -90,6 +96,7 @@ class ZephirumVM:
         pc = 0
         seq = 0                           # cursor do LOADSEQ
         loop_stack = []                   # (restantes, corpo_pc)
+        call_stack = []                   # endereços de RETORNO
         steps = 0
         while pc < len(program):
             ins = program[pc]
@@ -141,6 +148,26 @@ class ZephirumVM:
                 if v == 0:
                     pc = target
                     continue
+            elif op == "CALL":
+                target = labels.get(ins[1])
+                if target is None:
+                    raise VMFault("CALL para label inexistente %r" % ins[1])
+                if target <= pc:
+                    raise VMFault("CALL para TRÁS (pc=%d -> %d): "
+                                  "sub-rotina fica À FRENTE (§soundness)"
+                                  % (pc, target))
+                if len(call_stack) >= self.CALL_DEPTH:
+                    raise VMFault("CALL DEPTH: %d níveis — recursão "
+                                  "infinita bate no muro (§12)"
+                                  % self.CALL_DEPTH)
+                call_stack.append(pc + 1)
+                pc = target
+                continue
+            elif op == "RET":
+                if not call_stack:
+                    raise VMFault("RET sem CALL (pc=%d)" % pc)
+                pc = call_stack.pop()
+                continue
             elif op == "LOOP":
                 loop_stack.append([ins[1], pc + 1])
             elif op == "ENDLOOP":
