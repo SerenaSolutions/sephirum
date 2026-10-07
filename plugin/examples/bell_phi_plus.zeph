@@ -1,0 +1,6 @@
+# Bell |Phi+> = (|00> + |11>)/sqrt(2) — emaranhamento máximo
+ASK:
+    question: entangled == 1
+MODEL:
+    type: entanglement
+    state: 0.70710678118654752,0,0,0.70710678118654752

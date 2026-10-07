@@ -86,6 +86,7 @@ Executar `python3 prototype/conformance_v03.py`. PASS integral exige:
 | `verifier_indep/zverify.c` | verificador INDEPENDENTE em C: re-deriva vereditos, recalcula `INPUT_HASH` (SHA-256 próprio) e audita custos §5 — concordância Python<->C 520/520 (inclui 120 geofin), forjados 8/8 rejeitados |
 | `zephirum_transpiler_multi.py` | UMA fonte ZEPHIRUM -> programas autônomos em Python, C, Java, C#, Qiskit e Cirq: veredito, `INPUT_HASH` e unidades idênticos (90/90 + 40 emaranhamentos); recusa §12 preservada em todos os alvos |
 | `test_confront.py` CC1–CC5 | confronto medido clássico × quântico × exato: float64 mente na fronteira 2^53; SDKs com ruído/NaN declarados; Python×C exatos 120/120; ponte qiskit+cirq 30/30 com zero QPU |
+| `plugin/` (pip: zephirum-quantum-plugin) + `test_plugin_quantum.py` | ALGORITMO INSTALÁVEL: decisão exata de emaranhamento com certificado verificável, zero unidades QPU, SDKs adversariais opcionais |
 | `zephirum_parse_lang.py` + `test_parse_in_lang.py` | PARSER de dados EM BYTECODE (fatia B3.2): inteiros/frações/decimais exatos, erros por FLAG (nunca crash), VM == zvm == referência |
 | `zephirum_lex_lang.py` + `test_lex_in_lang.py` | LEXER de assinatura EM BYTECODE (fatia B3.1): VM == zvm == referência, UNITS == comprimento, wrap mod 2^32 verificado |
 | `zephirum_sha_lang.py` + `test_hash_in_lang.py` | SHA-256 do certificado EM BYTECODE (B4): 25 mensagens, VM == zvm == hashlib, UNITS=16 e TRACE_HASH idênticos |

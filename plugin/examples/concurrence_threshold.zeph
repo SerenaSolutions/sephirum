@@ -1,0 +1,6 @@
+# parcial 3/5|00> + 4/5|11> — C = 24/25 > 9/10?
+ASK:
+    question: concurrence > 0.9
+MODEL:
+    type: entanglement
+    state: 0.6,0,0,0.8

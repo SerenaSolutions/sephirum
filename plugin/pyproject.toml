@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "zephirum-quantum-plugin"
+version = "0.3.0"
+description = "Plug-in do algoritmo Zephirum para o mundo quantico: decisao exata de emaranhamento com certificado, zero unidades QPU"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "Proprietary - Serena Solutions" }
+authors = [{ name = "Serena Solutions / QALQON" }]
+keywords = ["quantum", "entanglement", "proof", "certificate", "zephirum"]
+
+[project.optional-dependencies]
+qiskit = ["qiskit"]
+cirq = ["cirq"]
+
+[project.scripts]
+zephirum-q = "zephirum_quantum_plugin.cli:main"
+
+[tool.setuptools]
+packages = ["zephirum_quantum_plugin"]

@@ -113,3 +113,31 @@ O desenho está pronto para virar aplicativo no Base44 (entidades +
 backend functions + páginas) no comando do dono. O custo de créditos
 da construção fica a critério dele — por isto este documento entra
 primeiro no repositório: o desenho é a evidência antes da velocidade.
+
+
+## PLUG-IN QUÂNTICO INSTALÁVEL (2026-10-07, direção do dono)
+
+O algoritmo saiu do repositório e virou PRODUTO: `plugin/` contém o
+pacote pip `zephirum-quantum-plugin` (v0.3.0) — o algoritmo Zephirum
+de emaranhamento *self-contained*, nascido do primeiro artefato da
+casa (o verificador autônomo transpilado em Python/C/Java).
+
+O que o plug-in faz:
+  - decide emaranhamento de 2 qubits puros com Fraction exata
+    (critério de Schmidt; Wootters PRL 1998 / N&C cap. 2);
+  - emite certificado verificável (INPUT_HASH + selo CERT_HASH
+    SHA-256) e verificação independente que REFAZ a decisão;
+  - cobra ZERO unidades QPU (o caminho SDK de 8 unidades é
+    eliminado pelo critério fechado);
+  - Qiskit/Cirq como gêmeos adversariais OPCIONAIS de contraprova
+    float — o SDK é ruído em volta do exato, nunca o veredito;
+  - recusa honesta (§12): família fora, SDK ausente -> SKIP com
+    motivo, nunca erro escondido;
+  - CLI `zephirum-q` (console script) + API Python `gateway()`.
+
+Bateria `test_plugin_quantum.py` (17ª da conformidade, PASS):
+7/7 vereditos == teoria; adulteração de ENTRADA pega na concorrência
+exata e de RESPOSTA pega na verificação (duas camadas); CLI
+end-to-end com contraprova Qiskit real.
+
+Instalação: `pip install plugin/` · extras: `[qiskit]`, `[cirq]`.

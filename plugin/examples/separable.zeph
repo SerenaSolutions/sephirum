@@ -1,0 +1,6 @@
+# estado produto |00> — separável
+ASK:
+    question: entangled == 1
+MODEL:
+    type: entanglement
+    state: 1,0,0,0
