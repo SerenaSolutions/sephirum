@@ -16,6 +16,7 @@ ISA (fatia 2: fluxo de controle ORÇADO):
   PUSH v     empilha constante exata (Fraction)      [custo 0]
   LOAD i     empilha dado i (terms/oráculo)          [custo 1 unidade]
   LOADSEQ    empilha o próximo dado em sequência     [custo 1 unidade]
+  MEDIAN k   mediana exata dos k valores do topo     [custo 0]
   ADD        soma o topo do stack                    [custo 0]
   MUL        multiplica o topo                        [custo 0]
   CMP op t   compara o topo com (op, t) => 1/0        [custo 0]
@@ -39,8 +40,12 @@ vem do certificado (required_terms). A aritmética é exata (Fraction).
 
 Limitações desta fatia (declaradas, §12):
   - cobre resíduos das famílias de soma (testemunha, oráculo, soma
-    plena, séries longas em laço); mediana/determinante/emaranhado
-    NÃO são codificáveis ainda (VMNotEncodable — recusa explícita);
+    plena, séries longas em laço) e MEDIANA (sort clássico em
+    bytecode, m unidades = m dados); emaranhado codifica como HALT
+    (eliminação analítica total); DETERMINANTE PLENO recusa
+    explicitamente: a unidade certificada é o termo de expansão
+    Laplace (n!), não o dado consumido (LOAD) — semânticas distintas,
+    e rebaixar o teto ou inflar o custo seria desonesto (§12);
   - desvio condicional é frente-only; não existe chamada de
     sub-rotina (sem return address) nesta fatia;
   - a base certificada (base_sum do residual) é reutilizada da
@@ -147,6 +152,16 @@ class ZephirumVM:
                     pc = ctx[1]
                     continue
                 loop_stack.pop()
+            elif op == "MEDIAN":
+                k = ins[1]
+                if k < 1 or len(stack) < k:
+                    raise VMFault("MEDIAN k=%d inválido para stack=%d "
+                                  "(pc=%d)" % (k, len(stack), pc))
+                vals = [stack.pop() for _ in range(k)]
+                sv = sorted(vals)
+                m = len(sv)
+                stack.append(sv[m // 2] if m % 2
+                             else (sv[m // 2 - 1] + sv[m // 2]) / 2)
             elif op == "LOAD":
                 i = ins[1]
                 if i < 0 or i >= len(self.data):
@@ -217,6 +232,20 @@ def compile_program(blocks, res):
         prog = [("PUSH", base), ("LOAD", 0), ("ADD",),
                 ("CMPT", op, thr), ("HALT",)]
         return (prog, [model["unknown_value"]], 1)
+
+    if status == "FULL_EXECUTION_REQUIRED" and model.get("type") == "raw_data":
+        data = parse_list(model["data"])
+        prog = [("LOAD", i) for i in range(len(data))]
+        prog += [("MEDIAN", len(data)), ("CMPT", op, thr), ("HALT",)]
+        return (prog, data, len(data))
+
+    if status == "FULL_EXECUTION_REQUIRED" and \
+            model.get("type") == "triangular_det":
+        raise VMNotEncodable(
+            "determinante pleno: unidade certificada = termo de expansão "
+            "Laplace (n!), não dado consumido (LOAD) — semânticas de "
+            "unidade distintas; recusa explícita §12 (nunca rebaixar o "
+            "teto orçamentário nem inflar o custo)")
 
     if status == "FULL_EXECUTION_REQUIRED" and model.get("type") == "threshold_sum":
         terms = parse_list(model["terms"])

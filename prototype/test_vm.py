@@ -24,6 +24,12 @@ Fatia 2 — fluxo de controle ORÇADO:
   V10 MURO MECÂNICO: laço de aritmética pura => STEP LIMIT (§12)
   V11 JMPZ para trás / label inexistente => VMFault
   V12 DETERMINISMO do laço + dado adulterado muda o trace_hash
+
+Fatia 3 — famílias extras:
+  V13 MEDIANA no bytecode (sort clássico, m/m unidades)
+  V14 EMARANHADO codifica como HALT (eliminação analítica total)
+  V15 mediana fuzz: 200 casos, contabilidade fechada
+  (det pleno: recusa explícita com motivo — unidade n! != LOAD)
 """
 import sys
 
@@ -105,14 +111,18 @@ def main():
     # V6: escopo honesto — mediana não é codificável NESTA fatia
     med = parse_nexa("ASK:\n    question: median > 50\nMODEL:\n    type: "
                      "raw_data\n    data: 12, 87, 45, 63, 51, 39, 96, 4, 58")
-    res6 = NCA(med, "med").compile()
+    # V6: escopo honesto FATIA 3 — mediana CODIFICA; det pleno RECUSA
+    # com motivo explícito (semântica de unidade); emaranhado => HALT.
+    detm = parse_nexa("ASK:\n    question: det > 0\nMODEL:\n    type: "
+                      "triangular_det\n    matrix: 1, 2; 3, 4\n")
+    resd = NCA(detm, "det").compile()
     try:
-        compile_program(med, res6)
-        raise AssertionError("VM fingiu codificar mediana!")
+        compile_program(detm, resd)
+        raise AssertionError("VM fingiu codificar det pleno!")
     except VMNotEncodable as e:
-        assert "não codificável" in str(e)
-    print("V6 escopo honesto: mediana => VMNotEncodable explícito "
-          "(nunca silêncio, nunca fingimento)")
+        assert "semânticas" in str(e) and "n!" in str(e)
+    print("V6 escopo honesto: det pleno => VMNotEncodable com MOTIVO "
+          "(unidade certificada n! != dado consumido — §12)")
 
     # ================= Fatia 2: fluxo de controle ORÇADO ================
     from fractions import Fraction
@@ -214,6 +224,56 @@ def main():
           "adulterados => hash muda; FRONTEIRA: valor de dado NÃO está no "
           "traço — quem protege o dado é o INPUT_HASH (cert de fonte "
           "trocada => REJECT)")
+
+    # ===== Fatia 3: famílias extras — mediana, emaranhado, det =====
+    from fractions import Fraction
+
+    # V13: MEDIANA no bytecode (ímpar e par) — equivalência exata
+    for data, thr in [("1, 2, 3, 900, 5", "3"), ("1, 2, 3, 4", "2"),
+                      ("7, 1, 5, 3, 9, 11, 2", "4")]:
+        blocks = parse_nexa("ASK:\n    question: median > %s\nMODEL:\n    "
+                            "type: raw_data\n    data: %s\n" % (thr, data))
+        res = NCA(blocks, "med13").compile()
+        r = vm_execute(blocks, res)
+        ref = sorted(Fraction(x) for x in data.split(","))
+        m = len(ref)
+        med = ref[m // 2] if m % 2 else (ref[m // 2 - 1] + ref[m // 2]) / 2
+        assert r["answer"] == (med > Fraction(thr)) and r["units"] == m
+        assert r["units"] == r["budget"]
+    print("V13 mediana: sort clássico em bytecode (ímpar e par), m/m "
+          "unidades, veredito == referência exata")
+
+    # V14: EMARANHADO codifica como HALT — eliminação analítica TOTAL
+    ent = parse_nexa("ASK:\n    question: entangled > 0.5\nMODEL:\n    "
+                     "type: entanglement\n    state: 1, 0, 0, 1\n")
+    rese = NCA(ent, "ent14").compile()
+    assert rese["status"] == "DECIDED_WITHOUT_EXECUTION"
+    r = vm_execute(ent, rese)
+    assert r["units"] == 0 and r["budget"] == 0
+    assert r["answer"] is None             # a máquina não responde:
+    assert rese["certificate"]["ANSWER"] is True   # o CERTIFICADO responde
+    assert r["program_size"] == 1          # só HALT
+    print("V14 emaranhado: família eliminada ANALITICAMENTE — VM executa "
+          "HALT de 1 instrução, 0/0 unidades, resposta=None na máquina; "
+          "quem responde é o CERTIFICADO (Schmidt fechou antes)")
+
+    # V15: contabilidade da mediana fecha em 200 casos aleatórios
+    import random as _rnd
+    _rnd.seed(61)
+    for _ in range(200):
+        m = _rnd.randint(2, 12)
+        data = ", ".join(str(_rnd.randint(-50, 50)) for _ in range(m))
+        thr = _rnd.randint(-50, 50)
+        blocks = parse_nexa("ASK:\n    question: median > %d\nMODEL:\n    "
+                            "type: raw_data\n    data: %s\n" % (thr, data))
+        res = NCA(blocks, "med15").compile()
+        r = vm_execute(blocks, res)
+        ref = sorted(Fraction(x) for x in data.split(","))
+        med = ref[m // 2] if m % 2 else (ref[m // 2 - 1] + ref[m // 2]) / 2
+        assert r["answer"] == (med > thr), (data, thr)
+        assert r["units"] == m == r["budget"]
+    print("V15 mediana fuzz: 200 casos aleatórios, unidades fechadas em "
+          "TODOS, veredito == referência em TODOS")
 
     print("RESULTADO: PASS — a VM gasta exatamente o que o certificado "
           "autoriza, nem uma unidade a mais")

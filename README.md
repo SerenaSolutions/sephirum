@@ -340,6 +340,14 @@ LOADSEQ custa 1 unidade certificada, e um muro mecânico de passos
 64 termos: 7 instruções, 64/64 unidades (`docs/PHASE_6.md`,
 `test_vm.py` V7-V12).
 
+## Fase 6, fatia 3: famílias extras na VM
+
+Mediana codifica (sort clássico em bytecode, m/m unidades, fuzz de
+200 casos); emaranhado codifica como HALT — eliminado analiticamente,
+quem responde é o certificado; determinante pleno recusa com MOTIVO
+explícito: unidade certificada n! != dado consumido (§12).
+`docs/PHASE_6.md`, `test_vm.py` V1-V15.
+
 ## The four pillars / Os quatro pilares
 
 ```

@@ -97,3 +97,26 @@ Limitações da fatia 2 (declaradas): sem chamada de sub-rotina (sem
 return address); desvio só para frente; LOOP exige contagem em tempo
 de compilação (não pode depender de dado); mediana/determinante/
 emaranhado seguem VMNotEncodable.
+
+
+## FATIA 3 — Famílias extras (2026-10-07, v0.6.2)
+
+A última recusa honesta da VM vira cobertura explícita:
+
+- MEDIANA (raw_data): codifica — sort clássico em bytecode. Opcode
+  MEDIAN k (mediana exata dos k valores do topo, par = média das
+  duas centrais em Fraction). m LOADs = m unidades certificadas.
+  V13/V15: ímpar, par e fuzz de 200 casos, contabilidade fechada.
+- EMARANHADO (entanglement): codifica como HALT de 1 instrução, 0/0
+  unidades — a família é eliminada ANALITICAMENTE (Schmidt). A
+  máquina não responde (answer=None); QUEM RESPONDE É O
+  CERTIFICADO (V14). A tese do projeto demonstrada no bytecode.
+- DETERMINANTE PLENO: recusa EXPLÍCITA com motivo (V6): a unidade
+  certificada é o termo de expansão Laplace (n!), não o dado
+  consumido (LOAD) — semânticas distintas. Rebaixar o teto
+  orçamentário ou inflar o custo seria desonesto (§12). Det
+  TRIANGULAR segue analítico (zero unidades, HALT).
+
+Bateria V1-V15 completa (PASS). O que a VM NÃO faz segue declarado:
+det pleno, sub-rotina (return address), LOOP com contagem dependente
+de dado.
