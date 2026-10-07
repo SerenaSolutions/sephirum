@@ -167,3 +167,24 @@ concordância VM == zvm == referência (16/16 estados).
 A verificação do certificado usa a referência Fraction direta
 (implementação INDEPENDENTE) — duas camadas: bytecode (decisão) e
 referência (contraprova).
+
+## MODO STANDBY (direção do dono, 2026-10-07)
+
+"Vou dificultar um pouquinho": o plug-in agora é o SOFTWARE QUÂNTICO
+QUE O MUNDO INSTALA HOJE — smartphones (Termux/Pydroid/iOS a-Shell),
+computadores e sistemas operacionais clássicos — e AGUARDA a
+computação quântica.
+
+  - serviço ATIVO hoje: decisão clássica EXATA em bytecode Zephirum
+    (runtime stdlib puro — bateria SB2 prova que não importa
+    numpy/qiskit/cirq no processo: apto a qualquer aparelho);
+  - probe honesto (§12): QPU_REAL=False, STATUS=AGUARDANDO, SDKs
+    declarados SIMULADORES, nunca encenação (bateria SB1);
+  - standby é ESTADO, não degradação: mesmo veredito e MESMO
+    CERT_HASH do caminho normal (SB3);
+  - QPU-ready: quando o hardware existir no aparelho, o MESMO
+    caminho de certificado (INPUT_HASH/CERT_HASH) roteia — só o
+    probe muda (SB4).
+
+CLI: `zephirum-q <arquivo> --standby` · `zephirum-q --qpu-probe`.
+Bateria: `test_standby.py` (19ª da conformidade).

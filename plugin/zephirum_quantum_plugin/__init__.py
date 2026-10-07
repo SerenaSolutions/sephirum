@@ -6,6 +6,7 @@ verificável, ZERO unidades QPU, e SDKs (Qiskit/Cirq) como gêmeos
 adversariais OPCIONAIS de contraprova float.
 """
 from .core import gateway, verify, certify, decide, parse_nexa
+from .standby import qpu_probe, standby_receipt
 
 __version__ = "0.4.0"
-__all__ = ["gateway", "verify", "certify", "decide", "parse_nexa"]
+__all__ = ["gateway", "verify", "certify", "decide", "parse_nexa", "qpu_probe", "standby_receipt"]
