@@ -29,6 +29,14 @@ ISA (fatia 2: fluxo de controle ORÇADO):
               declarada §12 — a aritmética gratuita não escapa
               dos passos de máquina sem parede própria)
   CMP op t   compara o topo com (op, t) => 1/0        [custo 0]
+  AND/OR/XOR bit a op b (inteiros, 0 <= v < 2^32)    [custo 0]
+             (muro §12: fora do domínio de bit = FALTA)
+  SHL k / SHR k   desloca k LITERAL (0..31)          [custo 0]
+  MOD m      a mod m (inteiros, m >= 1)             [custo 0]
+  STORE i    guarda o topo no slot i (0..255)        [custo 0]
+  FETCH i    empilha o slot i                        [custo 0]
+  (fatia B4: memória mínima + domínio de bit — o SHA-256
+   do certificado em bytecode; strings seguem fora, §12)
   CMPT op t  compara e FIXA a resposta                [custo 0]
   LABEL L    marcador (alvo de desvio)               [custo 0]
   JMPZ L     desvia SE o topo == 0 (só PARA FRENTE)  [custo 0]
@@ -87,9 +95,12 @@ class ZephirumVM:
         self.budget = budget        # unidades autorizadas pelo certificado
         self.units = 0              # unidades gastas
         self.trace = []             # opcodes executados (determinístico)
+        self.slots = [Fraction(0)] * 256   # memória mínima (B4, §12)
+        self.last_stack = None      # pilha final (inspeção da bateria)
 
     STEP_LIMIT = 65536   # muro mecânico (§12): passos TOTAIS de máquina
     CALL_DEPTH = 64      # muro (§12): profundidade de chamada
+    BIT_WALL = 4294967296       # muro (§12): domínio de bit 32
     POW_EXPONENT_LIMIT = 65536  # muro (§12): expoente de POW —
     # b**e cresce sem custo de unidade; sem este muro, um
     # expoente forjado transformaria aritmética gratuita em
@@ -253,6 +264,57 @@ class ZephirumVM:
                 t = Fraction(str(t)) if isinstance(t, float) else Fraction(t)
                 answer = {">": v > t, "<": v < t, ">=": v >= t,
                           "<=": v <= t, "==": v == t}[o]
+            elif op == "AND" or op == "OR" or op == "XOR":
+                b = stack.pop()
+                a = stack.pop()
+                for v in (a, b):
+                    if v.denominator != 1 or not (0 <= v < self.BIT_WALL):
+                        raise VMFault("%s: operando %s fora do domínio "
+                                      "de bit 32 (§12)" % (op, v))
+                na, nb = a.numerator, b.numerator
+                if op == "AND":
+                    stack.append(Fraction(na & nb))
+                elif op == "OR":
+                    stack.append(Fraction(na | nb))
+                else:
+                    stack.append(Fraction(na ^ nb))
+            elif op == "SHL" or op == "SHR":
+                k = ins[1]
+                if not (0 <= k <= 31):
+                    raise VMFault("%s: deslocamento %s fora do muro "
+                                  "0..31 (§12)" % (op, k))
+                a = stack.pop()
+                if a.denominator != 1 or not (0 <= a < self.BIT_WALL):
+                    raise VMFault("%s: operando %s fora do domínio "
+                                  "de bit 32 (§12)" % (op, a))
+                if op == "SHL":
+                    if a.numerator << k >= self.BIT_WALL:
+                        raise VMFault("SHL: %d << %d escapa do domínio "
+                                      "de bit 32 (§12)" % (a.numerator, k))
+                    stack.append(Fraction(a.numerator << k))
+                else:
+                    stack.append(Fraction(a.numerator >> k))
+            elif op == "MOD":
+                m = ins[1]
+                if m < 1:
+                    raise VMFault("MOD: m=%s < 1 (§12)" % m)
+                a = stack.pop()
+                if a.denominator != 1 or a < 0:
+                    raise VMFault("MOD: operando %s não é inteiro "
+                                  ">= 0 (§12)" % a)
+                stack.append(Fraction(a.numerator % m))
+            elif op == "STORE":
+                i = ins[1]
+                if not (0 <= i < 256):
+                    raise VMFault("STORE: slot %d fora do muro 0..255 "
+                                  "(§12)" % i)
+                self.slots[i] = stack.pop()
+            elif op == "FETCH":
+                i = ins[1]
+                if not (0 <= i < 256):
+                    raise VMFault("FETCH: slot %d fora do muro 0..255 "
+                                  "(§12)" % i)
+                stack.append(self.slots[i])
             elif op == "HALT":
                 break
             else:
@@ -260,6 +322,7 @@ class ZephirumVM:
             if len(stack) > 1024:
                 raise VMFault("stack overflow (pc=%d)" % pc)
             pc += 1
+        self.last_stack = list(stack)
         return answer, self.units, self.trace_hash()
 
     def trace_hash(self):

@@ -68,7 +68,7 @@ materializado acima de 5.000 — eliminação pura); 4 ataques de
 falsificação rejeitados; muros STEP_LIMIT/CALL_DEPTH/stack firmes;
 racionais de 10^30 exatos; 500 casos x 2 execuções com traços idênticos.
 | B3 | lexer/parser em ZEPHIRUM | exige strings/tokens como dados (ISA futura) |
-| B4 | SHA-256 do certificado em bytecode | exige operações de bit (ISA futura) |
+| B4 | SHA-256 do certificado em bytecode | **CONCLUÍDA** (2026-10-07, fatia de bit: AND/OR/XOR/SHL/SHR/MOD/STORE/FETCH) |
 | B5 | VM escrita em ZEPHIRUM | exige modelo de memória; fronteira declarada |
 
 ## FATIA geofin — o geométrico FINITO na linguagem (2026-10-07, v0.8.1)
@@ -109,7 +109,7 @@ Evidência (bateria GF1–GF6, PASS):
 
 - A VM que executa o bytecode AINDA é interpretada em Python. O que
   mudou: a DECISÃO (o degrau de eliminação) agora vive na linguagem.
-- Bootstrap completo (B5) não é promessa de roadmap: é fronteira
+- Bootstrap completo (B5) permanece fronteira — mas a exclusão "operações de bit" acabou de cair: a fatia B4 estendeu a ISA com o domínio de bit murado (32 bits) e memória mínima (256 slots), e o SHA-256 do INPUT_HASH agora corre EM BYTECODE (ver MARCO B4). O que resta declarado: strings como dados (B3) e o modelo de memória completo (B5)
   declarada, com os pré-requisitos de ISA explícitos acima.
 - A bateria cobre gauss_series + geometric_inf + arithmetic_mean (B2)
   + geometric_fin (geofin v0.8.1);
@@ -154,3 +154,31 @@ Com o zref (DECIDE) e o zvm (EXECUTA), o Zephirum cobre em C puro o
 ciclo inteiro: decidir, certificar, recusar e executar. O Python resta
 como juiz de conformidade e referência de precisão arbitrária — um
 alvo entre outros, não mais uma dependência.
+
+
+## MARCO B4 — o SHA-256 do certificado NA LINGUAGEM (2026-10-07)
+
+Extensão aditiva da ISA (precedente DUP/SWAP/POW): `AND/OR/XOR`
+(domínio de bit 32, murado §12), `SHL/SHR k` (literal 0..31, SHL que
+escapa = FALTA), `MOD m` (inteiros, m>=1), `STORE/FETCH i` (256
+slots — o começo honesto do modelo de memória). Tudo a custo 0, tudo
+espelhado entre a VM Python e o zvm em C puro.
+
+`zephirum_sha_lang.py`: o SHA-256 COMPLETO em bytecode — padding de um
+bloco (16 LOAD = 16 unidades certificadas), agenda de mensagens em
+slots, 64 rodadas de compressão unrolled, IV/K como PUSH, NOT via XOR
+0xFFFFFFFF e ROTR via AND antes do SHL (o muro nunca é contornado,
+é projetado para não ser atingido).
+
+Bateria `test_hash_in_lang.py` (PASS): 25 mensagens hasheadas em
+bytecode com digest == hashlib em 100%; tripla concordância VM Python
+== zvm C == hashlib (digest, UNITS=16/caso e TRACE_HASH idênticos);
+a 1ª rodada com recito == referência FIPS 180-4 derivada
+independentemente; 4/4 faltas espelhadas. Declarado (§12): a
+codificação bytes->palavras fica no hospedeiro (strings ainda não são
+dados da linguagem) e a fatia cobre mensagens de um bloco (0..55
+bytes) — multi-bloco é a mesma técnica, outra fatia.
+
+Self-hosting agora: o certificado pode derivar o PRÓPRIO INPUT_HASH
+na linguagem. Restam as fronteiras B3 (lexer/parser: strings/tokens)
+e B5 (VM completa em Zephirum: modelo de memória completo).

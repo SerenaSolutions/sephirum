@@ -176,9 +176,10 @@ static int f_cmp(Frac a, Frac b) {
 /* ------------------------------------------------------------ VM */
 #define STEP_LIMIT 65536
 #define CALL_DEPTH 64
+#define BIT_WALL  4294967296LL  /* domínio de bit 32 (§12) */
 #define POW_LIMIT  65536
 #define STACK_MAX  1024
-#define MAXPROG   4096
+#define MAXPROG   32768   /* SHA-256 unrolled ~9k ops */
 
 typedef struct { char op[16]; char a1[128]; char a2[128]; int na; } Ins;
 
@@ -190,7 +191,7 @@ int main(int argc, char **argv) {
     char line[512];
     long long ndata = 0, budget = 0, nprog = 0;
     Frac data[1024];
-    Ins prog[MAXPROG];
+    static Ins prog[MAXPROG];        /* BSS: 9MB fora da pilha */
     int pc = 0, have_data = 0, have_prog = 0;
 
     while (fgets(line, sizeof line, f)) {
@@ -234,7 +235,7 @@ int main(int argc, char **argv) {
 
     /* pré-varredura: LABEL -> pc (duplicado = falta) */
     int labels_n = 0;
-    char lname[MAXPROG][64]; int lpc[MAXPROG];
+    static char lname[MAXPROG][64]; static int lpc[MAXPROG];
     for (int i = 0; i < pc; i++) {
         if (strcmp(prog[i].op, "LABEL") == 0) {
             for (int j = 0; j < labels_n; j++)
@@ -248,10 +249,13 @@ int main(int argc, char **argv) {
         }
     }
 
+    Frac slots[256];
+    for (int i = 0; i < 256; i++) slots[i] = (Frac){0, 1};
     Frac stack[STACK_MAX + 8];
     int sp = 0;
     long long units = 0, seq = 0, steps = 0;
-    int loop_rem[MAXPROG], loop_body[MAXPROG], loop_n = 0;
+    static int loop_rem[MAXPROG], loop_body[MAXPROG];
+    int loop_n = 0;
     int call_stack[CALL_DEPTH + 8], call_n = 0;
     int answer = -1;                        /* -1 = none */
     int ip = 0;
@@ -529,6 +533,81 @@ int main(int argc, char **argv) {
                 return 2;
             }
             stack[sp++] = r;
+        } else if (strcmp(in->op, "AND") == 0 ||
+                   strcmp(in->op, "OR") == 0 ||
+                   strcmp(in->op, "XOR") == 0) {
+            if (sp < 2) { fprintf(stderr, "FALTA stack insuficiente "
+                          "(pc=%d)\n", ip); return 2; }
+            Frac b = stack[--sp], a = stack[--sp];
+            if ((a.q != 1 || a.p < 0 || a.p >= BIT_WALL) ||
+                (b.q != 1 || b.p < 0 || b.p >= BIT_WALL)) {
+                fprintf(stderr, "FALTA %s: operando fora do domínio "
+                        "de bit 32 (§12)\n", in->op);
+                return 2;
+            }
+            Frac r = { (strcmp(in->op, "AND") == 0) ? (a.p & b.p) :
+                       ((strcmp(in->op, "OR") == 0) ? (a.p | b.p)
+                                                    : (a.p ^ b.p)), 1 };
+            stack[sp++] = r;
+        } else if (strcmp(in->op, "SHL") == 0 ||
+                   strcmp(in->op, "SHR") == 0) {
+            long long k = atoll(in->a1);
+            if (k < 0 || k > 31) {
+                fprintf(stderr, "FALTA %s: deslocamento %lld fora do "
+                        "muro 0..31 (§12)\n", in->op, k);
+                return 2;
+            }
+            if (sp < 1) { fprintf(stderr, "FALTA stack vazio (pc=%d)\n",
+                          ip); return 2; }
+            Frac a = stack[--sp];
+            if (a.q != 1 || a.p < 0 || a.p >= BIT_WALL) {
+                fprintf(stderr, "FALTA %s: operando fora do domínio "
+                        "de bit 32 (§12)\n", in->op);
+                return 2;
+            }
+            if (in->op[2] == 'L') {
+                if (a.p << k >= BIT_WALL) {
+                    fprintf(stderr, "FALTA SHL: %lld << %lld escapa do "
+                            "domínio de bit 32 (§12)\n", a.p, k);
+                    return 2;
+                }
+                stack[sp++] = (Frac){a.p << k, 1};
+            } else {
+                stack[sp++] = (Frac){a.p >> k, 1};
+            }
+        } else if (strcmp(in->op, "MOD") == 0) {
+            long long m = atoll(in->a1);
+            if (m < 1) {
+                fprintf(stderr, "FALTA MOD: m=%lld < 1 (§12)\n", m);
+                return 2;
+            }
+            if (sp < 1) { fprintf(stderr, "FALTA stack vazio (pc=%d)\n",
+                          ip); return 2; }
+            Frac a = stack[--sp];
+            if (a.q != 1 || a.p < 0) {
+                fprintf(stderr, "FALTA MOD: operando não é inteiro "
+                        ">= 0 (§12)\n");
+                return 2;
+            }
+            stack[sp++] = (Frac){a.p % m, 1};
+        } else if (strcmp(in->op, "STORE") == 0) {
+            long long i = atoll(in->a1);
+            if (i < 0 || i >= 256) {
+                fprintf(stderr, "FALTA STORE: slot %lld fora do muro "
+                        "0..255 (§12)\n", i);
+                return 2;
+            }
+            if (sp < 1) { fprintf(stderr, "FALTA stack vazio (pc=%d)\n",
+                          ip); return 2; }
+            slots[i] = stack[--sp];
+        } else if (strcmp(in->op, "FETCH") == 0) {
+            long long i = atoll(in->a1);
+            if (i < 0 || i >= 256) {
+                fprintf(stderr, "FALTA FETCH: slot %lld fora do muro "
+                        "0..255 (§12)\n", i);
+                return 2;
+            }
+            stack[sp++] = slots[i];
         } else if (strcmp(in->op, "HALT") == 0) {
             break;
         } else {
@@ -550,6 +629,9 @@ int main(int argc, char **argv) {
     else printf("ANSWER %d\n", answer);
     printf("UNITS %lld\n", units);
     printf("TRACE_HASH %s\n", hex);
+    printf("STACK %d\n", sp);
+    for (int i = 0; i < sp; i++)
+        printf("FRAC %lld %lld\n", stack[i].p, stack[i].q);
     printf("ENGINE zvm-c11 (orçada, §12 muros declarados)\n");
     return 0;
 }
