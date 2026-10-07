@@ -103,7 +103,7 @@ Evidência (bateria GF1–GF6, PASS):
 - GF6: mesma execução => mesmo trace_hash; adulteração responde.
 - Verificador C estendido com a família `geofin` (produtos cruzados
   __int128, transborno declarado): 520/520 honestos, 8/8 forjados.
-- Conformidade v0.3 integral: 10 batteries + escala, PASS.
+- Conformidade v0.3 integral: 12 batteries + escala, PASS.
 
 ## Limitações honestas (§12)
 
@@ -115,3 +115,23 @@ Evidência (bateria GF1–GF6, PASS):
   + geometric_fin (geofin v0.8.1);
   o padrão executável v0.3 (docs/ZEPHIRUM_STANDARD_v0.3.md +
   conformance_v03.py) consolida as baterias como conformidade.
+
+
+## MARCO ZREF — o motor de referência em C puro (2026-10-07)
+
+`verifier_indep/zref.c`: lê a FONTE ZEPHIRUM (blocos ASK/CONTRACT/
+MODEL) diretamente e decide com aritmética exata própria (__int128,
+produtos cruzados, Schmidt sem raiz) nas cinco famílias: gauss,
+média, geométrica infinita, geométrica finita e EMARANHAMENTO.
+Recibo normativo: VERDICT/HASH(SHA-256 FIPS 180-4)/UNITS.
+
+Bateria `verifier_indep/test_ref_c.py` (PASS): 200 fontes — veredito,
+INPUT_HASH e unidades idênticos aos oráculos Python nas 5 famílias;
+3 recusas estruturais e 2 OVERFLOW de muro auditados (o C declara o
+muro — 2^53 inclusive — e nunca mente; a precisão arbitrária segue
+na referência Python).
+
+O que isto muda no caminho "excluir o Python": o padrão agora DECIDE,
+CERTIFICA e RECUSA sem Python em execução. O Python permanece como
+(1) bateria de conformidade (o juiz), (2) regime de precisão
+arbitrária além dos muros e (3) um alvo de transpilação entre outros.
