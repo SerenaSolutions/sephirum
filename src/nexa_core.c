@@ -24,6 +24,22 @@ static char g_question[MAXLINE];
 static char g_type[64], g_terms[MAXLINE], g_known[MAXLINE];
 static char g_bounds[MAXLINE], g_unknown[MAXLINE], g_assume[MAXLINE];
 static char g_r[64], g_n[64];
+static char g_state[256];
+static int ovl = 0; /* checked-overflow flag (§12: never a guess) */
+static i128 ck(i128 a, i128 b){ i128 r; if(ovl) return 0;
+  if(__builtin_mul_overflow(a,b,&r)) ovl=1; return ovl?0:r; }
+static i128 cad(i128 a, i128 b){ i128 r; if(ovl) return 0;
+  if(__builtin_add_overflow(a,b,&r)) ovl=1; return ovl?0:r; }
+static i128 iabs(i128 a){ return a<0?-a:a; }
+static i128 igcd(i128 a, i128 b){ if(a<0)a=-a; if(b<0)b=-b;
+  while(b){ i128 t=a%b; a=b; b=t; } return a; }
+static Rat rnorm(Rat r){ if(ovl||r.p==0){ if(!ovl&&r.p==0) r.q=1; return r; }
+  i128 g=igcd(iabs(r.p),r.q); if(g>1){r.p/=g;r.q/=g;} return r; }
+static Rat radd(Rat x, Rat y){ if(ovl) return x;
+  i128 g=igcd(x.q,y.q); if(g==0){ovl=1;return x;}
+  i128 l=ck(x.q/g,y.q);               /* lcm, checked */
+  i128 num=cad(ck(x.p,l/x.q), ck(y.p,l/y.q));
+  return rnorm((Rat){num,l}); }
 static int  g_has_unknown_value; static long g_unknown_value;
 static int  g_has_n; static long g_n_val;
 static int  g_has_u; static long g_u_val;
@@ -55,17 +71,20 @@ static void store_key(const char*line){
   else if(!strcmp(key,"r")) strncpy(g_r,val,63);
   else if(!strcmp(key,"n")) { strncpy(g_n? g_n:g_n, val,63); strncpy(g_n,val,63); g_has_n=1; g_n_val=atol(val);}
   else if(!strcmp(key,"unknown_count")) { g_has_u=1; g_u_val=atol(val);}
-  else if(!strcmp(key,"unknown_value")) { g_has_unknown_value=1; g_unknown_value=atol(val);} }
+  else if(!strcmp(key,"unknown_value")) { g_has_unknown_value=1; g_unknown_value=atol(val);}
+  else if(!strcmp(key,"state")) strncpy(g_state,val,255);}
 
 /* ---- parsing question "target op thr" ---- */
 static Rat parse_thr(const char*t){
-  Rat r={0,1}; const char*sl=strchr(t,'/');
+  Rat r={0,1}; while(*t==' ')t++;
+  int neg=0; if(*t=='-'){neg=1;t++;} else if(*t=='+'){t++;}
+  const char*sl=strchr(t,'/');
   if(sl){ r.p=atol(t); r.q=atol(sl+1); if(r.q<0){r.q=-r.q;r.p=-r.p;} return r;}
   const char*dot=strchr(t,'.');
   if(dot){ long ip=atol(t); const char*d=dot+1; long fr=0; i128 den=1;
     while(*d>='0'&&*d<='9'){ fr=fr*10+(*d-'0'); den*=10; d++; }
-    r.p=(i128)ip*den+(ip<0?-fr:fr); r.q=den; return r;}
-  r.p=atol(t); return r; }
+    r.p=(i128)ip*den+fr; if(neg) r.p=-r.p; r.q=den; return r;}
+  r.p=atol(t); if(neg) r.p=-r.p; return r; }
 static int parse_q(char *tgt, char *op, Rat *thr){
   char q[MAXLINE]; strncpy(q,g_question,MAXLINE-1); q[MAXLINE-1]=0; trim(q);
   char *sp1=strchr(q,' '); if(!sp1) return 0; *sp1=0;
@@ -167,6 +186,53 @@ static void fam_geo(const char*op, Rat thr){
   int c=cmp_rat(sum,op,thr); if(c<0){printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"unsupported op\"}\n");return;}
   printf("{\"status\":\"DECIDED_WITHOUT_EXECUTION\",\"answer\":%d,\"reason\":\"geometric closed form, exact rational\"}\n",c);}
 
+/* ---------- family: entanglement (Schmidt criterion, exact) ----------
+ * Amplitudes become integers over a COMMON denominator D (lcm).
+ * det = (P0*P3 - P1*P2)/D^2,  n = (P0^2+..+P3^2)/D^2, so D cancels:
+ *   entangled  <=>  P0*P3 - P1*P2 != 0
+ *   C ~ t      <=>  2|detP| * t_den  ~  t_num * S      (both sides >= 0)
+ * Exact integers end to end; overflow -> UNKNOWN, never a guess (§12). */
+static void fam_entangle(const char*op, Rat thr, const char*tgt){
+  if(!g_state[0]){printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"missing state\"}\n");return;}
+  char tmp[256]; strncpy(tmp,g_state,255); tmp[255]=0;
+  char *tok[4]; int nt=0; char *t=strtok(tmp,",");
+  while(t&&nt<4){ char e[64]; strncpy(e,t,63); e[63]=0;
+    char *q=e; while(*q==' ')q++;
+    tok[nt]=(char*)malloc(strlen(q)+1); strcpy(tok[nt],q); nt++;
+    t=strtok(NULL,","); }
+  if(nt!=4){printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"state must have 4 amplitudes (structural)\"}\n");return;}
+  Rat amp[4];
+  for(int i=0;i<4;i++){ amp[i]=rnorm(parse_thr(tok[i])); }
+  /* common denominator D = lcm of the four q's */
+  i128 D = amp[0].q;
+  for(int i=1;i<4&&!ovl;i++){
+    i128 g=igcd(D,amp[i].q);
+    D = ck(D/g, amp[i].q); }
+  if(ovl){printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"beyond C exact range (§12)\"}\n");return;}
+  i128 P[4];
+  for(int i=0;i<4&&!ovl;i++) P[i]=ck(amp[i].p, D/amp[i].q);
+  i128 detP = cad(ck(P[0],P[3]), -ck(P[1],P[2]));
+  i128 S = cad(cad(ck(P[0],P[0]),ck(P[1],P[1])), cad(ck(P[2],P[2]),ck(P[3],P[3])));
+  if(ovl){printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"beyond C exact range (§12)\"}\n");return;}
+  if(S==0){printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"zero state is not a quantum state (structural)\"}\n");return;}
+  if(!strcmp(tgt,"entangled")){
+    Rat v = { detP!=0 ? 1 : 0, 1 };
+    printf("{\"status\":\"DECIDED_WITHOUT_EXECUTION\",\"answer\":%d,\"reason\":\"Schmidt determinant criterion, exact\"}\n",
+           cmp_rat(v,op,thr));return;}
+  if(!strcmp(tgt,"concurrence")){
+    i128 A = ck(ck(2,iabs(detP)), thr.q);   /* 2|detP| * t_den */
+    i128 B = ck(iabs(thr.p), S);            /* t_num * S      */
+    if(ovl){printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"beyond C exact range (§12)\"}\n");return;}
+    int neg = thr.p<0; int ans;
+    if(!strcmp(op,">")) ans = neg ? 1 : (A>B);
+    else if(!strcmp(op,">=")) ans = (neg||thr.p==0) ? 1 : (A>=B);
+    else if(!strcmp(op,"<")) ans = (neg||thr.p==0) ? 0 : (A<B);
+    else if(!strcmp(op,"<=")) ans = neg ? 0 : (A<=B);
+    else if(!strcmp(op,"==")) ans = (A==B);
+    else { printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"unsupported op for concurrence\"}\n"); return; }
+    printf("{\"status\":\"DECIDED_WITHOUT_EXECUTION\",\"answer\":%d,\"reason\":\"concurrence by exact integer comparison, no root, no float\"}\n",ans);return;}
+  printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"family answers entangled or concurrence only\"}\n");}
+
 int main(int argc,char**argv){
   if(argc<2){fprintf(stderr,"usage: nexa_core <file.zeph>\n");return 2;}
   FILE*f=fopen(argv[1],"r"); if(!f){perror("open");return 2;}
@@ -182,5 +248,6 @@ int main(int argc,char**argv){
   if(!strcmp(g_type,"threshold_sum")) fam_sum(op,thr);
   else if(!strcmp(g_type,"mean_partial")) fam_mean(op,thr);
   else if(!strcmp(g_type,"geometric_series")) fam_geo(op,thr);
+  else if(!strcmp(g_type,"entanglement")) fam_entangle(op,thr,tgt);
   else printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"family outside C core scope (§12)\"}\n");
   return 0;}
