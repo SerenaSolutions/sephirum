@@ -1,5 +1,7 @@
 # Zephirum Quantum Plugin — installation by platform
 
+> **Brand:** ZEPHIRUM · **ZYQL** (say "Zykel") — the Zephirum Query Language.
+
 The plugin is **pure Python** (`py3-none-any` wheel: zero compiled
 extensions, zero mandatory dependencies, Python >= 3.8). Wherever
 Python 3 runs, the plugin runs — no QPU, no mandatory SDK.

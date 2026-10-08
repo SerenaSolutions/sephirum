@@ -10,21 +10,27 @@ from .core import gateway
 def main(argv=None):
     ap = argparse.ArgumentParser(
         prog="zephirum-q",
-        description="Zephirum Quantum Plugin — exact quantum decision "
-                    "emaranhamento com certificado, zero unidades QPU")
+        description="ZEPHIRUM Quantum Plugin — ZYQL (say \"Zykel\": "
+                    "the Zephirum Query Language) decides entanglement "
+                    "exactly, with a verifiable certificate and zero "
+                    "QPU units")
     ap.add_argument("source", nargs="?",
-                help="arquivo .zeph (fonte NEXA; opcional "
-                     "com --qpu-probe)")
+                    help=".zeph source file (ZYQL source; optional "
+                         "with --qpu-probe)")
+    ap.add_argument("--version", action="version",
+                    version="zephirum-q 0.5.1 — ZEPHIRUM · ZYQL "
+                    "(say \"Zykel\")")
     ap.add_argument("--sdk", default=None,
-                    help="gêmeo adversarial de contraprova (qiskit|cirq)")
+                    help="adversarial twin for cross-checking "
+                         "(qiskit|cirq)")
     ap.add_argument("--json", action="store_true",
-                    help="recibo completo em JSON")
+                    help="full receipt in JSON")
     ap.add_argument("--standby", action="store_true",
-                    help="modo standby: estado do QPU + decisão "
-                         "clássica ativa (o plug-in que aguarda a "
-                         "computação quântica)")
+                    help="standby mode: QPU status + active exact "
+                         "classical decision (the plugin that waits "
+                         "for quantum hardware)")
     ap.add_argument("--qpu-probe", action="store_true",
-                    help="apenas o estado honesto do QPU (§12)")
+                    help="honest QPU status only (§12)")
     args = ap.parse_args(argv)
 
     from .standby import qpu_probe, standby_receipt

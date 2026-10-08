@@ -4,13 +4,13 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "zephirum-quantum-plugin"
-version = "0.5.0"
-description = "Plug-in do algoritmo Zephirum para o mundo quantico: decisao exata de emaranhamento com certificado, zero unidades QPU"
+version = "0.5.1"
+description = "Zephirum plugin for the quantum world — ZYQL (say Zykel: the Zephirum Query Language) decides entanglement exactly with a verifiable certificate, zero QPU units"
 readme = "README.md"
 requires-python = ">=3.8"
 license = { text = "Proprietary - Serena Solutions" }
 authors = [{ name = "Serena Solutions / QALQON" }]
-keywords = ["quantum", "entanglement", "proof", "certificate", "zephirum"]
+keywords = ["quantum", "entanglement", "proof", "certificate", "zephirum", "zyql"]
 
 [project.optional-dependencies]
 qiskit = ["qiskit"]

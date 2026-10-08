@@ -1,6 +1,8 @@
 # Zephirum Quantum Plugin
 
-The **Zephirum algorithm** plugin for the quantum world — v0.5.0: THE
+> **Brand:** ZEPHIRUM · the language is the **Zephirum Query Language — ZYQL** (say **"Zykel"**).
+
+The **Zephirum algorithm** plugin for the quantum world — v0.5.1: THE
 DECISION IS ZEPHIRUM BYTECODE (Python is only the emitter/interpreter;
 the zvm C runtime contains no Python) — born from the house's first
 artifact (the autonomous verifier transpiled to Python/C/Java):

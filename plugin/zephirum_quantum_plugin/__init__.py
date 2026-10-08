@@ -10,5 +10,5 @@ from .standby import qpu_probe, standby_receipt
 from . import pqprotect
 from .pqprotect import pq_protect, pq_verify, self_seal, verify_seal
 
-__version__ = "0.5.0"
+__version__ = "0.5.1"
 __all__ = ["gateway", "verify", "certify", "decide", "parse_nexa", "qpu_probe", "standby_receipt", "pqprotect", "pq_protect", "pq_verify", "self_seal", "verify_seal"]
