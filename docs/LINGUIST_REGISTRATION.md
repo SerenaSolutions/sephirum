@@ -65,3 +65,10 @@ farming violates their spirit. Growth levers, in order:
 - 2026-10-08: grammar written and validated as JSON; registration
   package tracked here; grammar repo created. PR intentionally NOT
   opened yet — Linguist closes PRs below the 2000-file bar.
+
+## Editor distribution (adoption lever #1)
+
+- 2026-10-08: VS Code extension package prepared at
+  `editors/vscode/zephirum/` (manifest, language configuration,
+  embedded grammar). Publishing to the Marketplace requires the
+  owner's publisher account (PAT via `vsce`) — package is ready.
