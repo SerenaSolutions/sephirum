@@ -1,11 +1,24 @@
 #!/usr/bin/env python3
-"""CLI do plug-in: zephirum-q <arquivo.zeph> [--sdk qiskit|cirq]."""
+"""Plugin CLI: zephirum-q <file.zeph> [--sdk qiskit|cirq]."""
 import argparse
 import json
 import sys
 
 from .core import gateway
 
+
+
+STARTER_QUESTION = """# ZYQL (say "Zykel") — a real first question:
+# is this two-qubit state entangled? Exact classical decision,
+# zero QPU units, certificate included in the receipt.
+ASK:
+    question: entangled == 1
+CONTRACT:
+    absolute_error: 0
+MODEL:
+    type: entanglement
+    state: 0.70710678118654752,0,0,0.70710678118654752
+"""
 
 def main(argv=None):
     ap = argparse.ArgumentParser(
@@ -18,7 +31,7 @@ def main(argv=None):
                     help=".zeph source file (ZYQL source; optional "
                          "with --qpu-probe)")
     ap.add_argument("--version", action="version",
-                    version="zephirum-q 0.5.1 — ZEPHIRUM · ZYQL "
+                    version="zephirum-q 0.5.2 — ZEPHIRUM · ZYQL "
                     "(say \"Zykel\")")
     ap.add_argument("--sdk", default=None,
                     help="adversarial twin for cross-checking "
@@ -31,6 +44,10 @@ def main(argv=None):
                          "for quantum hardware)")
     ap.add_argument("--qpu-probe", action="store_true",
                     help="honest QPU status only (§12)")
+    ap.add_argument("--init", metavar="FILE",
+                    help="write a real starter question to FILE.zeph "
+                         "and exit (start authoring ZYQL questions "
+                         "in your own repo)")
     args = ap.parse_args(argv)
 
     from .standby import qpu_probe, standby_receipt
@@ -40,8 +57,18 @@ def main(argv=None):
         print("MOTIVO      %s" % pr["MOTIVO"])
         print("DECISAO     %s" % pr["DECISAO_CLASSICA"])
         return 0
+    if args.init:
+        import os
+        path = args.init if args.init.endswith(".zeph") else args.init + ".zeph"
+        if os.path.exists(path):
+            ap.error("%s already exists" % path)
+        with open(path, "w", encoding="utf-8") as f:
+            f.write(STARTER_QUESTION)
+        print("WROTE      %s" % path)
+        print("NEXT       zephirum-q %s --json" % path)
+        return 0
     if not args.source:
-        ap.error("source e obrigatorio (exceto com --qpu-probe)")
+        ap.error("source is required (except with --qpu-probe or --init)")
     with open(args.source, encoding="utf-8") as f:
         src = f.read()
     if args.standby:

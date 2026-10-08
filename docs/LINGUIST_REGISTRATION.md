@@ -72,3 +72,10 @@ farming violates their spirit. Growth levers, in order:
   `editors/vscode/zephirum/` (manifest, language configuration,
   embedded grammar). Publishing to the Marketplace requires the
   owner's publisher account (PAT via `vsce`) — package is ready.
+
+## Adoption lever #2 — plugin authors .zeph files (v0.5.2, 2026-10-08)
+
+`zephirum-q --init first_question.zeph` writes a REAL starter
+question (Bell-pair entanglement, not hello-world) into the user's
+own repo, then decides it with zero QPU units. Every new user of the
+plugin becomes a `.zeph` author in their own repository.
