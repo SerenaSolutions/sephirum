@@ -282,6 +282,14 @@ materialised above 5,000 terms — pure elimination). Resistance
 rejected; STEP_LIMIT/CALL_DEPTH/stack walls firm; 10^30-exact fractions;
 500×2 identical traces.
 
+**Slice B2-r (range)** — `sum(a..n) > T` decided in-language:
+`G(n) - G(a-1)` in bytecode (opcode `SUB`), 4 certified units vs n-a+1
+of the naive path. The ladder CHOOSES per case: ranges shorter than
+5 terms are cheaper to execute than to eliminate. Battery
+`test_boot_range.py` (R1-R7): 2,000 triple-agreement cases, 0 errors,
+honest choice at the 3/4-term boundary, budget wall, explicit §12
+refusals, deterministic traces.
+
 ## Executable standard v0.3 + independence across languages
 
 The standard is not a document that describes the system — it is a suite

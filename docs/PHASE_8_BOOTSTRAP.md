@@ -51,12 +51,51 @@ eliminação não é ideologia, é aritmética de unidades.
 Regressões do repositório inteiro: **17/17 PASS** após a adição do
 opcode `DIV` (exato, Fraction; divisor zero recusado).
 
+## Fatia 2 (v0.8.1): média e intervalo na linguagem
+
+Duas famílias novas decididas pelo degrau de Gauss em bytecode:
+
+- **gauss_mean** — `mean(1..n) > T`: boot = Gauss + `DIV` por n
+  (2 unidades) vs naive = somar tudo e dividir (n unidades).
+- **range_gauss** — `sum(a..n) > T`: boot = `G(n) - G(a-1)` via
+  `SUB` (4 unidades) vs naive = somar termo a termo (n-a+1 unidades).
+  Opcode `SUB` exato adicionado à ISA.
+
+**Novidade da fatia: a escada ESCOLHE por caso.** Para intervalos com
+menos de 5 termos a execução é mais barata que o degrau, e o kernel
+escolhe executar. Na bateria: 1.991 escolhas pelo degrau, 9 pela
+execução — a eliminação é aritmética de unidades, não ideologia.
+
+Evidência (bateria `test_boot_b2.py`, C1-C7):
+- C1/C2: 2.000 + 2.000 casos de concordância tripla
+  (boot == naive == juiz independente Fraction), 0 erros;
+  291.377 unidades evitadas de fato no intervalo.
+- C3: unidades gastas <= orçamento certificado, sempre.
+- C4: 5ª leitura sob certificado de 4 => `VMFault BUDGET EXCEEDED`.
+- C5: `a > n` (série vazia) e `n < 1` => recusa explícita (§12).
+- C6: traço determinístico; fonte trocada muda `INPUT_HASH`.
+- C7: decisão nasce de fonte ZEPHIRUM parseada; 1 termo => executa.
+
+### Por que o degrau GEOMÉTRICO foi adiado (análise honesta, §12)
+
+- Com a base `r` como **DADO**: `r^(n+1)` exige a base n+1 vezes na
+  pilha; sem `DUP` na ISA, são n+1 `LOAD`s (n+1 unidades) — o degrau
+  NÃO elimina unidades. Forçá-lo seria inflar a métrica.
+- Com `r` como **LITERAL** na fonte e `n` literal de `LOOP` (lei da
+  ISA: laço só com contagem literal): toda a resposta é constante de
+  compilação a 0 unidades — o caminho ingênuo seria o MESMO programa
+  (Horner), sem contraste honesto de unidades.
+- Conclusão: o degrau geométrico precisa de decisão de design
+  (`DUP` na ISA, ou forma fechada com base-literal) — fica registrado
+  como fronteira, não como promessa.
+
 ## Roadmap do bootstrap (declarado, não prometido)
 
 | Etapa | Conteúdo | Estado |
 |-------|----------|--------|
 | B1 | degrau de Gauss na linguagem (esta fatia) | **CONCLUÍDA** |
 | B2 | degraus geométrico (`geometric_inf`: a/(1-r), \|r\|<1) e de média (`arithmetic_mean`: (n+1)/2) em linguagem | **CONCLUÍDA** |
+| B2-r | range rung (`range_gauss`: G(n)-G(a-1) via SUB, 4 units vs n-a+1, ladder chooses per case) | **CONCLUÍDA** (2026-10-08, `test_boot_range.py`) |
 
 O geométrico FINITO foi entregue na fatia geofin (v0.8.1) com DUP/SWAP/POW
 murados — ver acima. O degrau do B2 permanece o geométrico INFINITO: 2 unidades onde a truncação de 12 termos NUNCA

@@ -114,6 +114,65 @@ def boot_decide(n, op, thr):
     return plan, boot_run(plan, "boot"), boot_run(plan, "naive")
 
 
+# ====== PHASE 8, SLICE B2-r: the RANGE rung, in the language ==========
+# Question "sum(a..n) > T" decided IN ZEPHIRUM: G(n) - G(a-1) written as
+# bytecode (opcode SUB), 4 certified units vs n-a+1 of the naive path.
+# The ladder CHOOSES per case: ranges shorter than 5 terms are cheaper
+# to execute than to eliminate — elimination is unit arithmetic, not
+# ideology. The MEAN rung lives in zephirum_boot_b2.py (arithmetic_mean,
+# 1 unit) — kept there, not duplicated here.
+
+def build_src_range(n, op, thr, a):
+    """ZEPHIRUM source for the range_gauss family (sum of a..n vs T)."""
+    return ("ASK:\n    question: sum %s %d\n"
+            "CONTRACT:\n    absolute_error: 0\n"
+            "MODEL:\n    type: range_gauss\n    n: %d\n    a: %d\n"
+            % (op, thr, n, a))
+
+
+def boot_compile_range(src):
+    """range_gauss source -> naive program (n-a+1 units) and BOOT program
+    (G(n) - G(a-1) in bytecode: 4 units, opcode SUB)."""
+    blocks = parse_zephirum(src)
+    model = blocks["MODEL"]
+    q = blocks["ASK"]["question"]
+    parts = q.rsplit(" ", 2)
+    op, thr = parts[1], int(parts[2])
+    if model.get("type") != "range_gauss":
+        raise VMFault("family %r is not range_gauss (explicit §12 refusal)"
+                      % model.get("type"))
+    n, a = int(model["n"]), int(model["a"])
+    if a > n:
+        raise VMFault("a > n: empty series (explicit §12 refusal)")
+
+    terms = list(range(a, n + 1))
+    naive_prog = [("LOAD", i) for i in range(len(terms))]
+    naive_prog += [("ADD",)] * max(0, len(terms) - 1)
+    naive_prog += [("CMPT", op, thr), ("HALT",)]
+    boot_prog = [
+        # G(n) = n(n+1)/2
+        ("LOAD", 0), ("LOAD", 0), ("PUSH", 1), ("ADD",), ("MUL",),
+        ("PUSH", 2), ("DIV",),
+        # G(a-1) = (a-1)a/2 : (a-1) via SUB, times a, over 2
+        ("LOAD", 1), ("PUSH", 1), ("SUB",),
+        ("LOAD", 1), ("MUL",), ("PUSH", 2), ("DIV",),
+        ("SUB",),                       # G(n) - G(a-1) = sum of a..n
+        ("CMPT", op, thr), ("HALT",)]
+    return {"n": n, "a": a, "op": op, "thr": thr,
+            "naive": {"program": naive_prog, "data": terms,
+                      "budget": len(terms)},
+            "boot": {"program": boot_prog, "data": [n, a], "budget": 4}}
+
+
+def boot_decide_range(src):
+    """range source -> BOOT receipt + naive twin + the ladder's CHOICE."""
+    plan = boot_compile_range(src)
+    boot = boot_run(plan, "boot")
+    naive = boot_run(plan, "naive")
+    choice = "boot" if boot["units"] <= naive["units"] else "naive"
+    return plan, boot, naive, choice
+
+
 # ------------------------------------------------------------- bateria
 def main():
     random.seed(8008)

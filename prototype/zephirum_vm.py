@@ -22,6 +22,7 @@ ISA (fatia 2: fluxo de controle ORÇADO):
   ADD        soma o topo do stack                    [custo 0]
   MUL        multiplica o topo                        [custo 0]
   DIV        divide exato o topo (b != 0)             [custo 0]
+  SUB        subtrai o topo do stack (a - b)        [custo 0]
   DUP        duplica o valor do topo                [custo 0]
   SWAP       troca os dois valores do topo          [custo 0]
   POW        b^e exato: e = topo, inteiro >= 0     [custo 0]
@@ -258,6 +259,11 @@ class ZephirumVM:
                                   "declarada (§12)"
                                   % (e.numerator, self.POW_EXPONENT_LIMIT))
                 stack.append(b ** e.numerator)
+            elif op == "SUB":
+                b = stack.pop()
+                a = stack.pop()
+                stack.append(a - b)
+
             elif op == "CMPT":
                 v = stack.pop()
                 o, t = ins[1], ins[2]
