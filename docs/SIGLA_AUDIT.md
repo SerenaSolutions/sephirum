@@ -72,3 +72,27 @@ Search-engine audit, not legal counsel, and not a targeted search of
 INPI/EUIPO/USPTO by Nice class. Does not replace a trademark
 attorney's opinion. A prior-art search at the INPI is recommended
 before filing (already planned in the owner's roadmap).
+
+---
+
+# Gateway naming resolution (charter §14) — 2026-10-08, owner-directed
+
+Swept and killed so far: ZQL (SmartBear Zephyr/Zero), ZIO (Scala ZIO +
+iRhythm Zio®), ZEAL (ZealDocs browser + Zeal payroll/wallet), ZEF
+(Raku package manager + ZefHub), ZEFIRO (Funambol app + vacuum-cleaner
+brand), ZEPHYRA (physics-trained AI agents company).
+
+Owner-directed resolution: the brand is ONE FAMILY.
+
+1. ZEPHIRUM — central mark (computation before execution).
+2. ZYQL — the language (Zephirum Query Language, say "Zykel").
+3. ZYQL GATEWAY — the product (former working name "QSim Gateway"
+   retired: collision with India's QSim toolkit). The gateway speaks
+   ZYQL and issues certified decisions. Pronunciation stays "Zykel".
+
+Fallback candidate (swept CLEAN, 2026-10-08): PsiQL (ψ = the quantum
+wave function + QL; say "cycle"). No software/brand collision located;
+residual adjacency risk only: PsiQuantum operates the "Psi" prefix in
+the same sector. Kept on file as first alternate of the ten required
+by charter §14; nine more candidates pending the owner's call.
+
