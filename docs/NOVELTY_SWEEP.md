@@ -61,3 +61,51 @@ Varredura via buscador público, não auditoria exaustiva de todo
 GitHub/arXiv/patentes. Novos sistemas podem surgir (o campo "quando usar
 quântico" está aquecendo: ver #6, #8, #9 — todos heurísticos). A
 anterioridade técnica deve ser selada com DOI (Zenodo/arXiv) o quanto antes.
+
+---
+
+# Sweep 3 — 2026-10-08 (English; owner direction: repo in English)
+
+Method: targeted web sweep of the term space and of adjacent lines not
+covered by Sweeps 1-2 (18 sources + 9 nearest neighbors).
+
+## Terms and lines probed
+
+1. **"necessity compilation"** — the term does NOT exist outside this
+   project. Search returns generic compiler Q&A. The neologism is ours;
+   this is a naming fact, not a novelty claim.
+2. **Supercompilation / distillation (Turchin 1986-; Reduceron; metasystem
+   transitions)** — specializes programs into residual code, can prove
+   quantified conjectures. Purpose: produce a FASTER residual program.
+   Not: a trivalent verdict that execution is unnecessary, with a
+   certificate of elimination. Closest historical ancestor; the ladder
+   differs in target, verdict and evidence.
+3. **Static analysis / dead-code identification** ("Is Static Analysis
+   Able to Identify Unnecessary Source Code?", HNR+19, Saarland)** —
+   analyzes without executing (level C precedent); identifies code that
+   was NOT executed dynamically. Never PROVES that a computation is
+   unnecessary for a question; no certificate, no verdict.
+4. **Refinement types (Liquid Haskell, F\*)** — prove properties
+   statically so runtime checks are erased. The program still executes;
+   proof is attached to executed code. No elimination verdict, no
+   trivalence, no QPU scope. Level C precedent for "static proof",
+   different purpose.
+5. **Zero-knowledge proofs / ZKML** — prove that an EXECUTED computation
+   was done correctly (succinctly / privately). Same direction as PCC:
+   certify execution, never non-execution.
+6. **IBM + University of Chicago, 2026-07-30** — verifiable quantum
+   advantage on logical circuits (70 logical qubits, error-corrected,
+   classically intractable). NOT a competitor: it verifies an execution
+   that happened. Strategic fact: the field is converging on VERIFIABLE
+   claims — exactly the epistemic level the Z-QEA charter occupies.
+
+## Sweep 3 verdict
+
+- No project, paper or product found that compiles (P, Q, C, B) into a
+  certificate that execution is unnecessary, with trivalent verdicts
+  and an elimination ladder. The hypothesis SURVIVES a third
+  independent sweep.
+- The claim structure remains honest: techniques have precedent
+  (level B/C); the composition has no located precedent (level A,
+  now three sweeps deep).
+- Term-space fact: "necessity compilation" is an original neologism.
