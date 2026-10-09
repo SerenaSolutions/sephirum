@@ -483,8 +483,42 @@ class NCA:
             return self._finish("DECIDED_WITHOUT_EXECUTION", ans,
                                 "FLATTEN_RANK_SCHMIDT", "ANALYTIC", ev,
                                 original=8, required=0, analysis_cost=0.05)
+        if len(toks) >= 16:
+            # N qubits (4 <= N <= 12): separabilidade plena recursiva,
+            # exata por Fraction — posto do achatamento q0 + residuo
+            n_amp = len(toks)
+            if n_amp & (n_amp - 1):
+                raise ValueError("state must have 2^N amplitudes")
+            if n_amp > 4096:
+                raise ValueError("core wall: max 4096 amplitudes (12 qubits)")
+            aN = [Fraction(t) for t in toks]
+            if sum(x * x for x in aN) == 0:
+                raise ValueError("zero state is not a quantum state (structural)")
+            def _sep(v):
+                L = len(v)
+                if L == 2:
+                    return True
+                h = L // 2
+                R0, R1 = v[:h], v[h:]
+                if any(R0[j] * R1[k] != R0[k] * R1[j]
+                       for j in range(h) for k in range(j + 1, h)):
+                    return False
+                return _sep(R0 if any(R0) else R1)
+            ent = not _sep(aN)
+            target = self.q[0]
+            if target != "entangled":
+                raise ValueError("N-qubit entanglement answers only 'entangled'")
+            ans = cmp(1 if ent else 0, op, thr)
+            self.log("ANALYTIC", "ELIMINATED",
+                     "recursive flatten-rank separability: ent=%s" % ent)
+            ev = {"amplitudes": n_amp, "fully_separable": not ent,
+                  "op": op, "threshold": thr}
+            return self._finish("DECIDED_WITHOUT_EXECUTION", ans,
+                                "RECURSIVE_FLATTEN_RANK", "ANALYTIC", ev,
+                                original=n_amp, required=0, analysis_cost=0.05)
         if len(toks) != 4:
-            raise ValueError("entanglement state must have 4 or 8 amplitudes")
+            raise ValueError("entanglement state must have 4, 8 or 2^N "
+                             "amplitudes (N <= 12)")
         a, b, c, d = (Fraction(t) for t in toks)   # decimal exato, não float
         n = a * a + b * b + c * c + d * d
         if n == 0:

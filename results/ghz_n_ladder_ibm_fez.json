@@ -1,0 +1,39 @@
+{
+  "experiment": "GHZ ladder rungs 4 and 6 + separable 4q control \u2014 fusion chain .zeph -> exact C verdict -> emitted OpenQASM 3 -> qasm3.loads -> ibm_fez; per owner's direction: use what the lab window gives; science battery (H2, neutrino pair, Micius Bell class) decided exactly offline",
+  "date_utc": "2026-10-09T00:45:45.860901Z",
+  "backend": "ibm_fez",
+  "job_id": "db43i4qmb58s7388k3mg",
+  "shots": 512,
+  "ghz4_entangled": {
+    "counts_top": {
+      "0000": 252,
+      "1111": 235,
+      "1000": 7,
+      "1101": 4
+    },
+    "pop_0N_1N": 0.9512,
+    "z_endpair": 0.957
+  },
+  "ghz6_entangled": {
+    "counts_top": {
+      "000000": 254,
+      "111111": 216,
+      "111011": 9,
+      "111101": 6
+    },
+    "pop_0N_1N": 0.918,
+    "z_endpair": 0.9727
+  },
+  "ghz4_separable_control": {
+    "counts_top": {
+      "1110": 43,
+      "0010": 36,
+      "1010": 35,
+      "0110": 35
+    },
+    "fix_note": "invalid first run replaced: emitter bug declared 2 qubits for 16-amp general states (measured an empty register); emitter fixed to qubit[log2(n)] and control re-run with exact-vector prepare_state (SDK-side prep per \u00a712 delegation)",
+    "parity_zzzz": -0.0078,
+    "expected": "|+>^4 uniform over 16 outcomes; parity correlator ~ 0 \u2014 no structure (verdict 0)"
+  },
+  "job_id_sep_fix": "db43icg4qg6s73c1jdvg"
+}

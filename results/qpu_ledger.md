@@ -14,6 +14,8 @@ filtering.
 | 2026-10-09 00:24 | db438aklf4us73c2547g | ibm_fez | Separable control \|+0⟩ (H only, no CX), Z and X bases | 2×512 | Negative control: exact verdict 0 (det=0), hardware shows ⟨ZZ⟩=0.0508, ⟨XX⟩=-0.0742 — no correlation, consistent with separable | < 1 s (est.) |
 | 2026-10-09 00:30 | db43b3imb58s7388js10 | ibm_fez | QCNN source data: 1D cluster state cell CZ\|++⟩ (Cong et al. 2019, arXiv:1810.03787), 3 bases | 3×512 | Paper-vs-Zephirum confrontation: exact verdict 1 (det=-0.5); stabilizers ⟨XZ⟩=0.918, ⟨ZX⟩=0.844, ⟨ZZ⟩=0.012 — cluster signature confirmed | < 1 s (est.) |
 | 2026-10-09 00:38 | db43f2kvf2bc73cu0ts0 | ibm_fez | FUSION run: Zephirum-emitted OpenQASM 3 (GHZ prep) absorbed by Qiskit, + separable 3q control | 2×512 | GHZ exact verdict 1: pair stabilizers ⟨ZZI⟩=⟨IZZ⟩=0.965, population 000/111 = 97.9% (⟨ZZZ⟩=0 is correct GHZ+ physics, label fixed in receipt); separable control ⟨ZZZ⟩=-0.09 ≈ 0, verdict 0 | < 1 s (est.) |
+| 2026-10-09 00:45 | db43i4qmb58s7388k3mg | ibm_fez | GHZ ladder rungs 4 and 6 via the fusion chain (.zeph → exact verdict → OpenQASM 3 → qasm3.loads → QPU) | 2×512 | GHZ4 exact verdict 1: 95.1% population {0000,1111}; GHZ6 verdict 1: 91.8% {000000,111111} — ladder scaling confirmed | < 2 s (est.) |
+| 2026-10-09 00:45 | (see receipt) | ibm_fez | Separable 4q control (exact-vector prepare_state) after emitter fix (qubit[log2(n)] bug, declared and corrected) | 512 | 16 distinct uniform outcomes, parity correlator −0.008 ≈ 0 — verdict 0 confirmed; first run invalid (empty register), replaced honestly | < 1 s (est.) |
 
 ## Interpretation (§12 honesty)
 

@@ -308,6 +308,55 @@ static int verdict_entangle3(Frac amp[8], const char *target,
     return verdict_from_cmp(cmpv(lhs, rhs), op);
 }
 
+/* separabilidade plena recursiva — vetor escalado A[0..L), L = 2^m
+ * (exato, i128; produtos <= 10^32 dentro do tipo)
+ */
+static int sepN(const i128 *A, int L, int *ovf) {
+    if (L == 2) return 1;                     /* 1 qubit é sempre produto */
+    int h = L / 2;
+    for (int j = 0; j < h; j++) {
+        for (int k = j + 1; k < h; k++) {
+            i128 l1, l2;
+            if (mul_ovf(A[j], A[h + k], &l1) ||
+                mul_ovf(A[k], A[h + j], &l2)) { *ovf = 1; return -1; }
+            if (l1 != l2) return 0;           /* posto > 1: emaranhado */
+        }
+    }
+    int nz = 0;
+    for (int j = 0; j < h; j++) if (A[j] != 0) { nz = 1; break; }
+    return sepN(nz ? A : A + h, h, ovf);
+}
+
+/* entanglement N qubits (4 <= N <= 12, muro declarado):
+ *   TOTALMENTE SEPARÁVEL <=> posto 1 do achatamento (q0) e o resíduo
+ *   totalmente separável (recursão) — critério exato, sem float
+ *   muros §12: |p|,|q| <= 10^4 por amplitude; D comum <= 10^12;
+ *   na <= 4096 amplitudes
+ */
+static int verdict_entangleN(Frac *amp, int na, const char *target,
+                            const char *op, Frac t, const char **reason) {
+    if (strcmp(target, "entangled") != 0) { *reason = "TARGETN"; return -1; }
+    if (llabs(t.p) > 1000LL || t.q > 1000LL) { *reason = "OVERFLOW"; return -1; }
+    long long D = 1;
+    for (int i = 0; i < na; i++) {
+        if (llabs(amp[i].p) > 10000LL || amp[i].q > 10000LL) {
+            *reason = "OVERFLOW"; return -1; }
+        long long g = gcd_ll(D, amp[i].q);
+        if (mul_ovf_i64(D / g, amp[i].q, &D)) { *reason = "OVERFLOW"; return -1; }
+        if (D > 1000000000000LL) { *reason = "OVERFLOW_D12"; return -1; }
+    }
+    i128 *A = malloc((size_t)na * sizeof(i128));
+    if (!A) { *reason = "MEM"; return -1; }
+    for (int i = 0; i < na; i++)
+        A[i] = LL(amp[i].p) * LL(D / amp[i].q);
+    int ovf = 0, sep = sepN(A, na, &ovf);
+    free(A);
+    if (ovf) { *reason = "OVERFLOW"; return -1; }
+    long long v = sep ? 0 : 1;                /* entangled = !separável */
+    i128 lhs = LL(v) * LL(t.q), rhs = LL(t.p);
+    return verdict_from_cmp(cmpv(lhs, rhs), op);
+}
+
 /* ---------------------------------------------------------- parser */
 static char *read_file(const char *path, size_t *len) {
     FILE *f = fopen(path, "rb");
@@ -345,7 +394,7 @@ int main(int argc, char **argv) {
     if (argc < 2) { fprintf(stderr, "uso: zref <fonte.zeph>\n"); return 2; }
     char *src = read_file(argv[1], NULL);
     if (!src) { perror(argv[1]); return 2; }
-    char qline[256], ftype[64], vn[64], va[128], vr[128], vstate[256];
+    char qline[256], ftype[64], vn[64], va[128], vr[128], vstate[262144];
     if (!src_key(src, "question", qline, sizeof qline) ||
         !src_key(src, "type", ftype, sizeof ftype)) {
         fprintf(stderr, "RECUSA (§12): fonte sem ASK/MODEL parseável\n");
@@ -362,6 +411,7 @@ int main(int argc, char **argv) {
     strcpy(target, t1); strcpy(op, t2); strcpy(thrs, t3);
 
     char data[512], hex[65];
+    char *dhash = data;
     uint8_t dg[32];
     long long units;
     int v = -1;
@@ -432,22 +482,37 @@ int main(int argc, char **argv) {
         units = 2;
     } else if (strcmp(ftype, "entanglement") == 0) {
         if (!src_key(src, "state", vstate, sizeof vstate)) { fprintf(stderr,
-            "RECUSA (§12): entanglement exige state (4 ou 8 amplitudes)\n");
+            "RECUSA (§12): entanglement exige state (2^N amplitudes, N = 2..12)\n");
             return 2;
         }
-        Frac amp[8];
-        int na = 0;
+        int na = 0, cap = 16;
+        Frac *amp = malloc((size_t)cap * sizeof(Frac));
+        if (!amp) { fprintf(stderr,
+            "RECUSA (§12): memória insuficiente\n"); return 2; }
         char *save = NULL;
-        for (char *t = strtok_r(vstate, ",", &save); t && na < 8;
+        for (char *t = strtok_r(vstate, ",", &save); t;
              t = strtok_r(NULL, ",", &save)) {
+            if (na == 4096) { fprintf(stderr,
+                "RECUSA (§12): muro do núcleo — máximo 4096 amplitudes "
+                "(12 qubits)\n"); free(amp); return 2; }
+            if (na == cap) {
+                cap *= 2;
+                Frac *tmp = realloc(amp, (size_t)cap * sizeof(Frac));
+                if (!tmp) { free(amp); fprintf(stderr,
+                    "RECUSA (§12): memória insuficiente\n"); return 2; }
+                amp = tmp;
+            }
             while (*t == ' ') t++;
             if (!parse_exact(t, &amp[na])) { fprintf(stderr,
-                "RECUSA (§12): amplitude '%s' não exata\n", t); return 2; }
+                "RECUSA (§12): amplitude '%s' não exata\n", t);
+                free(amp); return 2; }
             na++;
         }
-        if (na != 4 && na != 8) { fprintf(stderr,
-            "RECUSA (§12): estado com %d amplitudes — precisa 4 ou 8\n", na);
-            return 2;
+        if (!(na == 4 || na == 8 ||
+              (na >= 16 && (na & (na - 1)) == 0))) {
+            fprintf(stderr, "RECUSA (§12): estado com %d amplitudes — "
+                "precisa 2^N (N = 2..12)\n", na);
+            free(amp); return 2;
         }
         /* estado nulo: recusa estrutural (nunca veredito) */
         {
@@ -470,8 +535,9 @@ int main(int argc, char **argv) {
         Frac t;
         if (!parse_exact(thrs, &t)) { fprintf(stderr,
             "RECUSA (§12): threshold não exato\n"); return 2; }
-        v = (na == 8) ? verdict_entangle3(amp, target, op, t, &reason)
-                      : verdict_entangle(amp, target, op, t, &reason);
+        v = (na == 4) ? verdict_entangle(amp, target, op, t, &reason)
+            : (na == 8) ? verdict_entangle3(amp, target, op, t, &reason)
+            : verdict_entangleN(amp, na, target, op, t, &reason);
         if (v < 0) {
             if (strcmp(reason, "OVERFLOW_D12") == 0) { fprintf(stderr,
                 "OVERFLOW (§12): denominador comum > 10^12 no estado de "
@@ -480,6 +546,11 @@ int main(int argc, char **argv) {
             if (strcmp(reason, "TARGET3") == 0) { fprintf(stderr,
                 "RECUSA (§12): concurrence é medida de 2 qubits — "
                 "3 qubits respondem apenas 'entangled'\n"); return 2; }
+            if (strcmp(reason, "TARGETN") == 0) { fprintf(stderr,
+                "RECUSA (§12): concurrence é medida de 2 qubits — "
+                "N qubits respondem apenas 'entangled'\n"); return 2; }
+            if (strcmp(reason, "MEM") == 0) { fprintf(stderr,
+                "RECUSA (§12): memória insuficiente\n"); return 2; }
             if (strcmp(reason, "OVERFLOW") == 0) { fprintf(stderr,
                 "OVERFLOW (§12): amplitudes/threshold além do muro "
                 "(10^4/10^3) — precisão arbitrária é da referência "
@@ -493,19 +564,39 @@ int main(int argc, char **argv) {
             snprintf(data, sizeof data, "%s|%s|%s|%s|%s|%s|%s|%s",
                      sf8[0], sf8[1], sf8[2], sf8[3],
                      sf8[4], sf8[5], sf8[6], sf8[7]);
-        } else {
+        } else if (na == 4) {
             char sf[4][64];
             for (int i = 0; i < 4; i++) frac_str(amp[i], sf[i], sizeof sf[i]);
             snprintf(data, sizeof data, "%s|%s|%s|%s", sf[0], sf[1], sf[2], sf[3]);
+        } else {
+            char tmp[64];
+            size_t need = 2;
+            for (int i = 0; i < na; i++) {
+                frac_str(amp[i], tmp, sizeof tmp);
+                need += strlen(tmp) + 1;
+            }
+            dhash = malloc(need);
+            if (!dhash) { free(amp); fprintf(stderr,
+                "RECUSA (§12): memória insuficiente\n"); return 2; }
+            char *w = dhash;
+            for (int i = 0; i < na; i++) {
+                frac_str(amp[i], tmp, sizeof tmp);
+                size_t l = strlen(tmp);
+                if (i) *w++ = '|';
+                memcpy(w, tmp, l); w += l;
+            }
+            *w = 0;
         }
         units = 0;
+        free(amp);
     } else {
         fprintf(stderr, "RECUSA (§12): família '%s' fora do motor C nesta "
                 "fatia\n", ftype);
         return 2;
     }
 
-    sha256(data, dg); hex32(dg, hex);
+    sha256(dhash, dg); hex32(dg, hex);
+    if (dhash != data) free(dhash);
     printf("VERDICT %d\n", v);
     printf("HASH %s\n", hex);
     printf("UNITS %lld\n", units);
