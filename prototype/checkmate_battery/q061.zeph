@@ -1,0 +1,7 @@
+ASK:
+    question: entangled == 1
+CONTRACT:
+    absolute_error: 0
+MODEL:
+    type: entanglement
+    state: 0.9375,-0.25,-0.875,-0.8125

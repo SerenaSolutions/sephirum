@@ -1,0 +1,1411 @@
+{
+ "total": 100,
+ "agreed": 100,
+ "mismatch": 0,
+ "entangled": 70,
+ "product": 30,
+ "qpu_units_billed_total": 0,
+ "seed": 20261009,
+ "battery": [
+  {
+   "name": "q000",
+   "amplitudes": [
+    "1",
+    "0",
+    "0",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q001",
+   "amplitudes": [
+    "0",
+    "1",
+    "0",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q002",
+   "amplitudes": [
+    "0",
+    "0",
+    "1",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q003",
+   "amplitudes": [
+    "0",
+    "0",
+    "0",
+    "1"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q004",
+   "amplitudes": [
+    "1/2",
+    "1/2",
+    "1/2",
+    "1/2"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q005",
+   "amplitudes": [
+    "11/16",
+    "15/16",
+    "0",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q006",
+   "amplitudes": [
+    "13/16",
+    "0",
+    "1/4",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q007",
+   "amplitudes": [
+    "7/8",
+    "1/2",
+    "0",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q008",
+   "amplitudes": [
+    "3/16",
+    "0",
+    "3/8",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q009",
+   "amplitudes": [
+    "1/8",
+    "1/4",
+    "0",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q010",
+   "amplitudes": [
+    "11/16",
+    "0",
+    "11/16",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q011",
+   "amplitudes": [
+    "9/16",
+    "1/2",
+    "0",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q012",
+   "amplitudes": [
+    "7/8",
+    "0",
+    "7/8",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q013",
+   "amplitudes": [
+    "13/16",
+    "1/4",
+    "0",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q014",
+   "amplitudes": [
+    "1/8",
+    "0",
+    "1/2",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q015",
+   "amplitudes": [
+    "15/16",
+    "11/16",
+    "0",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q016",
+   "amplitudes": [
+    "13/16",
+    "0",
+    "11/16",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q017",
+   "amplitudes": [
+    "5/16",
+    "5/16",
+    "0",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q018",
+   "amplitudes": [
+    "3/8",
+    "0",
+    "5/16",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q019",
+   "amplitudes": [
+    "15/16",
+    "9/16",
+    "0",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q020",
+   "amplitudes": [
+    "7/16",
+    "0",
+    "7/16",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q021",
+   "amplitudes": [
+    "1/2",
+    "7/8",
+    "0",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q022",
+   "amplitudes": [
+    "11/16",
+    "0",
+    "15/16",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q023",
+   "amplitudes": [
+    "1/16",
+    "7/8",
+    "0",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q024",
+   "amplitudes": [
+    "9/16",
+    "0",
+    "1/2",
+    "0"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q025",
+   "amplitudes": [
+    "7/16",
+    "0",
+    "0",
+    "1/4"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "56/65"
+  },
+  {
+   "name": "q026",
+   "amplitudes": [
+    "1/2",
+    "0",
+    "0",
+    "7/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "112/113"
+  },
+  {
+   "name": "q027",
+   "amplitudes": [
+    "1/4",
+    "0",
+    "0",
+    "5/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "20/29"
+  },
+  {
+   "name": "q028",
+   "amplitudes": [
+    "9/16",
+    "0",
+    "0",
+    "7/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "252/277"
+  },
+  {
+   "name": "q029",
+   "amplitudes": [
+    "5/16",
+    "0",
+    "0",
+    "7/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "140/221"
+  },
+  {
+   "name": "q030",
+   "amplitudes": [
+    "11/16",
+    "0",
+    "0",
+    "3/4"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "264/265"
+  },
+  {
+   "name": "q031",
+   "amplitudes": [
+    "3/8",
+    "0",
+    "0",
+    "7/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "21/29"
+  },
+  {
+   "name": "q032",
+   "amplitudes": [
+    "9/16",
+    "0",
+    "0",
+    "1/2"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "144/145"
+  },
+  {
+   "name": "q033",
+   "amplitudes": [
+    "3/8",
+    "0",
+    "0",
+    "3/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "1"
+  },
+  {
+   "name": "q034",
+   "amplitudes": [
+    "1/4",
+    "0",
+    "0",
+    "1/2"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "4/5"
+  },
+  {
+   "name": "q035",
+   "amplitudes": [
+    "7/16",
+    "0",
+    "0",
+    "7/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "4/5"
+  },
+  {
+   "name": "q036",
+   "amplitudes": [
+    "1/8",
+    "0",
+    "0",
+    "3/4"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "12/37"
+  },
+  {
+   "name": "q037",
+   "amplitudes": [
+    "1/4",
+    "0",
+    "0",
+    "15/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "120/241"
+  },
+  {
+   "name": "q038",
+   "amplitudes": [
+    "1/2",
+    "0",
+    "0",
+    "9/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "144/145"
+  },
+  {
+   "name": "q039",
+   "amplitudes": [
+    "5/8",
+    "0",
+    "0",
+    "11/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "220/221"
+  },
+  {
+   "name": "q040",
+   "amplitudes": [
+    "3/8",
+    "0",
+    "0",
+    "7/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "84/85"
+  },
+  {
+   "name": "q041",
+   "amplitudes": [
+    "9/16",
+    "0",
+    "0",
+    "7/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "63/65"
+  },
+  {
+   "name": "q042",
+   "amplitudes": [
+    "11/16",
+    "0",
+    "0",
+    "1/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "44/125"
+  },
+  {
+   "name": "q043",
+   "amplitudes": [
+    "13/16",
+    "0",
+    "0",
+    "7/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "364/365"
+  },
+  {
+   "name": "q044",
+   "amplitudes": [
+    "7/16",
+    "0",
+    "0",
+    "1/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "28/53"
+  },
+  {
+   "name": "q045",
+   "amplitudes": [
+    "1/8",
+    "0",
+    "0",
+    "7/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "28/53"
+  },
+  {
+   "name": "q046",
+   "amplitudes": [
+    "5/8",
+    "0",
+    "0",
+    "1/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "20/101"
+  },
+  {
+   "name": "q047",
+   "amplitudes": [
+    "7/16",
+    "0",
+    "0",
+    "7/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "1"
+  },
+  {
+   "name": "q048",
+   "amplitudes": [
+    "9/16",
+    "0",
+    "0",
+    "11/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "99/101"
+  },
+  {
+   "name": "q049",
+   "amplitudes": [
+    "9/16",
+    "0",
+    "0",
+    "7/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "252/277"
+  },
+  {
+   "name": "q050",
+   "amplitudes": [
+    "3/4",
+    "11/16",
+    "-9/16",
+    "-15/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "162/571"
+  },
+  {
+   "name": "q051",
+   "amplitudes": [
+    "15/16",
+    "1/16",
+    "15/16",
+    "-1/4"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "150/467"
+  },
+  {
+   "name": "q052",
+   "amplitudes": [
+    "5/16",
+    "1/8",
+    "3/16",
+    "-1/4"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "26/27"
+  },
+  {
+   "name": "q053",
+   "amplitudes": [
+    "-13/16",
+    "-3/8",
+    "1/2",
+    "3/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "12/61"
+  },
+  {
+   "name": "q054",
+   "amplitudes": [
+    "3/4",
+    "-5/8",
+    "-5/16",
+    "1/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "4/21"
+  },
+  {
+   "name": "q055",
+   "amplitudes": [
+    "9/16",
+    "-15/16",
+    "-15/16",
+    "-3/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "14/15"
+  },
+  {
+   "name": "q056",
+   "amplitudes": [
+    "5/8",
+    "-5/16",
+    "1/16",
+    "3/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "65/81"
+  },
+  {
+   "name": "q057",
+   "amplitudes": [
+    "-3/4",
+    "-9/16",
+    "13/16",
+    "-3/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "189/215"
+  },
+  {
+   "name": "q058",
+   "amplitudes": [
+    "15/16",
+    "9/16",
+    "1/4",
+    "1/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "42/323"
+  },
+  {
+   "name": "q059",
+   "amplitudes": [
+    "-13/16",
+    "-3/4",
+    "5/16",
+    "-11/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "406/459"
+  },
+  {
+   "name": "q060",
+   "amplitudes": [
+    "5/8",
+    "3/16",
+    "-3/16",
+    "-1/2"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "71/91"
+  },
+  {
+   "name": "q061",
+   "amplitudes": [
+    "15/16",
+    "-1/4",
+    "-7/8",
+    "-13/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "251/303"
+  },
+  {
+   "name": "q062",
+   "amplitudes": [
+    "9/16",
+    "-3/16",
+    "7/8",
+    "15/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "354/511"
+  },
+  {
+   "name": "q063",
+   "amplitudes": [
+    "1/2",
+    "-3/8",
+    "-3/8",
+    "-1/2"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "1"
+  },
+  {
+   "name": "q064",
+   "amplitudes": [
+    "3/4",
+    "-1/4",
+    "-9/16",
+    "-1/2"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "264/305"
+  },
+  {
+   "name": "q065",
+   "amplitudes": [
+    "-5/16",
+    "-3/16",
+    "3/8",
+    "1/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "8/37"
+  },
+  {
+   "name": "q066",
+   "amplitudes": [
+    "1/8",
+    "-1/2",
+    "0",
+    "-3/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "12/77"
+  },
+  {
+   "name": "q067",
+   "amplitudes": [
+    "7/16",
+    "-3/4",
+    "-11/16",
+    "-7/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "46/51"
+  },
+  {
+   "name": "q068",
+   "amplitudes": [
+    "1/2",
+    "-1/4",
+    "3/16",
+    "0"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "24/89"
+  },
+  {
+   "name": "q069",
+   "amplitudes": [
+    "-5/8",
+    "11/16",
+    "3/4",
+    "1/2"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "424/429"
+  },
+  {
+   "name": "q070",
+   "amplitudes": [
+    "-5/16",
+    "3/8",
+    "1/16",
+    "7/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "82/111"
+  },
+  {
+   "name": "q071",
+   "amplitudes": [
+    "-7/8",
+    "-11/16",
+    "15/16",
+    "15/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "90/767"
+  },
+  {
+   "name": "q072",
+   "amplitudes": [
+    "5/16",
+    "13/16",
+    "11/16",
+    "3/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "64/81"
+  },
+  {
+   "name": "q073",
+   "amplitudes": [
+    "5/8",
+    "-11/16",
+    "-1/4",
+    "1/4"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "8/253"
+  },
+  {
+   "name": "q074",
+   "amplitudes": [
+    "-1/16",
+    "3/16",
+    "5/8",
+    "7/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "44/153"
+  },
+  {
+   "name": "q075",
+   "amplitudes": [
+    "1/16",
+    "1/2",
+    "1/4",
+    "2"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q076",
+   "amplitudes": [
+    "1/16",
+    "9/16",
+    "5/8",
+    "1439/256"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "32/2117313"
+  },
+  {
+   "name": "q077",
+   "amplitudes": [
+    "1/16",
+    "9/16",
+    "1/8",
+    "1/256"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "224/537"
+  },
+  {
+   "name": "q078",
+   "amplitudes": [
+    "1",
+    "0",
+    "0",
+    "1"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "1"
+  },
+  {
+   "name": "q079",
+   "amplitudes": [
+    "1/16",
+    "5/8",
+    "1/8",
+    "-19/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "39/233"
+  },
+  {
+   "name": "q080",
+   "amplitudes": [
+    "1/16",
+    "15/16",
+    "5/16",
+    "75/16"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q081",
+   "amplitudes": [
+    "1/16",
+    "11/16",
+    "3/16",
+    "529/256"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "32/313377"
+  },
+  {
+   "name": "q082",
+   "amplitudes": [
+    "1/16",
+    "1/2",
+    "7/16",
+    "-1/256"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "2208/2245"
+  },
+  {
+   "name": "q083",
+   "amplitudes": [
+    "1",
+    "0",
+    "0",
+    "1"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "1"
+  },
+  {
+   "name": "q084",
+   "amplitudes": [
+    "1/16",
+    "1/16",
+    "7/16",
+    "-3/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "26/87"
+  },
+  {
+   "name": "q085",
+   "amplitudes": [
+    "1/16",
+    "1/16",
+    "15/16",
+    "15/16"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q086",
+   "amplitudes": [
+    "1/16",
+    "1/2",
+    "3/4",
+    "1535/256"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "32/2409729"
+  },
+  {
+   "name": "q087",
+   "amplitudes": [
+    "1/16",
+    "1/4",
+    "9/16",
+    "1/256"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "18400/25089"
+  },
+  {
+   "name": "q088",
+   "amplitudes": [
+    "1",
+    "0",
+    "0",
+    "1"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "1"
+  },
+  {
+   "name": "q089",
+   "amplitudes": [
+    "1/16",
+    "11/16",
+    "13/16",
+    "-71/8"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "114/4091"
+  },
+  {
+   "name": "q090",
+   "amplitudes": [
+    "1/16",
+    "7/8",
+    "1/2",
+    "7"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q091",
+   "amplitudes": [
+    "1/16",
+    "15/16",
+    "15/16",
+    "3601/256"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "32/13082657"
+  },
+  {
+   "name": "q092",
+   "amplitudes": [
+    "1/16",
+    "1/2",
+    "7/8",
+    "-1/256"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "57376/66817"
+  },
+  {
+   "name": "q093",
+   "amplitudes": [
+    "1",
+    "0",
+    "0",
+    "1"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "1"
+  },
+  {
+   "name": "q094",
+   "amplitudes": [
+    "1/16",
+    "9/16",
+    "7/8",
+    "-125/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "502/15903"
+  },
+  {
+   "name": "q095",
+   "amplitudes": [
+    "1/16",
+    "5/8",
+    "3/16",
+    "15/8"
+   ],
+   "independent_truth": 0,
+   "cert_verdict": 0,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "0"
+  },
+  {
+   "name": "q096",
+   "amplitudes": [
+    "1/16",
+    "3/4",
+    "3/16",
+    "577/256"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "32/372353"
+  },
+  {
+   "name": "q097",
+   "amplitudes": [
+    "1/16",
+    "9/16",
+    "7/16",
+    "-1/256"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "32288/33537"
+  },
+  {
+   "name": "q098",
+   "amplitudes": [
+    "1",
+    "0",
+    "0",
+    "1"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "1"
+  },
+  {
+   "name": "q099",
+   "amplitudes": [
+    "1/16",
+    "15/16",
+    "3/8",
+    "-89/16"
+   ],
+   "independent_truth": 1,
+   "cert_verdict": 1,
+   "status": "DECIDED_WITHOUT_EXECUTION",
+   "qpu_units_billed": 0,
+   "concurrence_exact": "358/8183"
+  }
+ ]
+}
