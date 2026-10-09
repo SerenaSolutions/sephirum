@@ -38,9 +38,58 @@ def ccore(src):
     os.unlink(p)
     return json.loads(out)["answer"]  # 1 / 0 / None
 
+
+def src_ent(state, tgt, op, thr):
+    return ("ASK:\n    question: %s %s %s\nMODEL:\n    type: entanglement\n"
+            "    state: %s\n" % (tgt, op, thr, ", ".join(map(str, state))))
+
 mismatch, total = [], 0
 stats = {}
 cases = []
+def src_det(M, op, thr):
+    return ("ASK:\n    question: det %s %s\nMODEL:\n    type: triangular_det\n"
+            "    matrix: %s\n" %
+            (op, thr, "; ".join(",".join(map(str, r)) for r in M)))
+
+for _ in range(150):  # triangular_det
+    n = random.randint(1, 6)
+    kind = random.choice(["upper", "lower", "dense"])
+    M = [[random.randint(-9, 9) for _ in range(n)] for _ in range(n)]
+    if kind == "upper":
+        for i in range(n):
+            for j in range(i): M[i][j] = 0
+    elif kind == "lower":
+        for i in range(n):
+            for j in range(i+1, n): M[i][j] = 0
+    if kind != "dense":
+        for i in range(n): M[i][i] = random.choice([-4,-2,1,2,3,5])
+    op = random.choice([">", "<", ">=", "<=", "=="])
+    thr = random.randint(-400, 400)
+    cases.append(("triangular_det", src_det(M, op, thr)))
+
+from fractions import Fraction as Fr
+for _ in range(150):  # entanglement
+    kind = random.choice(["product", "max", "random", "bell17"])
+    if kind == "product":
+        u, v, x, y = (random.choice([-3,-2,2,3,0.5,1.5]) for _ in range(4))
+        state = [u*x, u*y, v*x, v*y]
+    elif kind == "max":
+        s = random.choice([0.5, 0.25, -0.5, 0.7071])
+        pat = random.choice([0,1,2])
+        state = [[s,0,0,s],[s,0,0,-s],[0,s,s,0]][pat]
+    elif kind == "bell17":
+        state = [0.70710678118654752,0,0,0.70710678118654752]
+    else:
+        state = [round(random.uniform(-1,1),3) for _ in range(4)]
+        if all(x==0 for x in state): state[0]=0.1
+    if random.random() < 0.5:
+        cases.append(("entanglement", src_ent(state, "entangled",
+            random.choice(["==", ">", "=="]), random.choice([1, 0, 1]))))
+    else:
+        t = random.choice([0.25, 0.5, 1, -0.25, 1.5, 0.0])
+        cases.append(("entanglement", src_ent(state, "concurrence",
+            random.choice([">", ">=", "<", "<=", "=="]), t)))
+
 ops = [">", "<", ">=", "<=", "=="]
 for _ in range(150):  # threshold_sum
     n = random.randint(1, 8)

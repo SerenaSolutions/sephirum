@@ -25,6 +25,7 @@ static char g_type[64], g_terms[MAXLINE], g_known[MAXLINE];
 static char g_bounds[MAXLINE], g_unknown[MAXLINE], g_assume[MAXLINE];
 static char g_r[64], g_n[64];
 static char g_state[256];
+static char g_matrix[512];
 static int ovl = 0; /* checked-overflow flag (§12: never a guess) */
 static i128 ck(i128 a, i128 b){ i128 r; if(ovl) return 0;
   if(__builtin_mul_overflow(a,b,&r)) ovl=1; return ovl?0:r; }
@@ -72,7 +73,8 @@ static void store_key(const char*line){
   else if(!strcmp(key,"n")) { strncpy(g_n? g_n:g_n, val,63); strncpy(g_n,val,63); g_has_n=1; g_n_val=atol(val);}
   else if(!strcmp(key,"unknown_count")) { g_has_u=1; g_u_val=atol(val);}
   else if(!strcmp(key,"unknown_value")) { g_has_unknown_value=1; g_unknown_value=atol(val);}
-  else if(!strcmp(key,"state")) strncpy(g_state,val,255);}
+  else if(!strcmp(key,"state")) strncpy(g_state,val,255);
+  else if(!strcmp(key,"matrix")) strncpy(g_matrix,val,511);}
 
 /* ---- parsing question "target op thr" ---- */
 static Rat parse_thr(const char*t){
@@ -233,6 +235,48 @@ static void fam_entangle(const char*op, Rat thr, const char*tgt){
     printf("{\"status\":\"DECIDED_WITHOUT_EXECUTION\",\"answer\":%d,\"reason\":\"concurrence by exact integer comparison, no root, no float\"}\n",ans);return;}
   printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"family answers entangled or concurrence only\"}\n");}
 
+/* ---------- family: triangular_det ---------- */
+static i128 g_M[8][8]; static int g_mn;
+static i128 lap(i128 M[8][8], int n){
+  if(n==1) return M[0][0];
+  i128 d=0;
+  for(int j=0;j<n&&!ovl;j++){
+    i128 minor[8][8];
+    for(int r=1;r<n;r++){ int cc=0;
+      for(int c=0;c<n;c++) if(c!=j) minor[r-1][cc++]=M[r][c]; }
+    i128 t=ck(M[0][j], lap(minor,n-1));
+    d = cad(d, (j%2)? -t : t); }
+  return d; }
+static void fam_det(const char*op, Rat thr){
+  if(!g_matrix[0]){printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"missing matrix\"}\n");return;}
+  /* parse rows separated by ';' , entries by ',' */
+  char tmp[512]; strncpy(tmp,g_matrix,511); tmp[511]=0;
+  int n=0; char *p=tmp;
+  while(*p && n<8){
+    int k=0;
+    while(*p && *p!=';' && k<8){
+      while(*p==' '||*p==',')p++;
+      if(*p==';'||!*p) break;
+      g_M[n][k++]=(i128)strtol(p,&p,10); }
+    if(k>0){ g_mn=k; n++; }
+    while(*p==' ')p++;
+    if(*p==';')p++; else if(*p) break; }
+  if(n==0||n!=g_mn){printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"matrix must be square (structural)\"}\n");return;}
+  int upper=1, lower=1;
+  for(int i=0;i<n;i++) for(int j=0;j<n;j++){
+    if(j<i && g_M[i][j]!=0) upper=0;
+    if(j>i && g_M[i][j]!=0) lower=0; }
+  i128 d;
+  if(upper||lower){
+    d=1; for(int i=0;i<n&&!ovl;i++) d=ck(d,g_M[i][i]);
+    if(ovl){printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"beyond C exact range (§12)\"}\n");return;}
+    Rat dr={d,1};
+    printf("{\"status\":\"DECIDED_WITHOUT_EXECUTION\",\"answer\":%d,\"reason\":\"det(triangular) = product of diagonal, O(n) instead of O(n!)\"}\n",cmp_rat(dr,op,thr));return;}
+  d = lap(g_M,n);
+  if(ovl){printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"beyond C exact range (§12)\"}\n");return;}
+  Rat dr={d,1};
+  printf("{\"status\":\"FULL_EXECUTION_REQUIRED\",\"answer\":%d,\"reason\":\"Laplace expansion, exact\"}\n",cmp_rat(dr,op,thr));}
+
 int main(int argc,char**argv){
   if(argc<2){fprintf(stderr,"usage: nexa_core <file.zeph>\n");return 2;}
   FILE*f=fopen(argv[1],"r"); if(!f){perror("open");return 2;}
@@ -249,5 +293,6 @@ int main(int argc,char**argv){
   else if(!strcmp(g_type,"mean_partial")) fam_mean(op,thr);
   else if(!strcmp(g_type,"geometric_series")) fam_geo(op,thr);
   else if(!strcmp(g_type,"entanglement")) fam_entangle(op,thr,tgt);
+  else if(!strcmp(g_type,"triangular_det")) fam_det(op,thr);
   else printf("{\"status\":\"UNKNOWN\",\"answer\":null,\"reason\":\"family outside C core scope (§12)\"}\n");
   return 0;}
