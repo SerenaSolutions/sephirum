@@ -1,0 +1,1 @@
+§12: alvo nao coberto na fatia esparso — o veredito exato esta no nucleo C/Python
