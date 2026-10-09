@@ -456,6 +456,93 @@ class NCA:
         Emaranhado é a FAMÍLIA do problema; o mecanismo decisório é
         clássico e exato (regra da Fase 3 preservada).
         """
+        state_str = self.model["state"]
+        if state_str.startswith("sparse("):
+            import re as _re
+            m = _re.match(r"sparse\((\d+)\)\s*(.*)$", state_str)
+            if not m:
+                raise ValueError("sparse(N) malformado")
+            nq = int(m.group(1)); body = m.group(2).strip()
+            if not (1 <= nq <= 64):
+                raise ValueError("sparse(N): N = 1..64 (espaco declarado)")
+            entries = []
+            seen = set()
+            for tok in body.split(","):
+                tok = tok.strip()
+                if not tok:
+                    continue
+                if ":" not in tok:
+                    raise ValueError("entrada esparsa sem idx:amp")
+                i_s, a_s = tok.split(":", 1)
+                i = int(i_s)
+                if i >= (1 << nq):
+                    raise ValueError("indice alem do espaco 2^N")
+                if i in seen:
+                    raise ValueError("indice duplicado")
+                seen.add(i)
+                entries.append((i, Fraction(a_s)))
+                if len(entries) > 256:
+                    raise ValueError("muro esparso: maximo 256 entradas")
+            if not entries or all(a == 0 for _, a in entries):
+                raise ValueError("zero state is not a quantum state (structural)")
+            entries = [(i, a) for i, a in entries if a != 0]
+            def _sep_sp(ents, m2):
+                if m2 == 1:
+                    return True
+                hb = m2 - 1
+                mask = (1 << hb) - 1
+                R0 = [(i & mask, a) for i, a in ents if not (i >> hb) & 1]
+                R1 = [(i & mask, a) for i, a in ents if (i >> hb) & 1]
+                if not R0 or not R1:
+                    return _sep_sp(ents, m2 - 1)
+                d0 = dict(R0); d1 = dict(R1)
+                pos = sorted(set(d0) | set(d1))
+                for aa in range(len(pos)):
+                    for bb in range(aa + 1, len(pos)):
+                        j, k = pos[aa], pos[bb]
+                        if d0.get(j, 0) * d1.get(k, 0) != \
+                           d0.get(k, 0) * d1.get(j, 0):
+                            return False
+                return _sep_sp(R0, hb)
+            ent = not _sep_sp(entries, nq)
+            target = self.q[0]
+            if target != "entangled":
+                raise ValueError("N-qubit entanglement answers only 'entangled'")
+            ans = cmp(1 if ent else 0, op, thr)
+            self.log("ANALYTIC", "ELIMINATED",
+                     "sparse recursive separability: ent=%s" % ent)
+            ev = {"n_qubits": nq, "support": len(entries),
+                  "fully_separable": not ent, "op": op, "threshold": thr}
+            return self._finish("DECIDED_WITHOUT_EXECUTION", ans,
+                                "SPARSE_RECURSIVE_FLATTEN_RANK", "ANALYTIC", ev,
+                                original=len(entries), required=0, analysis_cost=0.05)
+        toks = [x.strip() for x in self.model["state"].split(",")]
+        if len(toks) == 8:
+            # 3 qubits: separabilidade plena, exato por Fraction
+            # (postos do achatamento + Schmidt residual — sem simulacao)
+            a8 = [Fraction(t) for t in toks]
+            if sum(x * x for x in a8) == 0:
+                raise ValueError("zero state is not a quantum state (structural)")
+            R0, R1 = a8[:4], a8[4:]
+            rank1 = all(R0[j] * R1[k] == R0[k] * R1[j]
+                        for j in range(4) for k in range(j + 1, 4))
+            if rank1:
+                phi = R0 if any(R0) else R1
+                ent = (phi[0] * phi[3] - phi[1] * phi[2]) != 0
+            else:
+                ent = True
+            target = self.q[0]
+            if target != "entangled":
+                raise ValueError("3-qubit entanglement answers only 'entangled'")
+            ans = cmp(1 if ent else 0, op, thr)
+            self.log("ANALYTIC", "ELIMINATED",
+                     "flatten rank + residual Schmidt det: rank1=%s ent=%s"
+                     % (rank1, ent))
+            ev = {"amplitudes": toks, "fully_separable": not ent,
+                  "op": op, "threshold": thr}
+            return self._finish("DECIDED_WITHOUT_EXECUTION", ans,
+                                "FLATTEN_RANK_SCHMIDT", "ANALYTIC", ev,
+                                original=8, required=0, analysis_cost=0.05)
         toks = [x.strip() for x in self.model["state"].split(",")]
         if len(toks) == 8:
             # 3 qubits: separabilidade plena, exato por Fraction

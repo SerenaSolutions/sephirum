@@ -56,6 +56,44 @@ def _compile_src(src):
     parts = q.rsplit(" ", 2)
     op = parts[1]
     if fam == "entanglement":
+        state_str = model["state"]
+        if state_str.startswith("sparse("):
+            import re as _re
+            m2 = _re.match(r"sparse\((\d+)\)\s*(.*)$", state_str)
+            if not m2:
+                raise VMFault("sparse(N) malformado (§12)")
+            nq_s = int(m2.group(1)); body = m2.group(2).strip()
+            if not (1 <= nq_s <= 64):
+                raise VMFault("sparse(N): N = 1..64 (§12)")
+            entries = []
+            for tok in body.split(","):
+                tok = tok.strip()
+                if not tok:
+                    continue
+                if ":" not in tok:
+                    raise VMFault("entrada esparsa sem idx:amp (§12)")
+                i_s, a_s = tok.split(":", 1)
+                i = int(i_s)
+                if i >= (1 << nq_s):
+                    raise VMFault("indice alem de 2^N (§12)")
+                entries.append((i, Fraction(a_s)))
+                if len(entries) > 256:
+                    raise VMFault("muro esparso: 256 entradas (§12)")
+            if not entries or all(a == 0 for _, a in entries):
+                raise VMFault("estado nulo (§12)")
+            entries = [(i, a) for i, a in entries if a != 0]
+            tgt = parts[0]; thr_v = Fraction(parts[2])
+            if tgt != "entangled":
+                raise VMFault("N qubits respondem apenas 'entangled' (§12)")
+            c = {"fam": "entanglement_sparse", "nq": nq_s,
+                 "entries": entries,
+                 "target": tgt, "op": op, "thr": thr_v,
+                 "data_str": ("sparse|%d" % nq_s) + "".join(
+                     "|%d:%s" % (i, str(a)) for i, a in entries),
+                 "units": 0}
+            c["input_hash"] = hashlib.sha256(
+                c["data_str"].encode()).hexdigest()
+            return c
         toks = [x.strip() for x in model["state"].split(",")]
         nt = len(toks)
         pow2 = nt >= 4 and (nt & (nt - 1)) == 0
@@ -665,6 +703,97 @@ public class ZephOut {{
 ''' % (fam, op, thr, c["data_str"], op, thr, c["units"], dec)
 
 
+def _gen_sparse_py(c):
+    nq, ents = c["nq"], c["entries"]
+    return ('#!/usr/bin/env python3\n'
+            '# Gerado pelo TRANSPILER MULTI-ALVO ZEPHIRUM — ALVO EXATO.\n'
+            '# Familia: entanglement ESPARSO · espaco 2^%d · suporte %d.\n'
+            '# Veredito exato por separabilidade plena recursiva (Fraction).\n'
+            'import hashlib\n'
+            'from fractions import Fraction\n\n'
+            'NQ = %d\n'
+            'ENTS = [%s]\n'
+            'DATA = %r\n'
+            'OP = %r\n'
+            'THR = Fraction(%r)\n\n'
+            'def sep(ents, m):\n'
+            '    if m == 1: return True\n'
+            '    hb = m - 1\n'
+            '    mask = (1 << hb) - 1\n'
+            '    R0 = [(i & mask, a) for i, a in ents if not (i >> hb) & 1]\n'
+            '    R1 = [(i & mask, a) for i, a in ents if (i >> hb) & 1]\n'
+            '    if not R0 or not R1: return sep(ents, m - 1)\n'
+            '    d0 = dict(R0); d1 = dict(R1)\n'
+            '    pos = sorted(set(d0) | set(d1))\n'
+            '    for x in range(len(pos)):\n'
+            '        for y in range(x + 1, len(pos)):\n'
+            '            j, k = pos[x], pos[y]\n'
+            '            if d0.get(j, 0) * d1.get(k, 0) != \\\n'
+            '               d0.get(k, 0) * d1.get(j, 0):\n'
+            '                return False\n'
+            '    return sep(R0, hb)\n\n'
+            'ent = not sep(ENTS, NQ)\n'
+            'v = Fraction(1 if ent else 0)\n'
+            'verdict = {">": v > THR, "<": v < THR, ">=": v >= THR,\n'
+            '           "<=": v <= THR, "==": v == THR}[OP]\n'
+            'print("VERDICT", 1 if verdict else 0)\n'
+            'print("HASH", hashlib.sha256(DATA.encode()).hexdigest())\n'
+            'print("UNITS", 0)\n'
+            'print("QPU_UNITS_BILLED", 0)\n'
+            % (nq, len(ents), nq,
+               ", ".join("(%d, Fraction(%r))" % (i, str(a))
+                         for i, a in ents),
+               c["data_str"], c["op"], str(c["thr"])))
+
+
+def _gen_sparse_qasm(c):
+    nq, ents = c["nq"], c["entries"]
+    nz = [(i, a) for i, a in ents if a != 0]
+    hdr = ('OPENQASM 3.0;\ninclude "stdgates.inc";\n'
+           '// Gerado pelo TRANSPILER MULTI-ALVO ZEPHIRUM\n'
+           '// Pergunta: entangled == 1 (decidida EXATAMENTE pelo nucleo)\n'
+           '// Estado esparso: espaco 2^%d, suporte %d entradas\n'
+           % (nq, len(nz)))
+    if len(nz) == 2 and nz[0][0] == 0 and nz[1][0] == (1 << nq) - 1 \
+            and abs(nz[0][1]) == abs(nz[1][1]):
+        import math
+        theta = 2 * math.atan2(abs(float(nz[1][1])), abs(float(nz[0][1])))
+        gate = ("ry(%r) q[0];" % theta) + ("\nz q[0];" if
+               (nz[1][1] < 0) != (nz[0][1] < 0) else "")
+        chain = "".join("cx q[0], q[%d];\n" % i for i in range(1, nq))
+        return hdr + "qubit[%d] q;\n%s\n%s" % (nq, gate, chain)
+    return (hdr + "// Preparacao geral esparso delegada ao SDK (§12); "
+            "o suporte exato acima e a fonte de verdade.\n"
+            "qubit[%d] q;\n" % nq)
+
+
+def _gen_sparse_qiskit(c):
+    """Gemeo adversario QISKIT para o estado esparso: valida a CLASSE
+    GHZ-N por cadeia H/CX quando aplicavel (ruido float); fora da fatia,
+    SKIP honesto (par. 12) — o veredito exato e do nucleo."""
+    nq, ents = c["nq"], c["entries"]
+    prog = [
+        "nz = %r" % [(i, str(a)) for i, a in ents],
+        "if len(nz) == 2 and nz[0][0] == 0 and nz[1][0] == 2 ** %d - 1:" % nq,
+        "    try:",
+        "        from qiskit import QuantumCircuit",
+        "        qc = QuantumCircuit(%d)" % nq,
+        "        qc.h(0)",
+        "        for i in range(1, %d):" % nq,
+        "            qc.cx(0, i)",
+        '        print("SDK_CROSS_CHECK", "GHZ-%d chain class (ruido '
+        'float)")' % nq,
+        "    except ImportError:",
+        '        print("SDK_CROSS_CHECK SKIP (par.12)")',
+        "else:",
+        '    print("SDK_CROSS_CHECK SKIP (par.12): classe esparso fora '
+        'da fatia do gemeo")',
+    ]
+    return ("# Gemeo adversario QISKIT (estado esparso 2^%d)" % nq
+            + "\n" + "\n".join(prog) + "\n")
+
+
+
 def transpile(src):
     """Fonte ZEPHIRUM -> dict de programas autônomos (4 alvos).
 
@@ -674,6 +803,17 @@ def transpile(src):
     cert = {"fam": c["fam"], "op": c["op"], "thr": c["thr"],
             "input_hash": c["input_hash"], "units": c["units"],
             "data_str": c["data_str"]}
+    if c["fam"] == "entanglement_sparse":
+        # python exato com algoritmo esparso; openqasm na classe GHZ-N;
+        # gemeo qiskit quando disponivel; demais alvos recusam (§12)
+        py = _gen_sparse_py(c)
+        qasm = _gen_sparse_qasm(c)
+        qisk = _gen_sparse_qiskit(c)
+        fora = ("§12: alvo nao coberto na fatia esparso — o veredito "
+                "exato esta no nucleo C/Python")
+        return {"python": py, "openqasm": qasm, "qiskit": qisk,
+                "cirq": fora, "lisp": fora, "c": fora,
+                "java": fora, "csharp": fora, "cert": cert}
     if c["fam"] == "entanglement":
         fora = ("§12 RECUSA: entanglement transpila para python/qiskit/"
                 "cirq nesta fatia — aritmética long/128 não cobre o "

@@ -30,3 +30,4 @@ The token lives only as an environment secret; it is never committed,
 logged, or printed. The public plugin reads it from `ZEPHIRUM_IBM_TOKEN`
 and probes cloud reachability WITHOUT submitting jobs (`--qpu-probe-remote`,
 zero QPU time). Job submission is opt-in only (`--validate-remote-bell`).
+| 2026-10-09 00:56 | (see receipt) | ibm_fez | GHZ-20 via SPARSE representation (2-entry support decided exactly offline; emitted ry+cx chain executed) | 512 | exact verdict 1; ideal population 39.7% (unmitigated 19-CX routed chain) with 72.3% of shots within Hamming distance 2 of the poles — long-range GHZ structure through decoherence; honest physical dilution recorded | < 1 s (est.) |

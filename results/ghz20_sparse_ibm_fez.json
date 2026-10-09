@@ -1,0 +1,34 @@
+{
+  "experiment": "GHZ-20 via SPARSE representation \u2014 the dense 12-qubit wall broken honestly: .zeph sparse(20) with 2-entry support -> exact C verdict (recursive support-based separability) -> emitted OpenQASM 3 (ry+cx chain) -> qiskit qasm3.loads -> ibm_fez",
+  "date_utc": "2026-10-09T00:56:06.945887Z",
+  "backend": "ibm_fez",
+  "job_id": "db43n84lf4us73c25nf0",
+  "shots": 512,
+  "exact_verdict_c": 1,
+  "pop_0x20_1x20": 0.3965,
+  "distinct_outcomes": 192,
+  "top": {
+    "00000000000000000000": 168,
+    "11111111110111111111": 40,
+    "11111111111111111111": 35,
+    "00000000000000000100": 14
+  },
+  "expected": "population concentrated in {00000000000000000000, 11111111111111111111}; long-range order = entanglement evidence (verdict 1)",
+  "interpretation": "hardware agrees with the sparse-decided exact verdict (par. 12: evidence, not certificate)",
+  "pop_hamming_le2_of_poles": 0.7227,
+  "counts_full": {
+    "00000000000000000000": 168,
+    "11111111110111111111": 40,
+    "11111111111111111111": 35,
+    "00000000000000000100": 14,
+    "11111101111111111111": 5,
+    "00000000000000000010": 5,
+    "11111111110111101111": 5,
+    "11111111111111110111": 4,
+    "11111111110111110111": 4,
+    "11111100000000000001": 4,
+    "11111111110111011111": 3,
+    "11111111111110111111": 3
+  },
+  "honest_note": "unmitigated GHZ-20 through a routed 19-CX chain: ideal population diluted by decoherence; the structural GHZ signature is the mass within Hamming distance 2 of the poles (72.3%) vs 192 distinct decayed outcomes; verdict was decided EXACTLY offline from the 2-entry sparse support (zero QPU in the decision path)"
+}

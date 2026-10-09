@@ -108,7 +108,8 @@ def parse_zephirum(src):
             depth = 0
             while j < n and tokens[j][0] != "NEWLINE":
                 k2 = tokens[j][0]
-                if k2 not in ("NUMBER", "IDENT", "OP", "TWOOP", "ARITH", "COMMA"):
+                if k2 not in ("NUMBER", "IDENT", "OP", "TWOOP", "ARITH",
+                              "COMMA", "COLON"):
                     raise ZephirumSyntaxError("token ilegal %r no valor (linha %d)" % (tokens[j][1], line))
                 if tokens[j][1] == "(":
                     depth += 1

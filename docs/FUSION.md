@@ -23,7 +23,7 @@ absorbs Zephirum-decided questions easily.
 |---|---|---|
 | Python (exact, Fraction) | stable | runs standalone |
 | Qiskit (adversarial twin) | stable | `fusion/qiskit/*.py`, executed in CI-style checks |
-| OpenQASM 3 | stable | `fusion/openqasm/*.qasm`; GHZ-class prep circuits emitted; general vectors carried as exact Fraction comments with prep delegated to the absorbing SDK (§12) |
+| OpenQASM 3 | stable | `fusion/openqasm/*.qasm`; GHZ-class prep circuits emitted (any N — including sparse(20) GHZ-20 validated on ibm_fez); general vectors carried as exact Fraction comments with prep delegated to the absorbing SDK (§12) |
 | Cirq | 2-qubit slice | 3-qubit not covered yet (declared, never faked) |
 | C / Java / C# / Lisp | arithmetic families | entanglement 3q declared out of slice |
 
@@ -44,3 +44,4 @@ Zephirum `.zeph` → exact C verdict → emitted `OpenQASM 3` →
   owner opens that door. Not started; no code pretends otherwise.
 - OpenQASM general state-prep emitter (beyond Bell/GHZ classes).
 - 4-qubit cluster chain (full 1D cluster from Cong et al. 2019).
+- Sparse format generalization beyond GHZ-class (W-class prep emitters).

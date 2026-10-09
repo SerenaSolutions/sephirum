@@ -357,6 +357,79 @@ static int verdict_entangleN(Frac *amp, int na, const char *target,
     return verdict_from_cmp(cmpv(lhs, rhs), op);
 }
 
+/* separabilidade plena RECURSIVA sobre representacao ESPARSA
+ * (suporte <= 256 entradas, espaco declarado 2^N, N <= 64):
+ *   rank-1 do achatamento q0 testado por menores SOBRE O SUPORTE;
+ *   criterio exato em Frac (produtos <= 10^8, sem muro D comum).
+ */
+#define SPARSE_MAX 256
+
+static int sep_sparse(const unsigned long long *idx, const Frac *amp,
+                      int nnz, int m) {
+    if (m == 1) return 1;                     /* 1 qubit e sempre produto */
+    int hb = m - 1;
+    unsigned long long mask = (hb >= 64) ? ~0ULL : ((1ULL << hb) - 1);
+    unsigned long long p0[SPARSE_MAX], p1[SPARSE_MAX];
+    Frac a0[SPARSE_MAX], a1[SPARSE_MAX];
+    int n0 = 0, n1 = 0;
+    for (int i = 0; i < nnz; i++) {
+        if ((idx[i] >> hb) & 1ULL) {          /* bit MSB do nivel */
+            if (n1 == SPARSE_MAX) return -1;
+            p1[n1] = idx[i] & mask; a1[n1] = amp[i]; n1++;
+        } else {
+            if (n0 == SPARSE_MAX) return -1;
+            p0[n0] = idx[i] & mask; a0[n0] = amp[i]; n0++;
+        }
+    }
+    if (n0 == 0 || n1 == 0)                   /* qubit fatora trivialmente */
+        return sep_sparse(idx, amp, nnz, m - 1);
+    /* rank-1: todos os menores 2x2 do par (R0, R1) nulos */
+    unsigned long long P[2 * SPARSE_MAX];
+    for (int i = 0; i < n0; i++) P[i] = p0[i];
+    for (int i = 0; i < n1; i++) P[n0 + i] = p1[i];
+    int np = n0 + n1;
+    for (int a = 0; a < np; a++)
+        for (int b = a + 1; b < np; b++) {
+            unsigned long long j = P[a], k = P[b];
+            Frac r0j = {0,1}, r0k = {0,1}, r1j = {0,1}, r1k = {0,1};
+            for (int t = 0; t < n0; t++) {
+                if (p0[t] == j) r0j = a0[t];
+                if (p0[t] == k) r0k = a0[t];
+            }
+            for (int t = 0; t < n1; t++) {
+                if (p1[t] == j) r1j = a1[t];
+                if (p1[t] == k) r1k = a1[t];
+            }
+            /* menor: r0j*r1k - r0k*r1j  (Frac exato) */
+            i128 t1n = LL(r0j.p) * LL(r1k.p), t1d = LL(r0j.q) * LL(r1k.q);
+            i128 t2n = LL(r0k.p) * LL(r1j.p), t2d = LL(r0k.q) * LL(r1j.q);
+            i128 lhs = t1n * t2d, rhs = t2n * t1d;
+            if (lhs != rhs) return 0;        /* posto > 1: emaranhado */
+        }
+    /* rank 1: residuo = R0 (proporcional) — recursao com meia-posicao */
+    return sep_sparse(p0, a0, n0, hb);
+}
+
+/* entanglement esparso: N <= 64, suporte <= 256 (muros declarados) */
+static int verdict_sparse(unsigned long long *idx, Frac *amp, int nnz,
+                          int nq, const char *target, const char *op,
+                          Frac t, const char **reason) {
+    if (strcmp(target, "entangled") != 0) { *reason = "TARGETN"; return -1; }
+    if (llabs(t.p) > 1000LL || t.q > 1000LL) { *reason = "OVERFLOW"; return -1; }
+    if (nq < 1 || nq > 64) { *reason = "SPARSE_N"; return -1; }
+    unsigned long long lim = (nq == 64) ? ~0ULL : ((1ULL << nq) - 1ULL);
+    for (int i = 0; i < nnz; i++) {
+        if (llabs(amp[i].p) > 10000LL || amp[i].q > 10000LL) {
+            *reason = "OVERFLOW"; return -1; }
+        if (idx[i] > lim) { *reason = "SPARSE_IDX"; return -1; }
+    }
+    int sep = sep_sparse(idx, amp, nnz, nq);
+    if (sep < 0) { *reason = "MEM"; return -1; }
+    long long v = sep ? 0 : 1;
+    i128 lhs = LL(v) * LL(t.q), rhs = LL(t.p);
+    return verdict_from_cmp(cmpv(lhs, rhs), op);
+}
+
 /* ---------------------------------------------------------- parser */
 static char *read_file(const char *path, size_t *len) {
     FILE *f = fopen(path, "rb");
@@ -482,8 +555,84 @@ int main(int argc, char **argv) {
         units = 2;
     } else if (strcmp(ftype, "entanglement") == 0) {
         if (!src_key(src, "state", vstate, sizeof vstate)) { fprintf(stderr,
-            "RECUSA (§12): entanglement exige state (2^N amplitudes, N = 2..12)\n");
+            "RECUSA (§12): entanglement exige state (2^N ou sparse(N))\n");
             return 2;
+        }
+        if (strncmp(vstate, "sparse(", 7) == 0) {
+            /* estado esparso: sparse(N) idx:amp, idx:amp, ... */
+            int nq = (int)strtol(vstate + 7, NULL, 10);
+            char *close = strchr(vstate, ')');
+            if (!close || nq < 1 || nq > 64) { fprintf(stderr,
+                "RECUSA (§12): sparse(N) exige N = 1..64\n"); return 2; }
+            unsigned long long sidx[SPARSE_MAX];
+            Frac samp[SPARSE_MAX];
+            int snz = 0, nonzero = 0;
+            char *save2 = NULL;
+            char *ent = strtok_r(close + 1, ",", &save2);
+            while (ent) {
+                while (*ent == ' ') ent++;
+                if (!*ent) { ent = strtok_r(NULL, ",", &save2); continue; }
+                if (snz == SPARSE_MAX) { fprintf(stderr,
+                    "RECUSA (§12): muro esparso — maximo %d entradas\n",
+                    SPARSE_MAX); return 2; }
+                char *c2 = strchr(ent, ':');
+                if (!c2) { fprintf(stderr,
+                    "RECUSA (§12): entrada esparsa '%s' sem idx:amp\n",
+                    ent); return 2; }
+                *c2 = 0;
+                if (strchr(ent, '-') || ent[0] == 0 ||
+                    strlen(ent) > 20) { fprintf(stderr,
+                    "RECUSA (§12): indice '%s' invalido\n", ent); return 2; }
+                sidx[snz] = strtoull(ent, NULL, 10);
+                if (!parse_exact(c2 + 1, &samp[snz])) { fprintf(stderr,
+                    "RECUSA (§12): amplitude '%s' nao exata\n", c2 + 1);
+                    return 2; }
+                for (int d = 0; d < snz; d++)
+                    if (sidx[d] == sidx[snz]) { fprintf(stderr,
+                        "RECUSA (§12): indice %llu duplicado\n",
+                        sidx[snz]); return 2; }
+                if (samp[snz].p != 0) nonzero = 1;
+                snz++;
+                ent = strtok_r(NULL, ",", &save2);
+            }
+            if (snz == 0 || !nonzero) { fprintf(stderr,
+                "RECUSA (§12): estado nulo nao e estado quantico\n");
+                return 2; }
+            Frac tsp;
+            if (!parse_exact(thrs, &tsp)) { fprintf(stderr,
+                "RECUSA (§12): threshold não exato\n"); return 2; }
+            v = verdict_sparse(sidx, samp, snz, nq, target, op, tsp, &reason);
+            {
+                char tmp[64];
+                size_t need = 32 + (size_t)snz * 32;
+                dhash = malloc(need);
+                if (!dhash) { fprintf(stderr,
+                    "RECUSA (§12): memoria insuficiente\n"); return 2; }
+                char *w = dhash;
+                w += sprintf(w, "sparse|%d", nq);
+                for (int i = 0; i < snz; i++) {
+                    frac_str(samp[i], tmp, sizeof tmp);
+                    w += sprintf(w, "|%llu:%s", sidx[i], tmp);
+                }
+            }
+            units = 0;
+            if (v < 0) {
+                if (strcmp(reason, "SPARSE_N") == 0) { fprintf(stderr,
+                    "RECUSA (§12): sparse(N) exige N = 1..64\n"); return 2; }
+                if (strcmp(reason, "SPARSE_IDX") == 0) { fprintf(stderr,
+                    "RECUSA (§12): indice alem do espaco 2^N declarado\n");
+                    return 2; }
+                if (strcmp(reason, "OVERFLOW") == 0) { fprintf(stderr,
+                    "OVERFLOW (§12): amplitude/threshold alem do muro "
+                    "(10^4/10^3)\n"); return 3; }
+                if (strcmp(reason, "TARGETN") == 0) { fprintf(stderr,
+                    "RECUSA (§12): N qubits respondem apenas "
+                    "'entangled'\n"); return 2; }
+                if (strcmp(reason, "MEM") == 0) { fprintf(stderr,
+                    "RECUSA (§12): memoria insuficiente\n"); return 2; }
+                fprintf(stderr, "RECUSA (§12)\n"); return 2;
+            }
+            goto fin;
         }
         int na = 0, cap = 16;
         Frac *amp = malloc((size_t)cap * sizeof(Frac));
@@ -549,6 +698,12 @@ int main(int argc, char **argv) {
             if (strcmp(reason, "TARGETN") == 0) { fprintf(stderr,
                 "RECUSA (§12): concurrence é medida de 2 qubits — "
                 "N qubits respondem apenas 'entangled'\n"); return 2; }
+            if (strcmp(reason, "SPARSE_N") == 0) { fprintf(stderr,
+                "RECUSA (§12): sparse(N) exige N = 1..64 "
+                "(espaco declarado)\n"); return 2; }
+            if (strcmp(reason, "SPARSE_IDX") == 0) { fprintf(stderr,
+                "RECUSA (§12): indice alem do espaco 2^N declarado\n");
+                return 2; }
             if (strcmp(reason, "MEM") == 0) { fprintf(stderr,
                 "RECUSA (§12): memória insuficiente\n"); return 2; }
             if (strcmp(reason, "OVERFLOW") == 0) { fprintf(stderr,
@@ -595,6 +750,7 @@ int main(int argc, char **argv) {
         return 2;
     }
 
+fin:
     sha256(dhash, dg); hex32(dg, hex);
     if (dhash != data) free(dhash);
     printf("VERDICT %d\n", v);
