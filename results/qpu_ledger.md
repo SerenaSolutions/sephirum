@@ -31,3 +31,12 @@ logged, or printed. The public plugin reads it from `ZEPHIRUM_IBM_TOKEN`
 and probes cloud reachability WITHOUT submitting jobs (`--qpu-probe-remote`,
 zero QPU time). Job submission is opt-in only (`--validate-remote-bell`).
 | 2026-10-09 00:56 | (see receipt) | ibm_fez | GHZ-20 via SPARSE representation (2-entry support decided exactly offline; emitted ry+cx chain executed) | 512 | exact verdict 1; ideal population 39.7% (unmitigated 19-CX routed chain) with 72.3% of shots within Hamming distance 2 of the poles — long-range GHZ structure through decoherence; honest physical dilution recorded | < 1 s (est.) |
+
+| 2026-10-09 03:55 | db4632cvf2bc73cu4cs0 (+20 more, see receipt) | ibm_fez + ibm_marrakesh | Language cross-hardware battery: Bell Φ+ and separable \|+0⟩, Z and X bases | 21 jobs × 4 × 512 | Stage: language evidence on a SECOND backend + bootstrap error bars. Bell: ⟨ZZ⟩ +0.874/+0.918, ⟨XX⟩ +0.918/+0.901 (fez/marrakesh) — CIs exclude 0; separable: |⟨ZZ⟩|,|⟨XX⟩| ≤ 0.06, CIs consistent with 0. Exact verdicts (1/0) decided offline with certificates BEFORE submission (receipt). | 69 s total (see incident) |
+
+**Incident (recorded, not deleted):** agent session crashes mid-battery duplicated the
+lot (36 jobs submitted instead of 12). 15 redundant pending jobs were cancelled; 21 ran.
+Lot cost 69 s exceeded the 15 s lot ceiling and the 60 s repo monthly ceiling by 9 s.
+Cause: agent-side session instability, not QPU load testing. Flagged for SUPERVISOR audit;
+no further QPU jobs from this repo until the owner or supervisor clears the budget.
+Receipt: `results/language_cross_hardware_bootstrap.json` (per-rep values, CI95, usage).

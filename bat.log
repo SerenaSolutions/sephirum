@@ -1,0 +1,17 @@
+qiskit_runtime_service._discover_account:WARNING:2026-10-09 03:38:22,256: Loading account with the given token. A saved account will not be used.
+qiskit_runtime_service.__init__:WARNING:2026-10-09 03:38:23,728: Instance was not set at service instantiation. Free and trial plan instances will be prioritized. Based on the following filters: (tags: None, region: us-east, eu-de), and available plans: (open), the available account instances are: open-instance. If you need a specific instance set it explicitly either by using a saved account with a saved default instance or passing it in directly to QiskitRuntimeService(). Alternatively, pass instance='auto' or save it to your account for auto-selection without warning.
+[GATE] Bell: entangled==1 | Separable: entangled==0 (exact, zero QPU)
+qiskit_runtime_service.backends:WARNING:2026-10-09 03:38:23,867: Using instance: open-instance, plan: open
+/app/conversations/6ab3060a7f5a926229167e45/sephirum/prototype/qpu_language_cross.py:130: DeprecationWarning: The SamplerV2 class is deprecated as of qiskit-ibm-runtime 0.50.0 and will be removed no sooner than 3 months after the release date. `qiskit_ibm_runtime.executor_sampler.Sampler` provides a new Sampler implementation that runs all the pre- and post-processing in the client side. The top-level `qiskit_ibm_runtime.Sampler` import will be updated to point to the client-side sampler in an upcoming release, with the legacy Sampler being available until the deprecation is completed.
+  job = SamplerV2(mode=b).run(tqc, shots=SHOTS)
+[ibm_fez] par dirigido [0, 1] (CX err None) — 6 jobs submetidos
+qiskit_runtime_service.backends:WARNING:2026-10-09 03:38:30,606: Using instance: open-instance, plan: open
+/app/conversations/6ab3060a7f5a926229167e45/sephirum/prototype/qpu_language_cross.py:130: DeprecationWarning: The SamplerV2 class is deprecated as of qiskit-ibm-runtime 0.50.0 and will be removed no sooner than 3 months after the release date. `qiskit_ibm_runtime.executor_sampler.Sampler` provides a new Sampler implementation that runs all the pre- and post-processing in the client side. The top-level `qiskit_ibm_runtime.Sampler` import will be updated to point to the client-side sampler in an upcoming release, with the legacy Sampler being available until the deprecation is completed.
+  job = SamplerV2(mode=b).run(tqc, shots=SHOTS)
+[ibm_marrakesh] par dirigido [0, 1] (CX err None) — 6 jobs submetidos
+[ibm_fez rep0] DONE
+[ibm_fez rep1] DONE
+[ibm_fez rep2] DONE
+[ibm_fez rep3] DONE
+[ibm_fez rep4] DONE
+[ibm_fez rep5] DONE

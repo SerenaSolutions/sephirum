@@ -1,0 +1,14 @@
+qiskit_runtime_service._discover_account:WARNING:2026-10-09 03:39:29,379: Loading account with the given token. A saved account will not be used.
+qiskit_runtime_service.__init__:WARNING:2026-10-09 03:39:30,883: Instance was not set at service instantiation. Free and trial plan instances will be prioritized. Based on the following filters: (tags: None, region: us-east, eu-de), and available plans: (open), the available account instances are: open-instance. If you need a specific instance set it explicitly either by using a saved account with a saved default instance or passing it in directly to QiskitRuntimeService(). Alternatively, pass instance='auto' or save it to your account for auto-selection without warning.
+usage now: 124 s | remaining: 476
+36 jobs language-cross | pendentes: 16
+36 jobs language-cross | pendentes: 15
+36 jobs language-cross | pendentes: 15
+36 jobs language-cross | pendentes: 0
+status: {'db463eqmb58s7388nf6g': 'CANCELLED', 'db463esvf2bc73cu4df0': 'CANCELLED', 'db463ekvf2bc73cu4deg': 'CANCELLED', 'db463eimb58s7388nf60': 'CANCELLED', 'db463ecvf2bc73cu4de0': 'CANCELLED', 'db463e84qg6s73c1molg': 'CANCELLED', 'db463dimb58s7388nf40': 'DONE', 'db463dcvf2bc73cu4dcg': 'DONE', 'db463dclf4us73c28qdg': 'DONE', 'db463dcvf2bc73cu4dbg': 'CANCELLED', 'db463d2mb58s7388nf2g': 'DONE', 'db463d4lf4us73c28qd0': 'CANCELLED', 'db463d4lf4us73c28qbg': 'CANCELLED', 'db463d4vf2bc73cu4dag': 'CANCELLED', 'db463d4vf2bc73cu4da0': 'DONE', 'db463cslf4us73c28qb0': 'CANCELLED', 'db463cqmb58s7388nf1g': 'CANCELLED', 'db463csvf2bc73cu4d90': 'DONE', 'db463c04qg6s73c1moh0': 'DONE', 'db463c04qg6s73c1mogg': 'DONE', 'db463bslf4us73c28qa0': 'DONE', 'db463bqmb58s7388nevg': 'DONE', 'db463bkvf2bc73cu4d7g': 'DONE', 'db463b84qg6s73c1mof0': 'DONE', 'db4634amb58s7388neng': 'CANCELLED', 'db4634cvf2bc73cu4d0g': 'CANCELLED', 'db46342mb58s7388nelg': 'CANCELLED', 'db46344lf4us73c28q20': 'DONE', 'db4633qmb58s7388nekg': 'DONE', 'db4633qmb58s7388nek0': 'DONE', 'db46334vf2bc73cu4cug': 'DONE', 'db4632o4qg6s73c1mo4g': 'DONE', 'db4632o4qg6s73c1mo3g': 'DONE', 'db4632kvf2bc73cu4ctg': 'DONE', 'db4632kvf2bc73cu4ct0': 'DONE', 'db4632cvf2bc73cu4cs0': 'DONE'}
+RECIBO: /app/conversations/6ab3060a7f5a926229167e45/sephirum/results/language_cross_hardware_bootstrap.json
+[ibm_fez] bell <ZZ> +0.874 CI95 [0.8600260416666666, 0.8880208333333334] | <XX> +0.918 CI95 [0.9114583333333334, 0.9251302083333334] (n=6)
+[ibm_fez] sep  <ZZ> -0.018 CI95 [-0.054036458333333336, 0.018880208333333332] | <XX> -0.042 CI95 [-0.06380208333333333, -0.020833333333333332] (n=6)
+[ibm_marrakesh] bell <ZZ> +0.918 CI95 [0.8828125, 0.94140625] | <XX> +0.901 CI95 [0.89453125, 0.90625] (n=3)
+[ibm_marrakesh] sep  <ZZ> +0.060 CI95 [0.015625, 0.1328125] | <XX> +0.001 CI95 [-0.015625, 0.015625] (n=3)
+LOTE TOTAL (s): 60
