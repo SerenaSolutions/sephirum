@@ -1,0 +1,15 @@
+name: CI
+on: [push, pull_request]
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - name: Build C decision core
+        run: make -C src
+      - name: Cross-check C core vs Python reference (soundness-first)
+        run: python3 tests/cross_check_c.py
+      - name: Multi-target emission smoke (geometric family)
+        run: python3 prototype/zephirum_transpiler_multi.py examples/geometric.zeph > /dev/null

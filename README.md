@@ -1,3 +1,10 @@
+<p align="center">
+  <a href="https://github.com/SerenaSolutions/sephirum/actions/workflows/ci.yml"><img src="https://github.com/SerenaSolutions/sephirum/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
+  <img src="https://img.shields.io/badge/version-v0.8.2-steelblue" alt="Version v0.8.2">
+  <img src="https://img.shields.io/badge/IBM%20Quantum-validated-563D7C" alt="Validated on IBM Quantum hardware">
+</p>
+
 <p align="center"><img src="assets/brand/logo_zyql_main.png" width="480" alt="ZEPHIRUM — ZYQL: the official language emblem, the Z made of 0 and 1"></p>
 
 # ZEPHIRUM — Computation Before Execution
