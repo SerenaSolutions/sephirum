@@ -43,6 +43,13 @@ def tokenize(src):
         if src[pos] in " \t":
             pos += 1
             continue
+        if src[pos] == "#":                       # comentario ate o fim da linha
+            nl = src.find("\n", pos)
+            if nl == -1:
+                break
+            line += 1
+            pos = nl + 1
+            continue
         if src[pos] == "\n":
             tokens.append(("NEWLINE", "\\n", line))
             pos += 1

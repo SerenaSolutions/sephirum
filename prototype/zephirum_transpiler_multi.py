@@ -623,13 +623,14 @@ def transpile(src):
                 "openqasm": _gen_openqasm(c),
                 "cirq": _gen_cirq(c), "lisp": _gen_lisp(c),
                 "c": fora, "java": fora, "csharp": fora, "cert": cert}
-    fora_q = ("§12: os alvos qiskit/cirq cobrem a família entanglement "
-              "(a ponte quântica) — a família %r transpila para "
-              "python/c/java/csharp" % c["fam"])
+    fora_q = ("§12: os alvos qiskit/cirq/openqasm cobrem a família "
+              "entanglement (a ponte quântica) — a família %r transpila "
+              "para python/c/java/csharp" % c["fam"])
     return {"python": _gen_python(c), "c": _gen_c(c),
             "java": _gen_java(c), "csharp": _gen_csharp(c),
             "lisp": _gen_lisp(c),
-            "qiskit": fora_q, "cirq": fora_q, "cert": cert}
+            "qiskit": fora_q, "cirq": fora_q,
+            "openqasm": fora_q, "cert": cert}
 
 
 if __name__ == "__main__":
