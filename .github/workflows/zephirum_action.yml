@@ -1,0 +1,13 @@
+name: Zephirum Verify (action self-test)
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Run the Zephirum Verify action on this repo's own examples
+        uses: ./
+        with:
+          fail-on-unknown: 'false'

@@ -1,0 +1,28 @@
+name: 'Zephirum Verify'
+description: 'Decide-before-execute for CI: runs ZYQL questions through the certified decision core. Any question the ladder decides offline costs zero execution units; anything unverifiable fails the build with a named reason.'
+author: 'SerenaSolutions'
+branding:
+  icon: 'zap'
+  color: '22D3EE'
+inputs:
+  files:
+    description: 'Space-separated glob(s) of .zeph files to verify (relative to repo root)'
+    required: false
+    default: 'examples/**/*.zeph katas/*.zeph'
+  fail-on-unknown:
+    description: 'Fail the job when a verdict is UNKNOWN ("true"/"false")'
+    required: false
+    default: 'false'
+runs:
+  using: 'composite'
+  steps:
+    - name: Install Zephirum quantum plugin
+      shell: bash
+      run: pip install --quiet "${{ github.action_path }}/plugin"
+    - name: Verify ZYQL questions
+      shell: bash
+      env:
+        ZEPHIRUM_FILES: ${{ inputs.files }}
+        ZEPHIRUM_FAIL_UNKNOWN: ${{ inputs.fail-on-unknown }}
+        ZEPHIRUM_ACTION_PATH: ${{ github.action_path }}
+      run: bash "${{ github.action_path }}/scripts/action_verify.sh"
