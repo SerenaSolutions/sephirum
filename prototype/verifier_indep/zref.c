@@ -260,6 +260,54 @@ static int verdict_entangle(Frac amp[4], const char *target,
     *reason = "OP"; return -1;
 }
 
+/* entanglement 3 qubits — separabilidade plena, SEM raiz, SEM float:
+ *   |psi> = S a_ijk |ijk>; achatar ao longo do qubit 0:
+ *     R0 = (a000,a001,a010,a011), R1 = (a100,a101,a110,a111)
+ *   posto 1  <=>  |psi> = u (x) phi(q1,q2)    (menores 2x2 todos nulos)
+ *   phi produto <=>  phi0*phi3 - phi1*phi2 = 0
+ *   TOTALMENTE SEPARAVEL <=> posto 1 E det2 = 0;
+ *   entangled == !(totalmente separavel) — bisseparavel (Bell(x)|0>)
+ *   responde honestamente 1: nao e produto de tres.
+ *   muros §12: |p|,|q| <= 10^4 por amplitude; D comum <= 10^12
+ */
+static int verdict_entangle3(Frac amp[8], const char *target,
+                            const char *op, Frac t, const char **reason) {
+    if (strcmp(target, "entangled") != 0) {
+        *reason = "TARGET3"; return -1;
+    }
+    if (llabs(t.p) > 1000LL || t.q > 1000LL) { *reason = "OVERFLOW"; return -1; }
+    long long D = 1;
+    for (int i = 0; i < 8; i++) {
+        if (llabs(amp[i].p) > 10000LL || amp[i].q > 10000LL) {
+            *reason = "OVERFLOW"; return -1;
+        }
+        long long g = gcd_ll(D, amp[i].q);
+        long long dl = D / g;
+        if (mul_ovf_i64(dl, amp[i].q, &D)) { *reason = "OVERFLOW"; return -1; }
+        if (D > 1000000000000LL) { *reason = "OVERFLOW_D12"; return -1; }
+    }
+    i128 A[8];
+    for (int i = 0; i < 8; i++)
+        A[i] = LL(amp[i].p) * LL(D / amp[i].q);      /* |A| <= 10^16 */
+    /* posto 1 do achatamento: 6 menores 2x2 */
+    static const int pr[6][2] = {{0,1},{0,2},{0,3},{1,2},{1,3},{2,3}};
+    int rank1 = 1;
+    for (int k = 0; k < 6; k++) {
+        int j = pr[k][0], m = pr[k][1];
+        if (A[j]*A[4+m] != A[m]*A[4+j]) { rank1 = 0; break; }
+    }
+    int entangled = 1;
+    if (rank1) {
+        int nz0 = 0;
+        for (int i = 0; i < 4; i++) if (A[i] != 0) nz0 = 1;
+        if (nz0) entangled = (A[0]*A[3] - A[1]*A[2]) != 0;
+        else     entangled = (A[4]*A[7] - A[5]*A[6]) != 0;
+    }
+    long long v = entangled ? 1 : 0;
+    i128 lhs = LL(v) * LL(t.q), rhs = LL(t.p);
+    return verdict_from_cmp(cmpv(lhs, rhs), op);
+}
+
 /* ---------------------------------------------------------- parser */
 static char *read_file(const char *path, size_t *len) {
     FILE *f = fopen(path, "rb");
@@ -384,34 +432,34 @@ int main(int argc, char **argv) {
         units = 2;
     } else if (strcmp(ftype, "entanglement") == 0) {
         if (!src_key(src, "state", vstate, sizeof vstate)) { fprintf(stderr,
-            "RECUSA (§12): entanglement exige state (4 amplitudes)\n");
+            "RECUSA (§12): entanglement exige state (4 ou 8 amplitudes)\n");
             return 2;
         }
-        Frac amp[4];
+        Frac amp[8];
         int na = 0;
         char *save = NULL;
-        for (char *t = strtok_r(vstate, ",", &save); t && na < 4;
+        for (char *t = strtok_r(vstate, ",", &save); t && na < 8;
              t = strtok_r(NULL, ",", &save)) {
             while (*t == ' ') t++;
             if (!parse_exact(t, &amp[na])) { fprintf(stderr,
                 "RECUSA (§12): amplitude '%s' não exata\n", t); return 2; }
             na++;
         }
-        if (na != 4) { fprintf(stderr,
-            "RECUSA (§12): estado com %d amplitudes — precisa 4\n", na);
+        if (na != 4 && na != 8) { fprintf(stderr,
+            "RECUSA (§12): estado com %d amplitudes — precisa 4 ou 8\n", na);
             return 2;
         }
         /* estado nulo: recusa estrutural (nunca veredito) */
         {
             i128 nn = 0;
             char s4[64][4];
-            for (int i = 0; i < 4; i++) {
+            for (int i = 0; i < na; i++) {
                 i128 sq; mul_ovf(LL(amp[i].p), LL(amp[i].p), &sq);
                 nn += sq * 1;
                 (void)s4;
             }
             int zero = 1;
-            for (int i = 0; i < 4; i++)
+            for (int i = 0; i < na; i++)
                 if (amp[i].p != 0) zero = 0;
             if (zero) { fprintf(stderr,
                 "RECUSA (§12): estado nulo não é estado quântico\n");
@@ -422,8 +470,16 @@ int main(int argc, char **argv) {
         Frac t;
         if (!parse_exact(thrs, &t)) { fprintf(stderr,
             "RECUSA (§12): threshold não exato\n"); return 2; }
-        v = verdict_entangle(amp, target, op, t, &reason);
+        v = (na == 8) ? verdict_entangle3(amp, target, op, t, &reason)
+                      : verdict_entangle(amp, target, op, t, &reason);
         if (v < 0) {
+            if (strcmp(reason, "OVERFLOW_D12") == 0) { fprintf(stderr,
+                "OVERFLOW (§12): denominador comum > 10^12 no estado de "
+                "3 qubits — precisão arbitrária é da referência Python, "
+                "muro é declarado aqui\n"); return 3; }
+            if (strcmp(reason, "TARGET3") == 0) { fprintf(stderr,
+                "RECUSA (§12): concurrence é medida de 2 qubits — "
+                "3 qubits respondem apenas 'entangled'\n"); return 2; }
             if (strcmp(reason, "OVERFLOW") == 0) { fprintf(stderr,
                 "OVERFLOW (§12): amplitudes/threshold além do muro "
                 "(10^4/10^3) — precisão arbitrária é da referência "
@@ -431,9 +487,17 @@ int main(int argc, char **argv) {
             }
             fprintf(stderr, "RECUSA (§12): %s\n", reason); return 2;
         }
-        char sf[4][64];
-        for (int i = 0; i < 4; i++) frac_str(amp[i], sf[i], sizeof sf[i]);
-        snprintf(data, sizeof data, "%s|%s|%s|%s", sf[0], sf[1], sf[2], sf[3]);
+        if (na == 8) {
+            char sf8[8][64];
+            for (int i = 0; i < 8; i++) frac_str(amp[i], sf8[i], sizeof sf8[i]);
+            snprintf(data, sizeof data, "%s|%s|%s|%s|%s|%s|%s|%s",
+                     sf8[0], sf8[1], sf8[2], sf8[3],
+                     sf8[4], sf8[5], sf8[6], sf8[7]);
+        } else {
+            char sf[4][64];
+            for (int i = 0; i < 4; i++) frac_str(amp[i], sf[i], sizeof sf[i]);
+            snprintf(data, sizeof data, "%s|%s|%s|%s", sf[0], sf[1], sf[2], sf[3]);
+        }
         units = 0;
     } else {
         fprintf(stderr, "RECUSA (§12): família '%s' fora do motor C nesta "

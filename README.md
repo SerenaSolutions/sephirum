@@ -44,7 +44,7 @@ are empirical evidence only (§12). Both experiments ran on ibm_fez (Heron,
 
 A product state cannot show both correlations near 1; a Bell state cannot
 show both near 0. The hardware agrees with the exact decision in both
-directions. Receipts: `results/bell_phi_plus_ibm_fez.json`,
+directions. Receipts: `results/bell_phi_plus_ibm_fez.json`, `results/ghz3_fusion_ibm_fez.json`,
 `results/separable_control_ibm_fez.json`; full QPU usage ledger:
 `results/qpu_ledger.md`.
 

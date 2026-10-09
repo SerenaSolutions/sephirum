@@ -457,8 +457,34 @@ class NCA:
         clássico e exato (regra da Fase 3 preservada).
         """
         toks = [x.strip() for x in self.model["state"].split(",")]
+        if len(toks) == 8:
+            # 3 qubits: separabilidade plena, exato por Fraction
+            # (postos do achatamento + Schmidt residual — sem simulacao)
+            a8 = [Fraction(t) for t in toks]
+            if sum(x * x for x in a8) == 0:
+                raise ValueError("zero state is not a quantum state (structural)")
+            R0, R1 = a8[:4], a8[4:]
+            rank1 = all(R0[j] * R1[k] == R0[k] * R1[j]
+                        for j in range(4) for k in range(j + 1, 4))
+            if rank1:
+                phi = R0 if any(R0) else R1
+                ent = (phi[0] * phi[3] - phi[1] * phi[2]) != 0
+            else:
+                ent = True
+            target = self.q[0]
+            if target != "entangled":
+                raise ValueError("3-qubit entanglement answers only 'entangled'")
+            ans = cmp(1 if ent else 0, op, thr)
+            self.log("ANALYTIC", "ELIMINATED",
+                     "flatten rank + residual Schmidt det: rank1=%s ent=%s"
+                     % (rank1, ent))
+            ev = {"amplitudes": toks, "fully_separable": not ent,
+                  "op": op, "threshold": thr}
+            return self._finish("DECIDED_WITHOUT_EXECUTION", ans,
+                                "FLATTEN_RANK_SCHMIDT", "ANALYTIC", ev,
+                                original=8, required=0, analysis_cost=0.05)
         if len(toks) != 4:
-            raise ValueError("entanglement state must have 4 amplitudes")
+            raise ValueError("entanglement state must have 4 or 8 amplitudes")
         a, b, c, d = (Fraction(t) for t in toks)   # decimal exato, não float
         n = a * a + b * b + c * c + d * d
         if n == 0:

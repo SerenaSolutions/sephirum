@@ -57,8 +57,8 @@ def _compile_src(src):
     op = parts[1]
     if fam == "entanglement":
         toks = [x.strip() for x in model["state"].split(",")]
-        if len(toks) != 4:
-            raise VMFault("estado com %d amplitudes — precisa 4 (§12: "
+        if len(toks) not in (4, 8):
+            raise VMFault("estado com %d amplitudes — precisa 4 ou 8 (§12: "
                           "recusa antes de gerar qualquer programa)"
                           % len(toks))
         data = [Fraction(t) for t in toks]
@@ -69,6 +69,9 @@ def _compile_src(src):
         if target not in ("entangled", "concurrence"):
             raise VMFault("pergunta %r fora da família de emaranhamento "
                           "(§12)" % target)
+        if len(toks) == 8 and target != "entangled":
+            raise VMFault("concurrence é medida de 2 qubits — 3 qubits "
+                          "respondem apenas 'entangled' (§12)")
         # threshold FRACIONÁRIO exato (decimal de token, não float)
         return {"fam": fam, "op": op, "thr": Fraction(parts[2]),
                 "target": target, "data": data,
@@ -272,12 +275,103 @@ def _ent_exact_body(c):
     return dec % str(c["thr"])
 
 
+def _gen_entangle3_exact(c, sdk):
+    """3 qubits: separabilidade plena exata (Fraction) + gêmeo SDK."""
+    amps = c["data"]
+    decl = ("AMPS = [%s]\nDATA = %r\nOP = %r\n"
+            % (", ".join("Fraction(%r)" % str(a) for a in amps),
+               c["data_str"], c["op"]))
+    body = (
+        '# Família: entanglement (3 qubits) · pergunta: entangled %s %s\n'
+        '# TOTALMENTE SEPARÁVEL <=> posto 1 do achatamento (q0) E det2=0\n'
+        'R0, R1 = AMPS[:4], AMPS[4:]\n'
+        'rank1 = all(R0[j]*R1[k] == R0[k]*R1[j]\n'
+        '            for j in range(4) for k in range(j+1, 4))\n'
+        'if rank1:\n'
+        '    phi = R0 if any(R0) else R1\n'
+        '    ent = (phi[0]*phi[3] - phi[1]*phi[2]) != 0\n'
+        'else:\n'
+        '    ent = True\n'
+        'THR = Fraction(%r)\n'
+        'v = Fraction(1 if ent else 0)\n'
+        'verdict = {">": v > THR, "<": v < THR, ">=": v >= THR,\n'
+        '           "<=": v <= THR, "==": v == THR}[OP]\n'
+        'print("VERDICT", 1 if verdict else 0)\n'
+        'print("HASH", hashlib.sha256(DATA.encode()).hexdigest())\n'
+        'print("UNITS", %d)\n'
+        'print("QPU_UNITS_BILLED", 0)\n'
+        % (c["op"], str(c["thr"]), str(c["thr"]), c["units"]))
+    head = ('#!/usr/bin/env python3\n'
+            '# Gerado pelo TRANSPILER MULTI-ALVO ZEPHIRUM — ALVO %s.\n'
+            '# Família: entanglement · 3 qubits · separabilidade plena.\n'
+            '# O veredito EXATO é do ZEPHIRUM (Fraction, ZERO execução);\n'
+            '# o SDK é o gêmeo adversarial; ausente => SKIP §12.\n'
+            'import hashlib\n'
+            'from fractions import Fraction\n\n'
+            '%s\n%s\n' % (sdk or "EXATO (sem SDK)", decl, body))
+    if sdk == "qiskit":
+        head += ('try:\n'
+                 '    import numpy as np\n'
+                 '    from qiskit.quantum_info import Statevector\n'
+                 '    sv = Statevector([float(x) for x in AMPS])\n'
+                 '    M = np.asarray(sv.data).reshape(2, 4)\n'
+                 '    print("SDK_CROSS_CHECK", "qiskit flatten rank = %d '
+                 '(ruído float em torno do veredito exato)"\n'
+                 '          % np.linalg.matrix_rank(M, tol=1e-9))\n'
+                 'except ImportError:\n'
+                 '    print("SDK_CROSS_CHECK SKIP (§12): qiskit não '
+                 'instalado neste ambiente — o gateway nunca finge")\n'
+                 'except Exception as e:\n'
+                 '    print("SDK_CROSS_CHECK FAIL (§12): o SDK não '
+                 'representa este estado:", e)\n')
+    return head
+
+
+def _gen_openqasm(c):
+    """ALVO OpenQASM 3 (fusão internacional): o ZEPHIRUM emite o
+    artefato de EXECUÇÃO no padrão que qualquer SDK absorve. O veredito
+    exato permanece do núcleo; o QASM carrega o estado e, quando o
+    padrão de amplitudes é conhecido (Bell/GHZ/antipodal), o circuito
+    de preparação. Caso geral: vetor exato em comentário e preparação
+    delegada ao SDK absorvente (§12 — nunca finge)."""
+    if c["fam"] != "entanglement":
+        return ("// ZEPHIRUM -> OpenQASM 3: ainda não coberto nesta fatia "
+                "(§12)\n")
+    amps = c["data"]
+    nz = [(i, a) for i, a in enumerate(amps) if a != 0]
+    n = len(amps)
+    hdr = ("OPENQASM 3.0;\ninclude \"stdgates.inc\";\n"
+           "// Gerado pelo TRANSPILER MULTI-ALVO ZEPHIRUM\n"
+           "// Pergunta: %s %s %s (decidida EXATAMENTE pelo núcleo "
+           "Zephirum, sem execução)\n"
+           "// Estado exato (Fraction): %s\n"
+           % (c.get("target", "entangled"), c["op"], str(c["thr"]),
+              c["data_str"]))
+    if n == 4 and [i for i, _ in nz] == [0, 3] and nz[0][1] == nz[1][1]:
+        # c(|00>+|11>)/1: classe Bell
+        return (hdr + "qubit[2] q;\nh q[0];\ncx q[0], q[1];\n")
+    if n == 8 and len(nz) == 2 and nz[0][0] == 0 and nz[1][0] == 7 \
+            and abs(nz[0][1]) == abs(nz[1][1]):
+        # c0|000> + c1|111>: classe GHZ (fase relativa em z)
+        import math
+        theta = 2 * math.atan2(abs(float(nz[1][1])), abs(float(nz[0][1])))
+        gate = ("ry(%r) q[0];" % theta) + ("\nz q[0];" if
+               (nz[1][1] < 0) != (nz[0][1] < 0) else "")
+        return (hdr + "qubit[3] q;\n%s\ncx q[0], q[1];\ncx q[0], q[2];\n"
+                % gate)
+    return (hdr + "// Preparação geral delegada ao SDK absorvente "
+            "(§12);\n// o vetor exato acima é a fonte de verdade.\n"
+            "qubit[%d] q;\n" % (3 if n == 8 else 2))
+
+
 def _gen_entangle_exact(c, sdk):
     """Programa autônomo: veredito EXATO do ZEPHIRUM + gêmeo SDK opcional.
 
     O SDK (qiskit/cirq) é o ADVERSÁRIO: executa o caminho que o
     certificado eliminou. Sem SDK instalado => SKIP §12 — nunca finge.
     """
+    if len(c["data"]) == 8:
+        return _gen_entangle3_exact(c, sdk)
     a, b, cc, d = c["data"]
     decl = ('A = Fraction(%r)\nB = Fraction(%r)\nC_ = Fraction(%r)\n'
             'D = Fraction(%r)\nDATA = %r\nOP = %r\n'
@@ -392,6 +486,11 @@ def _gen_lisp(c):
                  " ((string= op \"<=\") (<= val thr))))\n"
                  % (c["data"][0], thr))
     elif fam == "entanglement":
+        if len(c["data"]) == 8:
+            body += (";; 3 qubits: nao coberto nesta fatia (§12) — o "
+                     "veredito exato esta no nucleo C/Python; alvos "
+                     "qiskit/openqasm carregam o estado.\n")
+            return body
         A, B, C_, D = c["data"]
         body += ("(defparameter thr %s)\n" % str(thr))
         if c.get("target") == "entangled":
@@ -521,6 +620,7 @@ def transpile(src):
                 "cirq nesta fatia — aritmética long/128 não cobre o "
                 "regime; gerar código errado seria pior que recusar")
         return {"python": _gen_python(c), "qiskit": _gen_qiskit(c),
+                "openqasm": _gen_openqasm(c),
                 "cirq": _gen_cirq(c), "lisp": _gen_lisp(c),
                 "c": fora, "java": fora, "csharp": fora, "cert": cert}
     fora_q = ("§12: os alvos qiskit/cirq cobrem a família entanglement "

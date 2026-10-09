@@ -1,0 +1,36 @@
+{
+  "experiment": "GHZ 3-qubit + separable control \u2014 FUSION: Zephirum emits OpenQASM 3 (ghz3_prep.qasm), Qiskit absorbs (qasm3.loads), ibm_fez executes; exact C verdicts decided without execution",
+  "date_utc": "2026-10-09T00:38:42.153727Z",
+  "backend": "ibm_fez",
+  "job_id": "db43f2kvf2bc73cu0ts0",
+  "shots": 512,
+  "ghz_exact_verdict_c": 1,
+  "ghz_zzz": -0.0508,
+  "ghz_counts": {
+    "111": 264,
+    "000": 237,
+    "110": 2,
+    "101": 3,
+    "010": 4,
+    "100": 1,
+    "011": 1
+  },
+  "sep_exact_verdict_c": 0,
+  "sep_zzz": -0.0938,
+  "sep_counts": {
+    "100": 141,
+    "101": 116,
+    "000": 108,
+    "001": 135,
+    "110": 7,
+    "011": 1,
+    "010": 2,
+    "111": 2
+  },
+  "expected": "GHZ+: pair stabilizers <ZZI>=<IZZ>=+1, population 000/111 near 1, and <ZZZ>=0 BY PARITY (three flips on |111>) \u2014 the earlier '<ZZZ> near +1' label was wrong physics, corrected",
+  "interpretation": "hardware agrees with the exact verdicts in both directions (\u00a712: evidence, not certificate)",
+  "ghz_zzi": 0.9648,
+  "ghz_izz": 0.9648,
+  "ghz_pop_000_111": 0.9785,
+  "ghz_zzz_meaning": "0.0 (correct for GHZ+; not an error signal)"
+}
