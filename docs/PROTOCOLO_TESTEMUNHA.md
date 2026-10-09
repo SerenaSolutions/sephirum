@@ -1,4 +1,4 @@
-# PROTOCOLO CHECKMATE — 100 perguntas, 0 segundos de QPU
+# PROTOCOLO TESTEMUNHA — 100 perguntas, 0 segundos de QPU
 
 A *prova viva* do ZEPHIRUM nos laboratórios da IBM: uma bateria de
 100 perguntas de emaranhamento respondidas por certificado, offline,
@@ -10,7 +10,7 @@ Complementa (não substitui) os recibos de hardware já publicados
 
 ## A bateria (concluída — Tier A, sandbox)
 
-- `prototype/checkmate_battery.py` — 100 estados de 2 qubits,
+- `prototype/witness_battery.py` — 100 estados de 2 qubits,
   semente fixa 20261009 (reproduzível), distribuição:
   25 produto puro · 25 emaranhado Schmidt · 25 geral ·
   25 armadilhas de fronteira (produto exato, quase-separável ±1/256,
@@ -21,7 +21,7 @@ Complementa (não substitui) os recibos de hardware já publicados
 - Resultado (2026-10-09): **100/100 certificado == verdade exata**,
   70 emaranhados · 30 produto, **0 unidades de QPU faturadas** para
   responder as 100.
-- Manifest público por pergunta: `prototype/checkmate_battery/manifest.json`.
+- Manifest público por pergunta: `prototype/witness_battery/manifest.json`.
 - Achado forense da própria bateria (q085): um caso quase-separável
   cujo decimal exato é não-terminante (7/13); a serialização truncada
   tornava o estado *genuinamente* levemente emaranhado — o motor

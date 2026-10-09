@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """
-CHECKMATE BATTERY — 100 perguntas de emaranhamento, 0 segundos de QPU.
+WITNESS BATTERY — 100 perguntas de emaranhamento, 0 segundos de QPU.
 
 A "prova viva": o núcleo de decisão certifica as 100 respostas offline
 (DECIDED_WITHOUT_EXECUTION, 0 unidades de QPU); a bateria fica pronta
@@ -18,7 +18,7 @@ Distribuição das 100 perguntas (semente fixa, reproduzível):
   25 gerais (veredito misto pelo determinante exato)
   25 ARMADILHAS de fronteira (ad ~ bc, quase-separáveis, borda exata)
 
-Saída: checkmate_battery/ (100 arquivos .zeph) + manifest JSON com
+Saída: witness_battery/ (100 arquivos .zeph) + manifest JSON com
 veredito do certificado, verdade independente, status e concurrence.
 EXIT 1 se qualquer divergência entre certificado e verdade exata.
 """
@@ -30,7 +30,7 @@ from fractions import Fraction
 from pathlib import Path
 
 RNG = random.Random(20261009)
-OUT = Path(__file__).parent / "checkmate_battery"
+OUT = Path(__file__).parent / "witness_battery"
 PLUGIN = "zephirum-q"
 
 
@@ -155,7 +155,7 @@ def main():
                "qpu_units_billed_total": qpu_total,
                "seed": 20261009, "battery": manifest},
               open(OUT / "manifest.json", "w"), indent=1, ensure_ascii=False)
-    print("CHECKMATE BATTERY: %d perguntas | %d emaranhadas, %d produto"
+    print("WITNESS BATTERY: %d perguntas | %d emaranhadas, %d produto"
           % (len(manifest), ent, prod))
     print("certificado == verdade exata: %d/%d" % (ok, len(manifest)))
     print("unidades de QPU gastas para responder as 100: %d" % qpu_total)
