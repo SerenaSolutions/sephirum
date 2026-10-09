@@ -1,0 +1,23 @@
+{
+  "experiment": "separable control |+>|0> \u2014 exact C verdict 0 (det=0); hardware must show NO correlation",
+  "date_utc": "2026-10-09T00:24:25.003086Z",
+  "backend": "ibm_fez",
+  "job_id": "db438aklf4us73c2547g",
+  "shots": 512,
+  "z_basis_counts": {
+    "01": 234,
+    "00": 263,
+    "11": 6,
+    "10": 9
+  },
+  "x_basis_counts": {
+    "10": 137,
+    "00": 111,
+    "01": 138,
+    "11": 126
+  },
+  "corr_zz": 0.0508,
+  "corr_xx": -0.0742,
+  "exact_verdict_c": 0,
+  "interpretation": "both correlations near zero: consistent with separable (\u00a712: evidence, not certificate)"
+}

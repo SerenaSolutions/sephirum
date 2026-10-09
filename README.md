@@ -31,6 +31,23 @@ The paradigm inverts: from `ALGORITHM → COMPUTE` to `PROOF → COMPUTE`.
 | Honest UNKNOWNs (no guessing) | 31,418 (6.3%) |
 | Advisory AI layer | 95.67% accuracy vs 53.05% baseline |
 
+## Hardware validation (IBM Quantum, real QPU)
+
+The exact classical core never consults the QPU for its verdict. Cloud runs
+are empirical evidence only (§12). Both experiments ran on ibm_fez (Heron,
+156 qubits), free Open Plan, each under 1 second of QPU time:
+
+| Experiment | Exact C verdict (decided without execution) | QPU evidence |
+|---|---|---|
+| Bell Φ+ (positive control) | entangled == 1 (Schmidt det ≠ 0) | ⟨ZZ⟩=0.886, ⟨XX⟩=0.909 — correlation in both bases |
+| Separable \|+0⟩ (negative control) | entangled == 0 (det = 0) | ⟨ZZ⟩=0.051, ⟨XX⟩=-0.074 — no correlation |
+
+A product state cannot show both correlations near 1; a Bell state cannot
+show both near 0. The hardware agrees with the exact decision in both
+directions. Receipts: `results/bell_phi_plus_ibm_fez.json`,
+`results/separable_control_ibm_fez.json`; full QPU usage ledger:
+`results/qpu_ledger.md`.
+
 ## Structure
 
 ```

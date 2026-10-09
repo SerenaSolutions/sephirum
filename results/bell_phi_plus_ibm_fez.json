@@ -1,0 +1,23 @@
+{
+  "experiment": "entangled positive control \u2014 Bell Phi+; exact C verdict 1 (det!=0); hardware must show correlation in BOTH Z and X bases",
+  "date_utc": "2026-10-09T00:17:xx",
+  "backend": "ibm_fez",
+  "job_id": "db4350o4qg6s73c1ivcg",
+  "shots": 2048,
+  "z_basis_counts": {
+    "00": 956,
+    "11": 975,
+    "10": 68,
+    "01": 49
+  },
+  "x_basis_counts": {
+    "11": 986,
+    "00": 969,
+    "10": 45,
+    "01": 48
+  },
+  "corr_zz": 0.8857,
+  "corr_xx": 0.9092,
+  "exact_verdict_c": 1,
+  "interpretation": "both correlations near +1: consistent with entangled (\u00a712: evidence, not certificate)"
+}
