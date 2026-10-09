@@ -80,12 +80,16 @@ mitigado ≈ +2,9; estabilizadores > +0,89 com IC95 excluindo zero).
 ### Justificativa da necessidade de HPC
 O sandbox local limita baterias de verificação a ~500 mil casos e
 estados com dezenas de qubits. No SDumont pretende-se:
-1. Escalar as baterias de falsificação (atualmente 200 certificados
-   adversariais, 0 aceitos) para milhões de casos, mantendo a meta
-   de 0 certificados falsos.
+1. Escalar as baterias de falsificação (atualmente 2.000 certificados
+   adversariais determinísticos, semente pública, 0 falsos aceitos —
+   bateria falsification_2000.py, executada em 0,24 s no sandbox) para
+   10^7 casos e regimes de parâmetros que não cabem em laptop:
+   matrizes grandes, exaustão por família, varredura de forjamento.
 2. Certificar por Schmidt exato estados além do limite local
-   (esparso GHZ-20 → faixas superiores), com re-derivação
-   independente de cada certificado por verificador em C puro (zref).
+   (esparso GHZ-20 → faixas superiores: a aritmética racional exata
+   cresce superlinearmente com 2^n e o re-derivar independente de
+   cada certificado dobra o custo — é CPU-bound puro), com verificador
+   em C puro (zref) na mesma máquina.
 3. Medir a taxa de eliminação por família em escala (hoje 76,51%
    em 500 mil casos) com intervalos de confiança públicos.
 
@@ -120,7 +124,8 @@ reutilizável pela comunidade (MIT).
 - Site com recibos: serenasolutions.github.io/sephirum
 - 15 releases técnicas (v0.1.0 → v0.9.0), CI verde a cada push
 - Validação em QPU real da IBM com ledger público de jobs
-- 200 certificados adversariais, 0 falsos aceitos (bateria pública)
+- 2.000 certificados adversariais, 0 falsos aceitos (bateria
+  determinística pública, semente 20261009, resultados em JSON)
 
 ### Referências do projeto
 docs/QINTEROP.md; docs/PHASE_5.md; docs/PHASE_6.md; docs/PHASE_7_TRUST.md;
