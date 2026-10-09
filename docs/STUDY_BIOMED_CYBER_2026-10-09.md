@@ -36,10 +36,10 @@ DECIDED_WITHOUT_EXECUTION, zero QPU.
 ### 1.2 Hubbard chain (`model: hubbard`) — the DNA/charge-transport bridge
 
 The standard effective model for charge/hole transport in molecular
-wires, including the DNA pi-stack — hole transport is the chemistry of
-DNA oxidative damage, the entry point of the molecular base into
-genomic-biology questions (cancer, viral genomes as future fusion
-targets). Full spinful Fock space, exact diagonalization, sites 2..5.
+wires, including the DNA pi-stack — hole transport is core physical
+chemistry of the molecular base, the entry point into genomic-scale
+questions (future fusion targets). Full spinful Fock space, exact
+diagonalization, sites 2..5.
 
 Verified against closed forms (3/3 exact, no tolerance beyond 1e-9):
 
@@ -55,8 +55,8 @@ bond (effective 2t).
 
 ### 1.3 Honest scope (registered, not overclaimed)
 
-Drug discovery at disease scale (DNA-level, viral proteases, tumor
-metabolism) needs molecule-scale electronic structure — fault-tolerant
+Molecule-scale electronic structure questions at organism level need
+fault-tolerant hardware (or near-term via the fusion targets)
 era, or near-term via the fusion targets (Qiskit Nature / PennyLane)
 that consume the same .zeph question. What the language guarantees
 TODAY: exact certified verdicts for the models it accepts (H2, Hubbard
