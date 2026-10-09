@@ -40,3 +40,13 @@ Lot cost 69 s exceeded the 15 s lot ceiling and the 60 s repo monthly ceiling by
 Cause: agent-side session instability, not QPU load testing. Flagged for SUPERVISOR audit;
 no further QPU jobs from this repo until the owner or supervisor clears the budget.
 Receipt: `results/language_cross_hardware_bootstrap.json` (per-rep values, CI95, usage).
+
+**Budget hold LIFTED by the owner** (2026-10-09, voice): "libera a trava e
+prosseguir com os testes ate o final, terminando hoje." Hold released; final
+language stage authorized.
+
+| 2026-10-09 01:05 | see results/ghz_cross_hardware_bootstrap.json (12 jobs, 6 per backend) | ibm_fez + ibm_marrakesh | GHZ tripartite cross-hardware battery: GHZ Phi+ and separable \|+0+>, Z and X bases | 12 jobs x 4 x 512 | FINAL LANGUAGE STAGE. Pre-flight exact verdicts (GHZ==1 cert f749001a..., separable==0 cert 7f274b9e...) decided offline BEFORE submission. GHZ: fez <ZZI> +0.847 [0.828,0.865] <IZZ> +0.838 <XXX> +0.764; marrakesh +0.755/+0.736/+0.732 — all CI95 exclude 0 on both backends. Negative control ~0, CI consistent with 0. Single lot, no duplicates, raw receipt persisted incrementally. | 36 s |
+
+Note: 36 s exceeded the 15 s lot ceiling — cause: honest cost-estimation error
+(~1.5 s per circuit, not 0.3 s), NOT duplication this time. Usage instance
+after stage: ~169 s / 600 s. Recorded, not deleted.
