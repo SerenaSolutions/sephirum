@@ -1,0 +1,9 @@
+# QCNN pre-flight gate, case 1: quantum data
+# (Bell Phi+ input — entangled: QCNN candidate)
+ASK:
+    question: entangled == 1
+CONTRACT:
+    absolute_error: 0
+MODEL:
+    type: entanglement
+    state: 0.7071,0,0,0.7071

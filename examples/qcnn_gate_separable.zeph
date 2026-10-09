@@ -1,0 +1,9 @@
+# QCNN pre-flight gate, case 2: classical data
+# (separable |+0> input — classically simulable: route classical)
+ASK:
+    question: entangled == 1
+CONTRACT:
+    absolute_error: 0
+MODEL:
+    type: entanglement
+    state: 0.7071,0.7071,0,0
