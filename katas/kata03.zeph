@@ -1,0 +1,7 @@
+# KATA 3 — Bell Phi+: is this state entangled? The core decides
+# exactly from amplitudes alone — no QPU, no shots.
+ASK:
+    question: entangled == ???
+MODEL:
+    type: entanglement
+    state: 0.70710678118654752,0,0,0.70710678118654752

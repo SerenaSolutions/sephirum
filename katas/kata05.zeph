@@ -1,0 +1,10 @@
+# KATA 5 — cyber base: an ML-DSA-44 signature with ONE flipped BYTE.
+# The runner signs the real message; you judge the artifact.
+ASK:
+    question: signature_valid == ???
+MODEL:
+    type: crypto
+    check: ml_dsa_verify
+    public_key: {{PUB}}
+    message: {{MSG}}
+    signature: {{SIG}}

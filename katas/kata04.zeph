@@ -1,0 +1,7 @@
+# KATA 4 — a 20-qubit sparse W class state (support 1,2,4,8).
+# Twelve-qubit limit? Not for sparse support. Predict the verdict.
+ASK:
+    question: entangled == ???
+MODEL:
+    type: entanglement
+    state: sparse(20) 1:0.5,2:0.5,4:0.5,8:0.5

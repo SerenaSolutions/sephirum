@@ -1,0 +1,8 @@
+# KATA 1 — constant folding: does the expression eliminate?
+# Replace ??? with 1 (decides True) or 0 (decides False). Wrong
+# predictions are structural refusals — the core never guesses.
+ASK:
+    question: constant == ???
+MODEL:
+    type: expression
+    expr: (3 * 4 + 6) / 3

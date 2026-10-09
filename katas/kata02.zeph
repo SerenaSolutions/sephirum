@@ -1,0 +1,7 @@
+# KATA 2 — threshold sum: partial sums already decide. Predict!
+ASK:
+    question: sum >= ???
+MODEL:
+    type: threshold_sum
+    terms: 40, 20, 30, 10, 5, 15
+    early_exit: 100

@@ -1,0 +1,12 @@
+# KATA 6 — biomedicine base: the H2-dimer analog (2 sites, J=1).
+# The exact core diagonalizes and returns the ground energy.
+# Derive it analytically: the singlet sits at exactly -3J/4.
+# Replace ??? with a THRESHOLD that makes the verdict DECIDE True
+# (any number strictly above -0.75 that you can defend).
+ASK:
+    question: ground_state_energy < ???
+MODEL:
+    type: molecular
+    model: heisenberg
+    sites: 2
+    coupling: 1
