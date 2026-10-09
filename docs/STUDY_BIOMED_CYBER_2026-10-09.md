@@ -56,9 +56,9 @@ bond (effective 2t).
 ### 1.3 Honest scope (registered, not overclaimed)
 
 Molecule-scale electronic structure questions at organism level need
-fault-tolerant hardware (or near-term via the fusion targets)
-era, or near-term via the fusion targets (Qiskit Nature / PennyLane)
-that consume the same .zeph question. What the language guarantees
+the fault-tolerant era, or near-term approximations via the fusion
+targets (Qiskit Nature / PennyLane) that consume the same .zeph
+question. What the language guarantees
 TODAY: exact certified verdicts for the models it accepts (H2, Hubbard
 clusters), and Section 12 refusals for anything beyond. This study
 registers the protocols now; it does not claim a cure, a drug, or a
