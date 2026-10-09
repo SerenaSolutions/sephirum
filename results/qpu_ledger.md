@@ -12,6 +12,7 @@ filtering.
 | 2026-10-09 00:17 | db4350o4qg6s73c1ivcg | ibm_fez | Bell Φ+ (H, CX), Z and X bases | 2×2048 | Empirical evidence of entanglement: ⟨ZZ⟩=0.8857, ⟨XX⟩=0.9092, consistent with the exact Zephirum verdict (det≠0, decided without execution) | < 1 s (est.) |
 | 2026-10-09 00:18 | db435mclf4us73c25180 | ibm_fez | Bell Φ+ (H, CX), Z basis | 512 | End-to-end plugin validation (`--validate-remote-bell`, opt-in): ⟨ZZ⟩=0.8828 | < 1 s (est.) |
 | 2026-10-09 00:24 | db438aklf4us73c2547g | ibm_fez | Separable control \|+0⟩ (H only, no CX), Z and X bases | 2×512 | Negative control: exact verdict 0 (det=0), hardware shows ⟨ZZ⟩=0.0508, ⟨XX⟩=-0.0742 — no correlation, consistent with separable | < 1 s (est.) |
+| 2026-10-09 00:30 | db43b3imb58s7388js10 | ibm_fez | QCNN source data: 1D cluster state cell CZ\|++⟩ (Cong et al. 2019, arXiv:1810.03787), 3 bases | 3×512 | Paper-vs-Zephirum confrontation: exact verdict 1 (det=-0.5); stabilizers ⟨XZ⟩=0.918, ⟨ZX⟩=0.844, ⟨ZZ⟩=0.012 — cluster signature confirmed | < 1 s (est.) |
 
 ## Interpretation (§12 honesty)
 

@@ -1,0 +1,11 @@
+# QCNN paper source data (Cong, Choi & Lukin 2019,
+# arXiv:1810.03787): 1D cluster state building block
+# CZ|++> = (|00>+|01>+|10>-|11>)/2 — the SPT-phase input
+# of the QCNN phase-recognition example, minimal cell
+ASK:
+    question: entangled == 1
+CONTRACT:
+    absolute_error: 0
+MODEL:
+    type: entanglement
+    state: 0.5,0.5,0.5,-0.5

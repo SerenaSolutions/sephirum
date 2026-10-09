@@ -48,10 +48,12 @@ control experiment on a real QPU (free Open Plan, each run < 1 s):
 |---|---|---|
 | Bell Φ+ input (`examples/qcnn_gate_entangled.zeph`) | 1 — entangled | ⟨ZZ⟩ = 0.886, ⟨XX⟩ = 0.909 (correlation in both bases) |
 | Separable \|+0⟩ input (`examples/qcnn_gate_separable.zeph`) | 0 — separable | ⟨ZZ⟩ = 0.051, ⟨XX⟩ = −0.074 (no correlation) |
+| QCNN paper source cell: 1D cluster state CZ\|++⟩ (`examples/qcnn_cluster_state.zeph`) | 1 — entangled (det = −0.5) | stabilizers ⟨XZ⟩ = 0.918, ⟨ZX⟩ = 0.844; ⟨ZZ⟩ = 0.012 — the cluster signature, distinct from both Bell and separable |
 
 A product state cannot show both correlations near 1; a Bell state
 cannot show both near 0. The hardware agrees with the exact decision
 in both directions. Receipts: `results/bell_phi_plus_ibm_fez.json`,
+`results/qcnn_cluster_ibm_fez.json`,
 `results/separable_control_ibm_fez.json`; full usage ledger:
 `results/qpu_ledger.md`.
 

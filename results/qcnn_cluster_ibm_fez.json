@@ -1,0 +1,31 @@
+{
+  "experiment": "QCNN paper source data on real QPU \u2014 1D cluster state cell CZ|++> (Cong, Choi & Lukin 2019, arXiv:1810.03787); exact C verdict 1 (det=-0.5)",
+  "date_utc": "2026-10-09T00:30:15.703146Z",
+  "backend": "ibm_fez",
+  "job_id": "db43b3imb58s7388js10",
+  "shots": 512,
+  "expected_signature": "stabilizers <XZ>=+1, <ZX>=+1, <ZZ>=0 \u2014 distinct from Bell (ZZ=1) and from separable (all 0)",
+  "exact_verdict_c": 1,
+  "ZZ": {
+    "10": 128,
+    "00": 126,
+    "11": 133,
+    "01": 125
+  },
+  "corr_ZZ": 0.0117,
+  "XZ": {
+    "11": 252,
+    "00": 239,
+    "10": 13,
+    "01": 8
+  },
+  "corr_XZ": 0.918,
+  "ZX": {
+    "00": 242,
+    "11": 230,
+    "10": 27,
+    "01": 13
+  },
+  "corr_ZX": 0.8438,
+  "interpretation": "stabilizers near +1 with ZZ near 0: consistent with the cluster state (\u00a712: evidence, not certificate)"
+}
