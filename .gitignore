@@ -1,10 +1,4 @@
 __pycache__/
 *.pyc
+*.log
 .DS_Store
-
-# build artifacts (never versioned)
-plugin/build/
-plugin/dist/
-*.egg-info/
-__pycache__/
-src/nexa_core

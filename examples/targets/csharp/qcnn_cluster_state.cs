@@ -1,0 +1,1 @@
+§12 RECUSA: entanglement transpila para python/qiskit/cirq nesta fatia — aritmética long/128 não cobre o regime; gerar código errado seria pior que recusar

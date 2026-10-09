@@ -1,12 +1,4 @@
-# SEPHIRUM source files: no Linguist entry exists yet (registration is
-# pending). Until then, tag by honest, declared category only.
-*.zeph linguist-detectable=false
-
-# Generated evidence / data is not authored source:
-results/** linguist-generated
-prototype/*_results*.json linguist-generated
-prototype/*.cert.json linguist-generated
-
-# Documentation and book content are not code:
-docs/** linguist-documentation
-book/** linguist-documentation
+# Estatisticas honestas do Linguist:
+# saidas geradas pelo transpilador multi-alvo nao contam como codigo-fonte manual.
+fusion/qiskit/*.py linguist-generated
+fusion/openqasm/*.qasm linguist-generated

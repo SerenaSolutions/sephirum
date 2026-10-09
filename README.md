@@ -1,4 +1,4 @@
-<p align="center"><img src="assets/brand/zephirum_bloch_z_dark.png" width="140" alt="ZEPHIRUM — monogram: the Z made of 0 and 1"></p>
+<p align="center"><img src="assets/brand/logo_zyql_main.png" width="480" alt="ZEPHIRUM — ZYQL: the official language emblem, the Z made of 0 and 1"></p>
 
 # ZEPHIRUM — Computation Before Execution
 
