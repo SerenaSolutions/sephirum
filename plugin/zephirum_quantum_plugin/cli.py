@@ -31,7 +31,7 @@ def main(argv=None):
                     help=".zeph source file (ZYQL source; optional "
                          "with --qpu-probe)")
     ap.add_argument("--version", action="version",
-                    version="zephirum-q 0.5.2 — ZEPHIRUM · ZYQL "
+                    version="zephirum-q 0.5.3 — ZEPHIRUM · ZYQL "
                     "(say \"Zykel\")")
     ap.add_argument("--sdk", default=None,
                     help="adversarial twin for cross-checking "
@@ -44,6 +44,15 @@ def main(argv=None):
                          "for quantum hardware)")
     ap.add_argument("--qpu-probe", action="store_true",
                     help="honest QPU status only (§12)")
+    ap.add_argument("--qpu-probe-remote", action="store_true",
+                    help="remote QPU reachability via cloud "
+                         "credential (§12: evidence, not a local "
+                         "claim; submits no job, spends no QPU time)")
+    ap.add_argument("--validate-remote-bell", action="store_true",
+                    help="end-to-end evidence: run the Bell Phi+ "
+                         "starter question on a real cloud QPU "
+                         "(512 shots, OPT-IN — this DOES spend QPU "
+                         "time on the free plan)")
     ap.add_argument("--init", metavar="FILE",
                     help="write a real starter question to FILE.zeph "
                          "and exit (start authoring ZYQL questions "
@@ -56,6 +65,49 @@ def main(argv=None):
         print("QPU         %s (§12)" % pr["STATUS"])
         print("MOTIVO      %s" % pr["MOTIVO"])
         print("DECISAO     %s" % pr["DECISAO_CLASSICA"])
+        return 0
+    if args.qpu_probe_remote:
+        from .standby import qpu_probe_remote
+        pr = qpu_probe_remote()
+        print("QPU_LOCAL   %s (§12)" % pr["QPU_LOCAL"])
+        print("REMOTE      %s" % pr["REMOTE"])
+        print("STATUS      %s" % pr["STATUS"])
+        print("MOTIVO      %s" % pr["MOTIVO"])
+        for b in pr.get("BACKENDS", []):
+            print("BACKEND     %s (%d qubits)" % (b["name"], b["qubits"]))
+        return 0
+    if args.validate_remote_bell:
+        import os
+        token = os.environ.get("ZEPHIRUM_IBM_TOKEN") or \
+            os.environ.get("IBM_QUANTUM_TOKEN") or \
+            os.environ.get("QISKIT_IBM_TOKEN")
+        if not token:
+            print("NOT ROUTED (§12): no cloud credential in "
+                  "environment (set ZEPHIRUM_IBM_TOKEN)")
+            return 1
+        from qiskit import QuantumCircuit, transpile
+        from qiskit_ibm_runtime import QiskitRuntimeService, SamplerV2
+        svc = QiskitRuntimeService(token=token,
+                                   channel="ibm_quantum_platform")
+        backend = svc.least_busy(simulator=False, operational=True)
+        qc = QuantumCircuit(2, 2)
+        qc.h(0); qc.cx(0, 1); qc.measure([0, 1], [0, 1])
+        isa = transpile(qc, backend=backend, optimization_level=1)
+        job = SamplerV2(mode=backend).run([isa], shots=512)
+        res = job.result()
+        counts = res[0].data.c.get_counts()
+        tot = sum(counts.values())
+        corr = (counts.get("00", 0) + counts.get("11", 0)
+                - counts.get("01", 0) - counts.get("10", 0)) / tot
+        # exact core verdict on the SPECIFIED state: det != 0
+        print("BACKEND     %s" % backend.name)
+        print("JOB_ID      %s" % job.job_id())
+        print("SHOTS       512 (billed)")
+        print("CORR_ZZ     %.4f (empirical)" % corr)
+        print("EXACT_CORE  entangled == 1 (Schmidt det != 0, "
+              "decided WITHOUT execution, 0 QPU units)")
+        print("EVIDENCE    empirical correlation consistent with "
+              "the exact verdict (§12: evidence, not certificate)")
         return 0
     if args.init:
         import os

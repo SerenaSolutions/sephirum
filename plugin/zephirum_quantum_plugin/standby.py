@@ -48,3 +48,50 @@ def standby_receipt(src):
     probe = qpu_probe()
     receipt["standby"] = probe
     return receipt, ok
+
+def qpu_probe_remote():
+    """Remote QPU reachability — §12 still intact: this NEVER claims
+    the local device has a QPU. It reports whether real quantum
+    hardware is reachable through a cloud credential, and lists it
+    as evidence. No job is submitted: zero QPU time spent."""
+    import os
+    token = None
+    for var in ("ZEPHIRUM_IBM_TOKEN", "IBM_QUANTUM_TOKEN",
+                "QISKIT_IBM_TOKEN"):
+        token = os.environ.get(var)
+        if token:
+            break
+    if not token:
+        return {
+            "QPU_LOCAL": False,
+            "REMOTE": "NO_CREDENTIALS",
+            "STATUS": "AWAITING",
+            "MOTIVO": ("no IBM Quantum credential in environment "
+                       "(§12): nothing is claimed, nothing is "
+                       "faked; set ZEPHIRUM_IBM_TOKEN to probe"),
+        }
+    try:
+        from qiskit_ibm_runtime import QiskitRuntimeService
+        svc = QiskitRuntimeService(token=token,
+                                   channel="ibm_quantum_platform")
+        backends = svc.backends(simulator=False, operational=True)
+        return {
+            "QPU_LOCAL": False,
+            "REMOTE": "REACHABLE",
+            "STATUS": "REMOTE_REACHABLE",
+            "BACKENDS": [{"name": b.name, "qubits": b.num_qubits}
+                         for b in backends],
+            "QPU_UNITS_SPENT": 0,
+            "MOTIVO": ("real quantum hardware reachable by cloud "
+                       "credential; the device itself still has no "
+                       "QPU (§12): cloud access is evidence, not a "
+                       "local claim; no job was submitted"),
+        }
+    except Exception as e:  # honest failure, never a guess
+        return {
+            "QPU_LOCAL": False,
+            "REMOTE": "UNREACHABLE",
+            "STATUS": "AWAITING",
+            "MOTIVO": ("credential present but cloud unreachable "
+                       "(§12): %s" % type(e).__name__),
+        }
