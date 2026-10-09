@@ -245,6 +245,8 @@ class NCA:
             return self._molecular(op, thr)
         if t == "crypto":
             return self._crypto(op, thr)
+        if t == "exact":
+            return self._exact(op, thr)
         # §12: erro estrutural falha explicitamente — nunca vira UNKNOWN
         raise ValueError("unsupported model type: %r" % t)
 
@@ -821,6 +823,167 @@ class NCA:
         return self._finish("DECIDED_WITHOUT_EXECUTION", cmp(e0, op, thr),
                             "EXACT_DIAGONALIZATION", "ANALYSIS", ev,
                             original=4, required=0, analysis_cost=0.03)
+
+    # IUPAC standard atomic weights (abridged, conventional) for the
+    # molar-mass kernel of the universal exact family.
+    ATOMIC_WEIGHTS = {"H": 1.008, "C": 12.011, "N": 14.007, "O": 15.999,
+                      "Na": 22.990, "Mg": 24.305, "Al": 26.982,
+                      "Si": 28.085, "P": 30.974, "S": 32.06,
+                      "Cl": 35.45, "K": 39.098, "Ca": 40.078,
+                      "Fe": 55.845, "Cu": 63.546, "Zn": 65.38}
+
+    def _exact(self, op, thr):
+        """UNIVERSAL EXACT FAMILY (owner directive 2026-10-09: every
+        domain of knowledge, from agro to space, gets an exact kernel
+        INSIDE the language — and a Section 12 refusal where exactness
+        does not hold). One family, many deterministic checks:
+
+        check: kepler3        (astronomy/orbital mechanics)
+        check: primality       (number theory / mathematics)
+        check: prazo_cpc       (legal deadline counting, deterministic
+                                rule application; holiday DATA must be
+                                declared by the operator — the kernel is
+                                exact, the data is declared)
+        check: dose_mgkg       (clinical dosage COMPUTATION; the
+                                clinical decision remains with the
+                                licensed professional — computation
+                                only, never diagnosis)
+        check: agro_density / agro_rate   (agronomy engineering)
+        check: stress_safety   (engineering statics)
+        check: molar_mass      (chemistry, IUPAC standard weights)
+        """
+        import re
+        m = self.model
+        kind = m.get("check")
+        if kind == "kepler3":
+            a = float(_num(m["semi_major_axis_au"]))
+            T = a ** 1.5  # Kepler III, M_host = 1 solar mass
+            ev = {"check": "kepler3", "semi_major_axis_au": a,
+                  "period_years": T,
+                  "law": "T^2 = a^3 (host mass = 1 solar)"}
+            self.log("EXACT_KEPLER_III", "ELIMINATED",
+                     "closed form a^1.5, zero QPU")
+            return self._finish("DECIDED_WITHOUT_EXECUTION",
+                                cmp(T, op, thr), "EXACT_KEPLER_III",
+                                "ANALYSIS", ev, original=1, required=0,
+                                analysis_cost=0.01)
+        if kind == "primality":
+            n = int(_num(m["n"]))
+            if not 2 <= n <= 10 ** 12:
+                raise ValueError("primality: 2 <= n <= 10^12 (trial "
+                                 "division remains exact and finite)")
+            isp = all(n % d for d in range(2, int(n ** 0.5) + 1))
+            ev = {"check": "primality", "n": n, "is_prime": int(isp),
+                  "method": "deterministic trial division (exact)"}
+            self.log("EXACT_PRIMALITY", "ELIMINATED",
+                     "trial division to sqrt(n), zero QPU")
+            return self._finish("DECIDED_WITHOUT_EXECUTION",
+                                cmp(int(isp), op, thr), "EXACT_PRIMALITY",
+                                "ANALYSIS", ev, original=1, required=0,
+                                analysis_cost=0.01)
+        if kind == "prazo_cpc":
+            from datetime import date, timedelta
+            start = date(*map(int, m["start"].split("-")))
+            days = int(_num(m["days"]))
+            uteis = str(m.get("dias_uteis", "true")).lower() == "true"
+            hol = set(m.get("holidays", "").replace(" ", "").split(",")) - {""}
+            hol = {tuple(map(int, h.split("-"))) for h in hol}
+            d, count = start, 0
+            while count < days:
+                d += timedelta(days=1)
+                ok = (d.weekday() < 5) if uteis else True
+                if ok and (d.year, d.month, d.day) not in hol:
+                    count += 1
+            cal = (d - start).days
+            ev = {"check": "prazo_cpc", "start": m["start"], "days": days,
+                  "dias_uteis": uteis, "holidays_declared": sorted(m.get(
+                      "holidays", "").split(",") if m.get("holidays") else []),
+                  "deadline": d.isoformat(),
+                  "rule": "exclude day of start, include day of expiry "
+                          "(deadline counting); operator-declared holidays",
+                  "calendar_days_until_deadline": cal}
+            self.log("EXACT_PRAZO_CPC", "ELIMINATED",
+                     "deterministic date arithmetic, zero QPU")
+            return self._finish("DECIDED_WITHOUT_EXECUTION",
+                                cmp(cal, op, thr), "EXACT_PRAZO_CPC",
+                                "ANALYSIS", ev, original=1, required=0,
+                                analysis_cost=0.01)
+        if kind == "dose_mgkg":
+            w = float(_num(m["weight_kg"]))
+            r = float(_num(m["mg_per_kg"]))
+            dose = w * r
+            ev = {"check": "dose_mgkg", "weight_kg": w, "mg_per_kg": r,
+                  "dose_mg": dose,
+                  "scope": "computation only; clinical decision remains "
+                           "with the licensed professional"}
+            self.log("EXACT_DOSE_MGKG", "ELIMINATED",
+                     "exact arithmetic w*r, zero QPU")
+            return self._finish("DECIDED_WITHOUT_EXECUTION",
+                                cmp(dose, op, thr), "EXACT_DOSE_MGKG",
+                                "ANALYSIS", ev, original=1, required=0,
+                                analysis_cost=0.01)
+        if kind == "agro_density":
+            row = float(_num(m["row_spacing_m"]))
+            plant = float(_num(m["plant_spacing_m"]))
+            dens = 10000.0 / (row * plant)
+            ev = {"check": "agro_density", "row_spacing_m": row,
+                  "plant_spacing_m": plant, "plants_per_hectare": dens,
+                  "formula": "10000 / (row * plant)"}
+            self.log("EXACT_AGRO_DENSITY", "ELIMINATED",
+                     "exact geometry, zero QPU")
+            return self._finish("DECIDED_WITHOUT_EXECUTION",
+                                cmp(dens, op, thr), "EXACT_AGRO_DENSITY",
+                                "ANALYSIS", ev, original=1, required=0,
+                                analysis_cost=0.01)
+        if kind == "agro_rate":
+            rate = float(_num(m["rate_per_ha"]))
+            ha = float(_num(m["hectares"]))
+            tot = rate * ha
+            ev = {"check": "agro_rate", "rate_per_ha": rate,
+                  "hectares": ha, "total": tot}
+            self.log("EXACT_AGRO_RATE", "ELIMINATED",
+                     "exact arithmetic rate*area, zero QPU")
+            return self._finish("DECIDED_WITHOUT_EXECUTION",
+                                cmp(tot, op, thr), "EXACT_AGRO_RATE",
+                                "ANALYSIS", ev, original=1, required=0,
+                                analysis_cost=0.01)
+        if kind == "stress_safety":
+            f = float(_num(m["force_n"]))
+            area = float(_num(m["area_m2"]))
+            limit = float(_num(m["limit_pa"]))
+            stress = f / area
+            sf = limit / stress
+            ev = {"check": "stress_safety", "force_n": f, "area_m2": area,
+                  "stress_pa": stress, "limit_pa": limit,
+                  "safety_factor": sf, "formula": "stress=F/A; sf=limit/stress"}
+            self.log("EXACT_STRESS_SAFETY", "ELIMINATED",
+                     "exact statics, zero QPU")
+            return self._finish("DECIDED_WITHOUT_EXECUTION",
+                                cmp(sf, op, thr), "EXACT_STRESS_SAFETY",
+                                "ANALYSIS", ev, original=1, required=0,
+                                analysis_cost=0.01)
+        if kind == "molar_mass":
+            import re as _re
+            formula = m["formula"].strip()
+            if not _re.fullmatch(r"(?:[A-Z][a-z]?\d*)+", formula):
+                raise ValueError("molar_mass: invalid chemical formula")
+            mm = 0.0
+            for el, cnt in _re.findall(r"([A-Z][a-z]?)(\d*)", formula):
+                if el not in self.ATOMIC_WEIGHTS:
+                    raise ValueError("molar_mass: element %r not in the "
+                                     "abridged IUPAC table" % el)
+                mm += self.ATOMIC_WEIGHTS[el] * (int(cnt) if cnt else 1)
+            ev = {"check": "molar_mass", "formula": formula,
+                  "molar_mass_g_mol": mm,
+                  "weights": "IUPAC standard atomic weights (conventional)"}
+            self.log("EXACT_MOLAR_MASS", "ELIMINATED",
+                     "exact formula arithmetic, zero QPU")
+            return self._finish("DECIDED_WITHOUT_EXECUTION",
+                                cmp(mm, op, thr), "EXACT_MOLAR_MASS",
+                                "ANALYSIS", ev, original=1, required=0,
+                                analysis_cost=0.01)
+        raise ValueError("exact family: unknown check %r (Section 12: "
+                         "the language refuses to guess)" % kind)
 
     def _crypto(self, op, thr):
         """CYBERSECURITY BASE (owner directive 2026-10-09): post-quantum
