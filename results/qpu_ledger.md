@@ -50,3 +50,12 @@ language stage authorized.
 Note: 36 s exceeded the 15 s lot ceiling — cause: honest cost-estimation error
 (~1.5 s per circuit, not 0.3 s), NOT duplication this time. Usage instance
 after stage: ~169 s / 600 s. Recorded, not deleted.
+
+| 2026-10-09 01:20 | see results/family_batch_hardware.json (8 jobs, 4 per backend) | ibm_fez + ibm_marrakesh | FAMILY BATCH: ghz4_entangled / ghz4_separable_control / qcnn_cluster_state (CZ\|++>, Cong-Choi-Lukin 2019 block) / qcnn_gate Bell + \|+0> control | 8 jobs x 6 x 512 | ALL remaining verdict families validated on hardware. Pre-flight exact verdicts (certs 2fff3dd1, b4385f98, 5c0ccc61, 91aa5539, 75c310e1) decided offline BEFORE submission. GHZ4 <Z0Z1> +0.935/+0.964 (fez/marrakesh), CIs exclude 0; plus4 control ~0 CI incl. 0; cluster stabilizers <X0Z1> +0.902/+0.946, <Z0X1> +0.890/+0.938; Bell +0.879/+0.928; sep ~0. | 24 s |
+
+## LANGUAGE LAB ON SILICON — CYCLE CLOSED (2026-10-09)
+
+Every verdict family of ZEPHIRUM (ZYQL) now has hardware evidence with bootstrap
+CI95 on TWO backends: Bell (2q), GHZ3, GHZ4, QCNN cluster block, and every
+separable negative control. Exact verdicts always decided offline with
+certificates before any job. Total instance usage: ~193 s / 600 s (period ends 2026-10-09).
