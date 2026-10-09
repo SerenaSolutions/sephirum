@@ -120,9 +120,25 @@ def main(argv=None):
         print("NEXT       zephirum-q %s --json" % path)
         return 0
     if not args.source:
-        ap.error("source is required (except with --qpu-probe or --init)")
-    with open(args.source, encoding="utf-8") as f:
-        src = f.read()
+        print("ZYQL — your first three minutes:")
+        print()
+        print("  1. zephirum-q --init my_first.zeph   (writes a real starter question)")
+        print("  2. zephirum-q my_first.zeph           (the certificate answers)")
+        print("  3. zephirum-q my_first.zeph --json    (machine-readable receipt)")
+        print()
+        print("Docs: QUICKSTART.md — https://github.com/SerenaSolutions/sephirum")
+        return 2
+    try:
+        with open(args.source, encoding="utf-8") as f:
+            src = f.read()
+    except FileNotFoundError:
+        print("FILE NOT FOUND: %s" % args.source)
+        print("NEXT  create a starter question:  zephirum-q --init my_first.zeph")
+        return 2
+    except (IsADirectoryError, PermissionError, UnicodeDecodeError) as e:
+        print("CANNOT READ %s (%s)" % (args.source, type(e).__name__))
+        print("NEXT  pass a .zeph source file — start with:  zephirum-q --init my_first.zeph")
+        return 2
     if args.standby:
         receipt, ok = standby_receipt(src)
     else:
