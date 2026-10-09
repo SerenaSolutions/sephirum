@@ -241,6 +241,10 @@ class NCA:
             return self._raw(op, thr)
         if t == "entanglement":
             return self._entangle(op, thr)
+        if t == "molecular":
+            return self._molecular(op, thr)
+        if t == "crypto":
+            return self._crypto(op, thr)
         # §12: erro estrutural falha explicitamente — nunca vira UNKNOWN
         raise ValueError("unsupported model type: %r" % t)
 
@@ -640,6 +644,96 @@ class NCA:
         return self._finish("DECIDED_WITHOUT_EXECUTION", ans,
                             "SCHMIDT_DET_CRITERION", "ANALYTIC", ev,
                             original=8, required=0, analysis_cost=0.05)
+
+    def _molecular(self, op, thr):
+        """BIOMEDICINE BASE (owner directive 2026-10-09): exact ground-state
+        energy of quantum many-body models — the family seed for molecular
+        and chemical questions (the 2-site member is the H2-dimer analog).
+        Dense exact diagonalization, zero QPU, decided offline.
+
+        MODEL:
+            type: molecular
+            model: heisenberg          (seed kernel; more with fusion)
+            sites: N                   (2..12 — exact diagonalization range)
+            coupling: J               (optional, default 1)
+            field: h                  (optional, default 0)
+        ASK: ground_state_energy <op> <threshold>   (Hartree-scaled units)
+
+        Honest scope (Evidence Before Velocity): this kernel decides small
+        active spaces exactly. Molecule-scale drug discovery needs the
+        fault-tolerant era; the scaling path is the Qiskit Nature /
+        PennyLane fusion target, which consumes the same .zeph question.
+        """
+        import numpy as np
+        m = self.model
+        kind = m.get("model", "heisenberg").lower()
+        if kind != "heisenberg":
+            raise ValueError("molecular family: only model: heisenberg is "
+                             "implemented (seed kernel)")
+        n = int(m.get("sites", "4"))
+        if not 2 <= n <= 12:
+            raise ValueError("sites out of exact-diagonalization range 2..12")
+        j = _num(m.get("coupling", "1"))
+        h = _num(m.get("field", "0"))
+        dim = 1 << n
+        H = np.zeros((dim, dim))
+        for st in range(dim):
+            for i in range(n - 1):
+                bi, bj = (st >> i) & 1, (st >> (i + 1)) & 1
+                if bi == bj:
+                    H[st, st] += j / 4.0
+                else:
+                    H[st, st] -= j / 4.0
+                    t = st ^ ((1 << i) | (1 << (i + 1)))
+                    H[t, st] += j / 2.0
+            for i in range(n):
+                H[st, st] += h / 2.0 * (1 - 2 * ((st >> i) & 1))
+        e0 = float(np.linalg.eigvalsh(H)[0])
+        self.log("EXACT_DIAGONALIZATION", "ELIMINATED",
+                 "dense eigh on %d-dim Hilbert space" % dim)
+        ev = {"model": kind, "sites": n, "coupling": j, "field": h,
+              "ground_state_energy": e0, "op": op, "threshold": thr,
+              "dim": dim}
+        return self._finish("DECIDED_WITHOUT_EXECUTION", cmp(e0, op, thr),
+                            "EXACT_DIAGONALIZATION", "ANALYSIS", ev,
+                            original=dim, required=0, analysis_cost=0.05)
+
+    def _crypto(self, op, thr):
+        """CYBERSECURITY BASE (owner directive 2026-10-09): post-quantum
+        signature verification decided EXACTLY on classical hardware —
+        zero QPU. The language can already answer 'is this verdict/
+        message/authentic artifact genuinely signed?' against FIPS 204.
+
+        MODEL:
+            type: crypto
+            check: ml_dsa_verify
+            public_key: <b64 ML-DSA-44 public key>
+            message: <plain text>
+            signature: <b64 ML-DSA-44 signature>
+        ASK: signature_valid == 1    (verdict 0 == invalid/forged)
+        """
+        from pq_receipt import _unb64
+        from pqcrypto.sign import ml_dsa_44
+        m = self.model
+        if m.get("check") != "ml_dsa_verify":
+            raise ValueError("crypto family: only check: ml_dsa_verify is "
+                             "implemented")
+        pub = _unb64(m["public_key"])
+        sig = _unb64(m["signature"])
+        msg = m.get("message", "").encode("utf-8")
+        try:
+            ml_dsa_44.verify(pub, msg, sig)
+            valid = True
+        except Exception:
+            valid = False
+        self.log("ML_DSA_VERIFY", "ELIMINATED",
+                 "FIPS 204 verification, zero QPU")
+        ev = {"check": "ml_dsa_verify", "alg": "ML-DSA-44",
+              "message_chars": len(msg), "signature_valid": int(valid)}
+        return self._finish("DECIDED_WITHOUT_EXECUTION",
+                            cmp(int(valid), op, thr), "ML_DSA_VERIFY",
+                            "ANALYSIS", ev, original=1, required=0,
+                            analysis_cost=0.01)
 
     def _raw(self, op, thr):
         data = parse_list(self.model["data"])

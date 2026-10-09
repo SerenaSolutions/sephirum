@@ -1,0 +1,187 @@
+{
+  "experiment": "language first receipt on ibm_kingston (3rd Heron)",
+  "date_utc_start": "2026-10-09T14:05:14Z",
+  "pre_flight_gate": {
+    "policy": "no QPU job without a prior exact ZEPHIRUM verdict",
+    "bell_positive_control": {
+      "program": "bell_phi_plus.zeph",
+      "status": "DECIDED_WITHOUT_EXECUTION",
+      "entangled": 1,
+      "kernel": "SCHMIDT_DET_CRITERION",
+      "rung": "ANALYTIC",
+      "cert_hash": "329c0d9f3a80563981136d7d65015c593a95b8b59ef103aea84d7e982d2be4df",
+      "decided_with": "ZERO QPU"
+    },
+    "separable_negative_control": {
+      "program": "separable_plus0.zeph",
+      "status": "DECIDED_WITHOUT_EXECUTION",
+      "entangled": 0,
+      "kernel": "SCHMIDT_DET_CRITERION",
+      "rung": "ANALYTIC",
+      "cert_hash": "bef530a38eca4ab69bc32210b1d9fea83e23b706f15cfca20b445ca84dad782f",
+      "decided_with": "ZERO QPU"
+    }
+  },
+  "budget": {
+    "usage_before_s": 204,
+    "usage_remaining_before_s": 396,
+    "lot_ceiling_s": 15,
+    "stop_floor_s": 120,
+    "usage_after_s": 222,
+    "usage_remaining_after_s": 378,
+    "lot_cost_s": 18
+  },
+  "jobs": [
+    {
+      "backend": "ibm_kingston",
+      "pair": [
+        0,
+        1
+      ],
+      "cx_err": null,
+      "rep": 0,
+      "job_id": "db4f97amb58s738947k0",
+      "status": "DONE",
+      "raw": {
+        "bell_z": {
+          "01": 98,
+          "00": 123,
+          "11": 247,
+          "10": 44
+        },
+        "bell_x": {
+          "11": 212,
+          "01": 151,
+          "00": 105,
+          "10": 44
+        },
+        "sep_z": {
+          "00": 132,
+          "11": 74,
+          "01": 279,
+          "10": 27
+        },
+        "sep_x": {
+          "10": 155,
+          "11": 145,
+          "00": 96,
+          "01": 116
+        }
+      }
+    },
+    {
+      "backend": "ibm_kingston",
+      "pair": [
+        0,
+        1
+      ],
+      "cx_err": null,
+      "rep": 1,
+      "job_id": "db4f97klf4us73c2ln0g",
+      "status": "DONE",
+      "raw": {
+        "bell_z": {
+          "00": 141,
+          "11": 230,
+          "01": 113,
+          "10": 28
+        },
+        "bell_x": {
+          "01": 114,
+          "10": 51,
+          "00": 119,
+          "11": 228
+        },
+        "sep_z": {
+          "11": 76,
+          "01": 283,
+          "00": 123,
+          "10": 30
+        },
+        "sep_x": {
+          "01": 116,
+          "00": 116,
+          "10": 126,
+          "11": 154
+        }
+      }
+    },
+    {
+      "backend": "ibm_kingston",
+      "pair": [
+        0,
+        1
+      ],
+      "cx_err": null,
+      "rep": 2,
+      "job_id": "db4f97svf2bc73cuh5lg",
+      "status": "DONE",
+      "raw": {
+        "bell_z": {
+          "11": 248,
+          "01": 106,
+          "00": 124,
+          "10": 34
+        },
+        "bell_x": {
+          "01": 108,
+          "10": 54,
+          "00": 131,
+          "11": 219
+        },
+        "sep_z": {
+          "01": 290,
+          "11": 64,
+          "00": 119,
+          "10": 39
+        },
+        "sep_x": {
+          "01": 124,
+          "10": 136,
+          "11": 145,
+          "00": 107
+        }
+      }
+    }
+  ],
+  "stats": {
+    "bell": {
+      "bell_z": {
+        "mean": 0.4492,
+        "n": 3,
+        "ci95": [
+          0.4453,
+          0.4531
+        ]
+      },
+      "bell_x": {
+        "mean": 0.3203,
+        "n": 3,
+        "ci95": [
+          0.2383,
+          0.3672
+        ]
+      }
+    },
+    "sep": {
+      "sep_z": {
+        "mean": -0.2344,
+        "n": 3,
+        "ci95": [
+          -0.2852,
+          -0.1953
+        ]
+      },
+      "sep_x": {
+        "mean": -0.0065,
+        "n": 3,
+        "ci95": [
+          -0.0586,
+          0.0547
+        ]
+      }
+    }
+  },
+  "interpretation": "Bell Phi+ on the third Heron: <ZZ>=0.449, <XX>=0.320 (CI95 exclude 0: True); separable controls consistent with 0. Exact verdicts were decided offline with certificates BEFORE submission; the QPU is empirical evidence only.",
+  "status": "DONE"
+}
