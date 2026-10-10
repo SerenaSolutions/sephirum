@@ -1,0 +1,17 @@
+{
+  "battery": "hybrid_stack_battery",
+  "source_manifest": "witness_battery/manifest.json (seed 20261009)",
+  "inputs": 100,
+  "gate_decisions_exact_offline": 100,
+  "routed_classical_separable": 30,
+  "admitted_quantum_entangled": 70,
+  "unknown": 0,
+  "cert_vs_independent_truth_mismatch": 0,
+  "qpu_units_in_gate": 0,
+  "declared_counterfactual": {
+    "shots_per_admitted_question": 512,
+    "shots_avoided_if_all_went_to_qpu": 15360,
+    "note": "contrafactual DECLARADO (§12): nao e medicao de hardware"
+  },
+  "elimination_rate": 0.3
+}
