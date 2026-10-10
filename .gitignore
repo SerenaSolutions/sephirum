@@ -4,3 +4,7 @@ __pycache__/
 .DS_Store
 dist/
 pq_keys/ml_dsa_44.signing.pub
+c-api/*.o
+c-api/*.so
+c-api/tests/test_c_api
+c-api/tests/test_cpp
