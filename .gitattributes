@@ -1,1 +1,3 @@
 *.zeph linguist-language=Python
+*.zyql linguist-language=Python
+grammar/*.tmLanguage.json linguist-vendored

@@ -1,0 +1,113 @@
+{
+ "evento": "ZEPHIRUM Hybrid Stack (Quantum+AI, Topic 01) integrado ao algoritmo e ao OS v0.3.0",
+ "data": "2026-10-10",
+ "fonte_arquitetura": "post QuBits - Quantum & AI (LinkedIn): Data -> Classical -> AI/ML -> QPU -> Post-processing + loop de otimizacao. Atribuido a fonte original; implementacao propria.",
+ "algoritmo": "zephyrum/zhybrid.py (5 camadas) + audit_hybrid.py",
+ "auditoria_simulacao": {
+  "A1_hermitiano": true,
+  "A1_E0_exato_H2": -1.8572019850484371,
+  "A2_norma_ok": true,
+  "A2_violacoes_variacional": 0,
+  "A3_analitico": -1.0373542070519246,
+  "A3_amostral_200k": -1.0380465610000003,
+  "A3_erro": 0.0006923539480756524,
+  "A4_VQE_exato": {
+   "E": -1.8570483896653034,
+   "E0": -1.8572019850484371,
+   "erro_Ha": 0.00015359538313375332,
+   "erro_mHa": 0.15359538313375332
+  },
+  "A5_ablacao_mHa": {
+   "ia": {
+    "media": 9.52903501659778,
+    "mediana": 3.62855758993319,
+    "pior": 36.79219189282223,
+    "todos": [
+     1.99,
+     2.87,
+     4.39,
+     0.9,
+     10.23,
+     36.79
+    ]
+   },
+   "spsa": {
+    "media": 173.48163782642754,
+    "mediana": 180.38351008712726,
+    "pior": 360.3127625559173,
+    "todos": [
+     132.92,
+     227.85,
+     228.1,
+     23.29,
+     68.42,
+     360.31
+    ]
+   }
+  },
+  "A6_ruido_leitura_mHa": {
+   "bruto": 3.6607885068380974,
+   "mitigado": 2.36237264572009
+  },
+  "A7_custo": {
+   "chamadas_qpu": 276,
+   "tiros": 552000,
+   "tempo_por_camada": {
+    "L2": 0.025,
+    "L3": 0.253,
+    "L4": 0.273,
+    "L5": 0.001
+   }
+  },
+  "A8_ising3": {
+   "E0": -2.4032119259115534,
+   "E": -2.374172177407609,
+   "erro_mHa": 29.039748503944196
+  }
+ },
+ "ibm_real": {
+  "job_id": "db4qn304qg6s73c2hrcg",
+  "backend": "ibm_fez",
+  "shots": 1024,
+  "qpu_s": 3,
+  "E_exato": -1.8572019850484371,
+  "E_hw_bruto": -1.7689234375,
+  "E_hw_mitigado": -1.8001359815809461,
+  "erro_bruto_mHa": 88.27854754843712,
+  "erro_mitigado_mHa": 57.06600346749102,
+  "precisao_quimica_atingida": false
+ },
+ "diagnostico_erro": {
+  "ideal": {
+   "ZI": -0.9720579319489949,
+   "IZ": 0.9720136483557973,
+   "ZZ": -0.9997231627823302,
+   "XX": -0.23437925530784362
+  },
+  "hw": {
+   "ZI": -0.818359375,
+   "IZ": 0.904296875,
+   "ZZ": -0.8125,
+   "XX": -0.22265625
+  },
+  "fator_Z_medio": 0.8616472816425237,
+  "lambda_depol": 0.1383527183574763
+ },
+ "bug_corrigido_no_OS": "rot1 (RX/RY/RZ) passava vetor plano a apply1 que espera matriz 2x4 -> NaN em todo circuito com rotacao; corrigido e validado (RY(pi)|0>=|1>, E_js=-1.857047 vs py -1.857048)",
+ "bugs_SVG_corrigidos": [
+  "cor do texto herdada de <body> inexistente no foreignObject (texto preto sobre navy)",
+  "innerHTML rejeita entidades HTML nomeadas em XML (&nbsp;/&middot;) -> trocadas por numericas"
+ ],
+ "navegador_real": {
+  "VQE_IA_erro_mHa": 6.83,
+  "SPSA_puro_erro_mHa": 515.41,
+  "igual_ao_node": true
+ },
+ "limites": [
+  "sem vantagem quantica: H2 em 2 qubits e trivial classicamente",
+  "hardware nao atingiu precisao quimica (1,6 mHa)",
+  "IA = modelo substituto quadratico, nao LLM",
+  "coeficientes H2 da literatura (O'Malley et al. 2016)",
+  "ablacao em 6 sementes e 40 iteracoes: indicativa, nao estatistica forte"
+ ]
+}
