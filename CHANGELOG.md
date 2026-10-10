@@ -27,3 +27,8 @@ the contract.
 ## v0.1.0 — 2026-10-07
 - First public release: nexa core, exact verdicts, certificates, refusal
   protocol (Section 12).
+
+## v0.1.1 (2026-10-10)
+- c-api/: SQLite-style single-file C99 core (zyql.c/zyql.h, zero deps)
+- PORTGATE + kepler3 + expression; parity 3/3 vs nexa_core.py (same verdicts, same hashes)
+- bindings: C native, C++ RAII (tested), Python ctypes (parity-proven), C# P/Invoke (provided)
