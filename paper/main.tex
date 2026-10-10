@@ -55,6 +55,14 @@ needed}, and only executes what remains, with a verifiable certificate.
 The name is the Latin form of \emph{zero} recorded by Fibonacci in
 \emph{Liber Abaci} (1202).
 
+\paragraph{Epistemic discipline.}
+Following the project's internal review standard, every claim in this paper is
+kept in an explicit epistemic category: \emph{measured fact} (recorded in
+signed receipts, reproducible from the public repository), \emph{inference}
+(deduced from measured facts and stated as such), and \emph{prototype status}
+(capability boundaries of the current implementation). Nothing is reported
+outside these categories.
+
 Three design commitments:
 \begin{enumerate}
   \item \textbf{Exactness.} The classical kernel decides with integer and
@@ -66,6 +74,45 @@ Three design commitments:
   empirical evidence of physical plausibility, never the certificate
   (\S\ref{sec:honesty}).
 \end{enumerate}
+
+\section{Related Work}
+\label{sec:related}
+The ingredients of exact classical decision for quantum questions have deep
+roots; the contribution of this work is their combination into a
+question-answering discipline with certificates, not the underlying
+mathematics.
+
+\paragraph{Quantum programming and verification languages.}
+Quipper~\cite{quipper} provides scalable circuit description; QWIRE~\cite{qwire}
+embeds circuit construction in a dependently typed host language; SQIR~\cite{sqir}
+supports mechanically verified compilation of quantum circuits in Coq; and
+Qbricks~\cite{qbricks} offers a deductive verification framework for
+circuit-building programs. These systems verify \emph{programs written by the
+user}; ZEPHIRUM instead answers \emph{questions} posed about a model, emitting
+trivalent verdicts and third-party-verifiable certificates without requiring
+the user to write proofs.
+
+\paragraph{Classical decision for quantum families.}
+The Gottesman--Knill theorem~\cite{gottesman} shows that stabilizer circuits
+are efficiently classically simulable --- historically the strongest
+``decide without executing'' result. It is a theorem about a fixed family;
+ZEPHIRUM's kernel generalizes the posture to a question language over arbitrary
+models, with an honest UNKNOWN when the family falls outside exact reach.
+
+\paragraph{Entanglement criteria.}
+The Schmidt decomposition and the Peres--Horodecki (PPT)
+criterion~\cite{peres,horodecki} are textbook mathematics from the 1990s; the
+kernel uses such criteria as exact rational primitives. No novelty of the
+mathematics is claimed. The same honesty applies to the hardware layer: the
+QCNN cluster-state signature follows Cong et al.~\cite{qcnn}.
+
+\paragraph{Position.}
+What is new here is the packaged discipline: (i) a trivalent
+ASK/CONTRACT/MODEL language that never guesses; (ii) a necessity compiler
+that eliminates execution when a certificate decides the question; (iii)
+SHA-256 certificates verifiable by any third party; and (iv) a protocol in
+which the QPU is a witness gated behind prior offline decisions, never the
+judge.
 
 \section{The ZYQL Language}
 A program states a question, a contract, and a model:
@@ -195,7 +242,7 @@ from the hardware.
 
 \subsection{Cluster-State (QCNN) Signature}
 The 1D cluster state cell (CZ$|++\rangle$) of Cong et al.\
-(arXiv:1810.03787) was confronted with the kernel (exact verdict:
+(Cong et al.\ \cite{qcnn}) was confronted with the kernel (exact verdict:
 entangled) and the QPU (3$\times$512 shots, ibm\_fez): stabilizers
 $\langle XZ\rangle = 0.918$, $\langle ZX\rangle = 0.844$,
 $\langle ZZ\rangle = 0.012$ --- the cluster signature, confirming the
@@ -231,5 +278,26 @@ quantum questions: trivalent verdicts, exact offline certificates,
 independent verification, and hardware evidence gated behind prior
 decisions --- on free-tier access. All artifacts (language, grammar,
 emitters, receipts, ledger, demo) are public.
+
+\begin{thebibliography}{9}
+\bibitem{quipper} A.~S. Green, P.~L. Lumsdaine, N.~J. Ross, P. Selinger,
+B. Valiron, \emph{Quipper: A Scalable Quantum Programming Language},
+PLDI 2013.
+\bibitem{qwire} J. Rand, S. Lahiri, C. Licher, S. Lafortune,
+\emph{QWIRE: A Core Language for Quantum Circuits}, PLDI 2017.
+\bibitem{sqir} K.~S. Hietala, R. Rand, S.-H. Hung, M.~M. Hicks,
+\emph{A Verified Optimizer for Quantum Circuits}, PLDI 2021 (SQIR).
+\bibitem{qbricks} C. Chareton et al., \emph{A Deductive Verification
+Framework for Circuit-building Quantum Programs}, arXiv:2003.05841 (Qbricks).
+\bibitem{gottesman} D. Gottesman, \emph{The Heisenberg Representation of
+Quantum Computers}, talk at ICC 1998, arXiv:quant-ph/9807006.
+\bibitem{peres} A. Peres, \emph{Separability Criterion for Density
+Matrices}, Phys. Rev. Lett. 77, 1413 (1996).
+\bibitem{horodecki} M. Horodecki, P. Horodecki, R. Horodecki,
+\emph{Separability of mixed states: necessary and sufficient conditions},
+Phys. Lett. A 223, 1 (1996).
+\bibitem{qcnn} I. Cong, S. Choi, M.~D. Lukin, \emph{Quantum Convolutional
+Neural Networks}, Nature Physics 15, 1273 (2019); arXiv:1810.03787.
+\end{thebibliography}
 
 \end{document}
