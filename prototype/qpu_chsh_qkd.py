@@ -113,11 +113,8 @@ def main():
     res = job.result()
 
     pairs = {}
-    for name, pub in zip(("a0b0", "a0b1", "a1b0", "a1b1"), res):
-        counts = dict(pub[0].data.items())[0].__dict__ if False else pub[0].data
-        # SamplerV2: get counts dict from the classical register
-        c = getattr(pub[0].data, "c", None)
-        counts = c.get_counts() if c is not None else pub[0].data.get_counts()
+    for i, name in enumerate(("a0b0", "a0b1", "a1b0", "a1b1")):
+        counts = res[i].data.c.get_counts()
         pairs[name] = counts_to_pair(counts)
     receipt["counts"] = pairs
 
