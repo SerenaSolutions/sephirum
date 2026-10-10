@@ -35,3 +35,6 @@ the contract.
 
 ## v0.1.2 (2026-10-10)
 - c-api v0.2 bridge: zyql_gate_circuit (quantum-language purpose gate on OQ3/QIR text, digest parity with Python core) + zyql_verify_receipt (pure-C receipt verification for language models); battery 5/5
+
+## v0.1.3 (2026-10-10)
+- c-api: interop matrix proven (tests/test_interop.py, 5/5): Zephyron->OQ3->C gate->any quantum backend (Qiskit/Cirq/PennyLane/Braket speak OQ3; QIR gateable as text); their OQ3 exports -> our C gate -> our kernel (Bell 511/513, GHZ 495/529)
