@@ -50,15 +50,3 @@ expression). The full ladder (entanglement, molecular, crypto, hybrid
 ...) remains Python-side; the C core grows rung by rung, each rung
 landing only with a parity test. The purpose string is DATA, never
 executed: the language has no execution primitive at all.
-
-## v0.3 — interop with the quantum ecosystem (proven 5/5)
-`tests/test_interop.py` proves both directions of the bridge:
-1. Zephyron -> OpenQASM 3 -> C gate -> ANY backend that ingests OQ3
-   (Qiskit, Cirq, PennyLane, Braket); QIR is gateable the same way —
-   the gate takes text, so every quantum language plugs in.
-2. Their OQ3 exports -> our C gate -> our kernel (round-trip: Bell
-   511/513, GHZ 495/529 — only the expected states).
-Python appears only as the TEST DRIVER (like sqlite3's harness); the
-bridge core is pure C — no Python, Qiskit, C#, Julia or Rust inside
-`zyql.c` (CEO mandate, 2026-10-10). Next rung: the Zephyron->OQ3
-transpiler itself ported to C.
