@@ -613,7 +613,7 @@ class NCA:
                                 original=n_amp, required=0, analysis_cost=0.05)
         if len(toks) != 4:
             raise ValueError("entanglement state must have 4, 8 or 2^N "
-                             "amplitudes (N <= 12)")
+                             "amplitudes (N <= 12) (structural)")
         a, b, c, d = (Fraction(t) for t in toks)   # decimal exato, não float
         n = a * a + b * b + c * c + d * d
         if n == 0:
