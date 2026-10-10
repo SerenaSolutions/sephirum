@@ -1,0 +1,9 @@
+ZYQL:
+  type: programming
+  color: "#22D3EE"
+  extensions:
+    - ".zeph"
+  tm_scope: source.zyql
+  ace_mode: text
+  # language_id assigned by Linguist maintainers at merge time
+  # group: Zephirum

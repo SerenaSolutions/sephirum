@@ -1,0 +1,53 @@
+{
+  "$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+  "name": "ZYQL",
+  "scopeName": "source.zyql",
+  "fileTypes": [
+    "zeph",
+    "zyql"
+  ],
+  "patterns": [
+    {
+      "name": "comment.line.number-sign.zyql",
+      "match": "#.*$"
+    },
+    {
+      "name": "entity.name.section.zyql",
+      "match": "^\\s*(ASK|CONTRACT|MODEL|BUDGET|REQUIRE)\\s*:",
+      "captures": {
+        "1": {
+          "name": "keyword.control.section.zyql"
+        }
+      }
+    },
+    {
+      "name": "meta.key.zyql",
+      "match": "^\\s*([a-z][a-z0-9_]*)\\s*:",
+      "captures": {
+        "1": {
+          "name": "variable.other.key.zyql"
+        }
+      }
+    },
+    {
+      "name": "constant.language.verdict.zyql",
+      "match": "\\b([0-1]|Z)\\b"
+    },
+    {
+      "name": "constant.numeric.zyql",
+      "match": "\\b\\d+\\.?\\d*\\b"
+    },
+    {
+      "name": "keyword.operator.comparison.zyql",
+      "match": "==|!=|<=|>=|<|>"
+    },
+    {
+      "name": "keyword.operator.logical.zyql",
+      "match": "\\b(and|or|not)\\b"
+    },
+    {
+      "name": "string.unquoted.state-vector.zyql",
+      "match": "[-+]?\\d+\\.?\\d*(?:\\s*,\\s*[-+]?\\d+\\.?\\d*)+"
+    }
+  ]
+}

@@ -1,4 +1,1 @@
-# Estatisticas honestas do Linguist:
-# saidas geradas pelo transpilador multi-alvo nao contam como codigo-fonte manual.
-fusion/qiskit/*.py linguist-generated
-fusion/openqasm/*.qasm linguist-generated
+*.zeph linguist-language=Python
