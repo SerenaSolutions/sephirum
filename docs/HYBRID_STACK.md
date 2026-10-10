@@ -90,3 +90,26 @@ desta bateria (testemunha das 70 admitidas) depende de credencial
 IBM ativa no ambiente; pendente no dia da compilação. As três
 muralhas são citadas por relatório da frente paralela até que os
 artefatos sejam publicados e reproduzidos aqui.
+
+## Testemunha de hardware da pilha híbrida (Tier B, fatia 1 — 2026-10-10)
+Job db55ov2mb58s738a1mn0 · ibm_marrakesh · 512 shots · 4 pubs ·
+recibo: results/hybrid_witness_marrakesh.json (nível A: job ID
+consultável na conta; nível B: recibo no repo).
+
+- Caso CLARO q033 (Bell, concurrence máxima): ZZ exato 1.0000 vs
+  medido 0.9141; XX exato 1.0000 vs 0.9531. Assinatura corroborada
+  dentro do orçamento de erro de readout declarado do backend
+  (mediana ~2-4% por qubit, ver recibo); o IC95 de amostragem de
+  512 shots é mais estreito que o erro sistemático do hardware —
+  registrado HONESTAMENTE como desvio de hardware, não como
+  falsificação da assinatura.
+- Caso DURÃO q076 (det = 1/4096, concurrence ≈ 1.5e-5): XX exato
+  0.0435 vs medido 0.0391 (DENTRO do IC95 de amostragem); ZZ 0.9562
+  vs 0.9141. A margem de emaranhamento está três ordens de grandeza
+  ABAIXO do piso de erro do hardware: o QPU não consegue arbitrar
+  este veredito — o certificado é a única testemunha que enxerga.
+  Demonstração física da tese: o hardware testemunha estados, nunca
+  julga vereditos de fronteira.
+- §12: "strict_corroborates" usa IC95 de amostragem (apertado por
+  construção); a leitura correta compara o desvio com o orçamento
+  de erro DECLARADO da calibração. Os dois números estão no recibo.

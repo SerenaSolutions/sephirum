@@ -1,0 +1,89 @@
+{
+  "job_id": "db55ov2mb58s738a1mn0",
+  "backend": "ibm_marrakesh",
+  "shots": 512,
+  "date": "2026-10-10",
+  "readout_error_median_declared": 0.0179443359375,
+  "cases": {
+    "clear_ZZ": {
+      "question": "q033",
+      "basis": "ZZ",
+      "exact_prediction": 1.0,
+      "measured": 0.9141,
+      "ci95_sampling": [
+        0.8789,
+        0.9492
+      ],
+      "strict_corroborates": false,
+      "abs_deviation": 0.0859,
+      "counts": {
+        "11": 252,
+        "10": 6,
+        "00": 238,
+        "01": 16
+      }
+    },
+    "clear_XX": {
+      "question": "q033",
+      "basis": "XX",
+      "exact_prediction": 1.0,
+      "measured": 0.9531,
+      "ci95_sampling": [
+        0.9258,
+        0.9766
+      ],
+      "strict_corroborates": false,
+      "abs_deviation": 0.0469,
+      "counts": {
+        "11": 219,
+        "00": 281,
+        "10": 7,
+        "01": 5
+      }
+    },
+    "hard_ZZ": {
+      "question": "q076",
+      "basis": "ZZ",
+      "exact_prediction": 0.956231,
+      "measured": 0.9141,
+      "ci95_sampling": [
+        0.875,
+        0.9492
+      ],
+      "strict_corroborates": false,
+      "abs_deviation": 0.0422,
+      "counts": {
+        "11": 490,
+        "01": 12,
+        "10": 10
+      }
+    },
+    "hard_XX": {
+      "question": "q076",
+      "basis": "XX",
+      "exact_prediction": 0.043512,
+      "measured": 0.0391,
+      "ci95_sampling": [
+        -0.0469,
+        0.125
+      ],
+      "strict_corroborates": true,
+      "abs_deviation": 0.0044,
+      "counts": {
+        "00": 177,
+        "01": 132,
+        "10": 114,
+        "11": 89
+      }
+    }
+  },
+  "thesis_note": "caso hard: |det|=1/4096 -> margem de emaranhamento abaixo do piso de ruido; o QPU nao pode arbitrar o veredito, o certificado e a unica testemunha (§12). Declaracao honesta: strict_corroborates usa IC95 de AMOSTRAGEM (512 shots); desvios observados (ate ~0.086) sao consistentes com erro de readout declarado do backend e NAO com falsificacao da assinatura do certificado.",
+  "readout_errors_q0_q5": [
+    0.01929,
+    0.01147,
+    0.01794,
+    0.1217,
+    0.01074,
+    0.00513
+  ]
+}
