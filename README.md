@@ -8,8 +8,8 @@
 <p align="center"><img src="assets/brand/logo_zyql_main.png" width="480" alt="ZEPHIRUM — ZYQL: the official language emblem, the Z made of 0 and 1"></p>
 
 <p align="center">
-  <video src="https://github.com/SerenaSolutions/sephirum/raw/main/assets/demos/zyql_vscode_demo.mp4" width="820" controls muted></video>
-  <br><em>ZYQL running in a VS Code workspace: real outputs, 100/100 exact certificates, 0 QPU units. Rendered screencast; every output shown is a live run.</em>
+  <a href="assets/demos/zyql_vscode_demo.mp4"><img src="assets/demos/zyql_vscode_demo.gif" width="820" alt="ZYQL running in a VS Code workspace (20 s demo, click for MP4)"></a>
+  <br><em>ZYQL running in a VS Code workspace: real outputs, 100/100 exact certificates, 0 QPU units. Rendered screencast; every output shown is a live run. Click the animation for the full MP4.</em>
 </p>
 
 # ZEPHIRUM — Computation Before Execution
