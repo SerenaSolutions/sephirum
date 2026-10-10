@@ -247,6 +247,8 @@ class NCA:
             return self._crypto(op, thr)
         if t == "exact":
             return self._exact(op, thr)
+        if t == "hybrid":
+            return self._hybrid(op, thr)
         # §12: erro estrutural falha explicitamente — nunca vira UNKNOWN
         raise ValueError("unsupported model type: %r" % t)
 
@@ -823,6 +825,74 @@ class NCA:
         return self._finish("DECIDED_WITHOUT_EXECUTION", cmp(e0, op, thr),
                             "EXACT_DIAGONALIZATION", "ANALYSIS", ev,
                             original=4, required=0, analysis_cost=0.03)
+
+    def _hybrid(self, op, thr):
+        """HYBRID BOUNDARY PATTERN (owner directive 2026-10-10, from the
+        heterogeneous quantum-classical stack theme; universal sources:
+        Preskill, Quantum 2, 79 (2018); Peruzzo et al., Nat. Commun. 5,
+        4213 (2014)). The QPU is NOT an accelerator that receives a
+        model and returns a faster answer: it is a specialized witness
+        resource inside a larger heterogeneous system. The classical
+        side decides WHICH part of the workload crosses the boundary —
+        and the exact core decides BEFORE any crossing.
+
+        Four stages, explicit in every certificate:
+        1. CLASSICAL_PREP   — data prep / transpilation (never crosses)
+        2. EXACT_DECISION   — core verdict, offline, zero QPU
+        3. QPU_WITNESS      — crosses the boundary; budget-gated
+        4. RECEIPT          — ML-DSA signature closes the loop
+
+        MODEL:
+            type: hybrid
+            check: boundary_plan
+            qpu_witness: true|false
+            budget_seconds: N   (supervisor cap: 15 s/lot)
+            shots: 2048
+            basis: ZZ,XX,YY
+        ASK: plan_valid == 1
+        """
+        m = self.model
+        if m.get("check") != "boundary_plan":
+            raise ValueError("hybrid family: only check: boundary_plan "
+                             "is implemented (Section 12)")
+        witness = str(m.get("qpu_witness", "false")).lower() == "true"
+        budget = int(_num(m.get("budget_seconds", "0")))
+        shots = int(_num(m.get("shots", "2048")))
+        bases = [b.strip() for b in m.get(
+            "basis", "ZZ,XX,YY").split(",") if b.strip()]
+        stages = ["CLASSICAL_PREP", "EXACT_DECISION"]
+        valid, reason = True, "boundary plan valid"
+        if witness:
+            if budget <= 0:
+                valid = False
+                reason = ("QPU witness requested with zero budget - "
+                          "refused (supervisor directive)")
+            elif budget > 15:
+                valid = False
+                reason = ("budget %d s exceeds the 15 s/lot cap "
+                          "(supervisor directive)" % budget)
+            elif not (1 <= shots <= 4096):
+                valid = False
+                reason = "shots outside the declared study range"
+            elif not bases:
+                valid = False
+                reason = "no measurement bases declared for the witness"
+            else:
+                stages += ["QPU_WITNESS", "RECEIPT"]
+        ev = {"check": "boundary_plan", "qpu_witness": witness,
+              "budget_seconds": budget, "shots": shots, "bases": bases,
+              "stages": stages,
+              "boundary_crossings": 1 if witness else 0,
+              "plan_valid": int(valid), "reason": reason,
+              "pattern": "classical decides what crosses; the QPU is "
+                         "witness, never the decider; receipt closes "
+                         "the loop"}
+        self.log("HYBRID_BOUNDARY_PLAN", "ELIMINATED",
+                 "boundary routing decided offline, zero QPU")
+        return self._finish("DECIDED_WITHOUT_EXECUTION",
+                            cmp(int(valid), op, thr),
+                            "HYBRID_BOUNDARY_PLAN", "ANALYSIS", ev,
+                            original=1, required=0, analysis_cost=0.01)
 
     # IUPAC standard atomic weights (abridged, conventional) for the
     # molar-mass kernel of the universal exact family.
