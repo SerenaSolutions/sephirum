@@ -51,6 +51,8 @@ BATTERIES = [
      "VM orçada em C puro: 150 execuções cruzadas, trace idêntico (zvm)"),
     ("test_confront.py",
      "confronto clássico x quântico x exato (CC1-CC5, SDKs opcionais)"),
+    ("test_chsh_qkd.py",
+     "CHSH/QKD: fronteira classica, Tsirelson e testemunha (ciberseguranca)"),
     ("test_qsim_gateway.py",
      "Q-SIM Gateway: emaranhamento decidido no portao, zero unidades QPU"),
 ]

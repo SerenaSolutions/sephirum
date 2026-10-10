@@ -925,6 +925,96 @@ class NCA:
         import re
         m = self.model
         kind = m.get("check")
+        if kind == "chsh_bound":
+            # CYBERSECURITY BASE (study ZYQL-TR-2026-10-10, QKD witness):
+            # the CHSH game bounds of entanglement-based key distribution.
+            # S = E(a0,b0) + E(a0,b1) + E(a1,b0) - E(a1,b1).
+            mode = m.get("mode", "classical")
+            if mode == "classical":
+                # exact enumeration of ALL 16 deterministic local
+                # strategies (A0,A1,B0,B1 in {-1,+1}): the classical
+                # bound is a finite arithmetic fact, zero QPU.
+                best = -10
+                for A0 in (-1, 1):
+                    for A1 in (-1, 1):
+                        for B0 in (-1, 1):
+                            for B1 in (-1, 1):
+                                S = (A0 * B0 + A0 * B1 + A1 * B0
+                                     - A1 * B1)
+                                best = max(best, abs(S))
+                ev = {"check": "chsh_bound", "mode": "classical",
+                      "classical_max_abs_S": best,
+                      "strategies_enumerated": 16,
+                      "law": "local realism bounded by 2 (finite "
+                             "enumeration, exact integers)"}
+                self.log("EXACT_CHSH_CLASSICAL", "ELIMINATED",
+                         "16-strategy enumeration: |S|max=%d" % best)
+                return self._finish("DECIDED_WITHOUT_EXECUTION",
+                                    cmp(best, op, thr),
+                                    "EXACT_CHSH_CLASSICAL", "ANALYSIS", ev,
+                                    original=16, required=0,
+                                    analysis_cost=0.01)
+            if mode == "tsirelson":
+                from decimal import Decimal, getcontext
+                getcontext().prec = 28
+                v = 2 * Decimal(2).sqrt()
+                ev = {"check": "chsh_bound", "mode": "tsirelson",
+                      "tsirelson_bound": float(v),
+                      "law": "quantum max S = 2*sqrt(2)",
+                      "note_s12": "sqrt(2) is irrational: Decimal "
+                                  "truncated to 28 significant digits, "
+                                  "disclosed, never faked exact"}
+                self.log("EXACT_CHSH_TSIRELSON", "ELIMINATED",
+                         "2*sqrt(2) = %s (28 digits)" % v)
+                return self._finish("DECIDED_WITHOUT_EXECUTION",
+                                    cmp(float(v), op, thr),
+                                    "EXACT_CHSH_TSIRELSON", "ANALYSIS", ev,
+                                    original=1, required=0,
+                                    analysis_cost=0.01)
+            if mode == "witness":
+                # The QPU (or any declared source) supplies RAW COUNTS as
+                # declared empirical data; the language computes the
+                # correlators and S EXACTLY in Fractions and decides.
+                # The hardware never judges: it only witnesses. §12: the
+                # kernel is exact over DECLARED data; provenance is the
+                # receipt attached by the operator.
+                from fractions import Fraction
+                def _pair(key):
+                    toks = str(m[key]).replace(" ", "").split(",")
+                    if (len(toks) != 2
+                            or not all(t.lstrip("-").isdigit()
+                                       for t in toks)):
+                        raise ValueError("chsh witness %s: expected "
+                                         "'same,diff' integer pair "
+                                         "(structural)" % key)
+                    a, b = int(toks[0]), int(toks[1])
+                    tot = a + b
+                    if tot <= 0:
+                        raise ValueError("chsh witness %s: counts must be "
+                                         "positive (structural)" % key)
+                    return Fraction(a - b, tot), tot
+                E00, n0 = _pair("a0b0")
+                E01, n1 = _pair("a0b1")
+                E10, n2 = _pair("a1b0")
+                E11, n3 = _pair("a1b1")
+                S = E00 + E01 + E10 - E11
+                ev = {"check": "chsh_bound", "mode": "witness",
+                      "E_a0b0": str(E00), "E_a0b1": str(E01),
+                      "E_a1b0": str(E10), "E_a1b1": str(E11),
+                      "S": str(S), "S_float": float(S),
+                      "shots_total": n0 + n1 + n2 + n3,
+                      "note_s12": "counts are declared empirical data; "
+                                  "the verdict is exact over them"}
+                self.log("EXACT_CHSH_WITNESS", "ELIMINATED",
+                         "S = %s from declared counts (exact Fractions)"
+                         % S)
+                return self._finish("DECIDED_WITHOUT_EXECUTION",
+                                    cmp(float(S), op, thr),
+                                    "EXACT_CHSH_WITNESS", "ANALYSIS", ev,
+                                    original=n0 + n1 + n2 + n3, required=0,
+                                    analysis_cost=0.01)
+            raise ValueError("chsh_bound: mode must be classical, "
+                             "tsirelson or witness (structural)")
         if kind == "kepler3":
             a = float(_num(m["semi_major_axis_au"]))
             T = a ** 1.5  # Kepler III, M_host = 1 solar mass
