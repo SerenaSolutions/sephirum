@@ -380,6 +380,75 @@ zyql_decision *zyql_decide(const char *program_src){
   d->message=xstrdup("decided without execution");
   return d; }
 
+
+/* -------------------------------------------------- v0.2: the bridge */
+static const char *json_get_str(const char *json, const char *key,
+                                char *out, size_t outsz){
+  char pat[64]; snprintf(pat,sizeof pat,"\"%s\"",key);
+  const char *p=strstr(json,pat); if(!p) return NULL;
+  p=strstr(p+strlen(pat),"\""); if(!p) return NULL; p++;
+  size_t n=0;
+  while(*p && n<outsz-1){
+    if(*p=='\\'){ p++;
+      if(*p=='"') out[n++]='"';
+      else if(*p=='\\') out[n++]='\\';
+      else if(*p=='n') out[n++]='\n';
+      else if(*p=='t') out[n++]='\t';
+      else if(*p=='r') out[n++]='\r';
+      else break; p++; }
+    else if(*p=='"') break;
+    else out[n++]=*p++; }
+  if(*p!='"') return NULL;
+  out[n]=0; return out; }
+
+zyql_decision *zyql_gate_circuit(const char *purpose,
+                                 const char *openqasm3_src){
+  struct zyql_decision *d=calloc(1,sizeof *d);
+  if(!d) return NULL;
+  const char *cls=zyql_purpose_class(purpose?purpose:"");
+  char cdig[65]; zyql_sha256_hex(openqasm3_src?openqasm3_src:"",
+                                 openqasm3_src?(unsigned long)strlen(openqasm3_src):0,
+                                 cdig);
+  sb o={0};
+  if(cls){
+    sb canon={0};
+    sb_add(&canon,"{\"class\":"); sb_json_str(&canon,cls);
+    sb_add(&canon,",\"list_version\":\"1\",\"purpose_verbatim\":");
+    sb_json_str(&canon,purpose); sb_add(&canon,"}");
+    char dig[65]; zyql_sha256_hex(canon.s,(unsigned long)canon.n,dig);
+    sb_add(&o,"{\"GATE\":\"PORTGATE_CIRCUIT\",\"CIRCUIT_SHA256\":\"%s\",",cdig);
+    sb_add(&o,"\"EVIDENCE\":{\"gate\":\"PORTGATE_CIRCUIT\",");
+    sb_add(&o,"\"list_version\":\"1\",\"class\":"); sb_json_str(&o,cls);
+    sb_add(&o,",\"purpose_verbatim\":"); sb_json_str(&o,purpose);
+    sb_add(&o,",\"refused_before_compute\":true,");
+    sb_add(&o,"\"sha256_refusal_digest\":\"%s\",",dig);
+    sb_add(&o,"\"canonical_refusal\":"); sb_json_str(&o,canon.s);
+    sb_add(&o,"},\"STATUS\":\"REFUSED_BEFORE_COMPUTE\",\"ANSWER\":null}");
+    free(canon.s);
+    d->st=ZYQL_REFUSED; d->answer=-1; d->receipt=o.s;
+    d->message=xstrdup("prohibited purpose class; circuit refused before execution");
+    return d; }
+  sb_add(&o,"{\"GATE\":\"PORTGATE_CIRCUIT\",\"CIRCUIT_SHA256\":\"%s\",",cdig);
+  sb_add(&o,"\"EVIDENCE\":{\"purpose_verbatim\":");
+  sb_json_str(&o,purpose?purpose:"");
+  sb_add(&o,",\"circuit_sha256\":\"%s\",",cdig);
+  sb_add(&o,"\"note\":\"ZYQL gates and never executes; "
+            "the target backend executes\"},");
+  sb_add(&o,"\"STATUS\":\"PASSED_PORTGATE\",\"ANSWER\":null}");
+  d->st=ZYQL_OK; d->answer=-1; d->receipt=o.s;
+  d->message=xstrdup("circuit passed the purpose gate");
+  return d; }
+
+int zyql_verify_receipt(const char *receipt_json){
+  if(!receipt_json) return -1;
+  char canon[2048], dig[128];
+  if(!json_get_str(receipt_json,"canonical_refusal",canon,sizeof canon))
+    return -1;
+  if(!json_get_str(receipt_json,"sha256_refusal_digest",dig,sizeof dig))
+    return -1;
+  char real[65]; zyql_sha256_hex(canon,(unsigned long)strlen(canon),real);
+  return strcmp(real,dig)==0 ? 1 : 0; }
+
 zyql_status zyql_result(const zyql_decision *d){ return d?d->st:ZYQL_ERROR; }
 int zyql_answer(const zyql_decision *d){ return d?d->answer:-1; }
 const char *zyql_receipt(const zyql_decision *d){ return d?d->receipt:"{}"; }

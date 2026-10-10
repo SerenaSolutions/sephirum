@@ -26,6 +26,18 @@ and injection-is-inert-string wall).
     cc -std=c99 -O2 tests/test_c_api.c zyql.c -o test_c_api -lm && ./test_c_api
     python3 tests/parity_nexa.py
 
+## v0.2 — the bridge: quantum languages + language models
+- `zyql_gate_circuit(purpose, openqasm3_src)`: ANY quantum language that
+  can emit text (OpenQASM 3, QIR/Q# output, Silq/Cirq exports) passes the
+  SAME purpose gate BEFORE any backend executes it. ZYQL gates and never
+  executes. Refusal digest is byte-identical to the Python core (parity
+  re-verified for the bridge).
+- `zyql_verify_receipt(receipt_json)`: language models / agents verify a
+  quoted receipt in pure C — 1 valid, 0 tampered, -1 malformed.
+- Battery: tests/test_bridge.c — 5/5 OK (Bell passes, fraud refused
+  before execution, original receipt valid, tampered receipt invalid,
+  malformed rejected).
+
 ## Bindings
 - C: native (zyql.h).
 - C++: `bindings/zyql.hpp` (RAII) — tested (tests/test_cpp.cpp).

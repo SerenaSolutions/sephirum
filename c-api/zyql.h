@@ -44,6 +44,19 @@ const char     *zyql_purpose_class(const char *purpose);
 void            zyql_sha256_hex(const void *data, unsigned long len,
                                 char out[65]);
 
+
+/* v0.2 — BRIDGE: quantum languages and language models.
+ * Any quantum language that can emit text (OpenQASM 3, QIR/Q#, Silq
+ * exports, Cirq dumps) passes through the SAME gate before any backend
+ * executes it. ZYQL never executes; the target backend does. */
+zyql_decision *zyql_gate_circuit(const char *purpose,
+                                 const char *openqasm3_src);
+
+/* Receipt verification for language models: an LLM (or any agent) that
+ * quotes a ZYQL receipt can be checked in pure C. 1 valid, 0 invalid,
+ * -1 malformed. */
+int             zyql_verify_receipt(const char *receipt_json);
+
 #ifdef __cplusplus
 }
 #endif

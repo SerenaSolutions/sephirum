@@ -32,3 +32,6 @@ the contract.
 - c-api/: SQLite-style single-file C99 core (zyql.c/zyql.h, zero deps)
 - PORTGATE + kepler3 + expression; parity 3/3 vs nexa_core.py (same verdicts, same hashes)
 - bindings: C native, C++ RAII (tested), Python ctypes (parity-proven), C# P/Invoke (provided)
+
+## v0.1.2 (2026-10-10)
+- c-api v0.2 bridge: zyql_gate_circuit (quantum-language purpose gate on OQ3/QIR text, digest parity with Python core) + zyql_verify_receipt (pure-C receipt verification for language models); battery 5/5
