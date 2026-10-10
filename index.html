@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ZEPHIRUM — the computation before the execution</title>
+<meta name="description" content="ZEPHIRUM decides a computation is unnecessary — with a verifiable certificate — before any machine runs it. Language: ZYQL (say 'Zykel').">
+<style>
+:root{--navy:#0A1A3C;--cyan:#22D3EE;--ink:#E8F1FF;--dim:#8FA3C4}
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:var(--navy);color:var(--ink);font-family:ui-sans-serif,system-ui,-apple-system,'Segoe UI',Roboto,sans-serif;line-height:1.6}
+.wrap{max-width:900px;margin:0 auto;padding:48px 24px}
+h1{font-size:clamp(2.2rem,6vw,3.6rem);letter-spacing:.06em;font-weight:800}
+h1 span{color:var(--cyan)}
+.tag{color:var(--dim);font-size:1.05rem;margin-top:8px}
+.z{color:var(--cyan);font-weight:800}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;margin:36px 0}
+.card{background:rgba(255,255,255,.04);border:1px solid rgba(34,211,238,.25);border-radius:12px;padding:20px}
+.card b{color:var(--cyan);font-size:1.4rem;display:block}
+.verdicts{display:flex;gap:12px;flex-wrap:wrap;margin:32px 0}
+.v{border-radius:10px;padding:14px 22px;font-family:ui-monospace,'JetBrains Mono',Consolas,monospace;font-size:1.5rem;font-weight:700;border:1px solid rgba(255,255,255,.15)}
+.v0{color:#7BE3A5}.v1{color:#7FB5FF}.vz{color:var(--cyan);border-color:var(--cyan)}
+.v small{display:block;font-family:ui-sans-serif;font-weight:400;font-size:.8rem;color:var(--dim)}
+pre{background:#050D24;border:1px solid rgba(34,211,238,.3);border-radius:10px;padding:18px;overflow:auto;font-size:.95rem}
+code,pre{font-family:ui-monospace,'JetBrains Mono',Consolas,monospace}
+a{color:var(--cyan)}
+img.demo{max-width:100%;border-radius:12px;border:1px solid rgba(255,255,255,.12);margin-top:8px}
+.sect{margin:44px 0}
+.sect h2{font-size:1.3rem;letter-spacing:.04em;margin-bottom:12px;color:var(--cyan)}
+.receipt{font-size:.85rem;color:var(--dim)}
+footer{margin-top:56px;padding-top:20px;border-top:1px solid rgba(255,255,255,.1);color:var(--dim);font-size:.85rem}
+</style>
+</head>
+<body><div class="wrap">
+<h1>ZEPHIR<span>UM</span></h1>
+<p class="tag">The computation before the execution — say <b class="z">"Zykel"</b> for the language, ZYQL.</p>
+
+<div class="verdicts">
+<div class="v v0">0<small>decided: NO</small></div>
+<div class="v v1">1<small>decided: YES</small></div>
+<div class="v vz">Z<small>UNKNOWN — refused honestly</small></div>
+</div>
+
+<div class="sect">
+<h2>What it is</h2>
+<p>An admission gate between you and the machine: a necessity compiler decides — offline, with exact arithmetic — whether a computation is needed at all. Every decision emits an independently verifiable certificate; every refusal says why. Only the residual reaches the hardware. The hardware testifies. The certificate judges.</p>
+</div>
+
+<div class="sect">
+<h2>ZYQL live in a workspace</h2>
+<img class="demo" src="assets/demos/zyql_vscode_demo.gif" alt="ZYQL running in VS Code: Bell and separable verdicts, witness battery 100/100, zero QPU units">
+<p class="receipt">Rendered screencast, real live outputs. Full video: <a href="assets/demos/zyql_vscode_demo.mp4">MP4</a></p>
+</div>
+
+<div class="sect">
+<h2>Quick start</h2>
+<pre>pip install zephirum-quantum-plugin
+zephirum check examples/bell.zyql</pre>
+</div>
+
+<div class="sect">
+<h2>Witnessed on real quantum hardware</h2>
+<p>Admitted questions run on IBM QPUs with signed receipts. Frontier case q076: entanglement margin 1.5e-5 — three orders of magnitude below the hardware noise floor. The QPU cannot arbitrate it. Only the certificate sees it.</p>
+<p class="receipt">Receipt: job db55ov2mb58s738a1mn0 · ibm_marrakesh · 512 shots · results/hybrid_witness_marrakesh.json</p>
+</div>
+
+<div class="sect">
+<h2>Explore</h2>
+<pre>GitHub   https://github.com/SerenaSolutions/zephirum
+Docs     https://github.com/SerenaSolutions/zephirum/tree/main/docs
+License  MIT</pre>
+</div>
+
+<footer>ZEPHIRUM — pure Python, zero dependencies, exact by construction. Z is epistemic: never a guess.</footer>
+</div></body></html>
