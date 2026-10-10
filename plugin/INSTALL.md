@@ -10,7 +10,7 @@ Python 3 runs, the plugin runs — no QPU, no mandatory SDK.
 
 ```
 pkg update && pkg install python git -y
-pip install git+https://github.com/SerenaSolutions/sephirum.git@main#subdirectory=plugin
+pip install git+https://github.com/SerenaSolutions/zephirum.git@main#subdirectory=plugin
 zephirum-q file.zeph
 ```
 
@@ -29,7 +29,7 @@ missing SDK = declared SKIP receipt, never an error).
 ## Windows
 
 ```
-py -m pip install git+https://github.com/SerenaSolutions/sephirum.git@main#subdirectory=plugin
+py -m pip install git+https://github.com/SerenaSolutions/zephirum.git@main#subdirectory=plugin
 zephirum-q file.zeph
 ```
 

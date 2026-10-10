@@ -49,7 +49,7 @@ stabilizer families so far; hardware runs are evidence, never the
 certificate; no quantum-advantage claims.
 
 Repo (language, grammar, receipts, QPU ledger, 20s demo):
-https://github.com/SerenaSolutions/sephirum
+https://github.com/SerenaSolutions/zephirum
 
 Ask me anything — including the parts that don't work yet.
 ```
@@ -79,7 +79,7 @@ eficiência categórica.
 Rigor antes de velocidade: hardware é evidência, nunca certificado.
 
 Repositório, gramática, recibos e demonstração:
-https://github.com/SerenaSolutions/sephirum
+https://github.com/SerenaSolutions/zephirum
 ```
 
 ## O que exige a mão do dono

@@ -7,7 +7,7 @@ numbers.
 
 ## Baseline (measured 2026-10-09, GitHub API)
 
-- Stars / forks on SerenaSolutions/sephirum: 0 / 0
+- Stars / forks on SerenaSolutions/zephirum: 0 / 0
 - `.zeph` files on ALL of GitHub: 22, in 5 repos
 - Repos that are ACTUALLY ours: 1 (this one)
 - **Extension collision, discovered today:** LuanTSP/Zeph,

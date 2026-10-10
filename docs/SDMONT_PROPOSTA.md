@@ -120,8 +120,8 @@ baterias públicos; artigo submetido; infra de verificação HPC
 reutilizável pela comunidade (MIT).
 
 ### Resultados prévios que sustentam a proposta (verificáveis)
-- Repositório público: github.com/SerenaSolutions/sephirum (MIT)
-- Site com recibos: serenasolutions.github.io/sephirum
+- Repositório público: github.com/SerenaSolutions/zephirum (MIT)
+- Site com recibos: serenasolutions.github.io/zephirum
 - 15 releases técnicas (v0.1.0 → v0.9.0), CI verde a cada push
 - Validação em QPU real da IBM com ledger público de jobs
 - 2.000 certificados adversariais, 0 falsos aceitos (bateria

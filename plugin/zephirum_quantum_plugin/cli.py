@@ -126,7 +126,7 @@ def main(argv=None):
         print("  2. zephirum-q my_first.zeph           (the certificate answers)")
         print("  3. zephirum-q my_first.zeph --json    (machine-readable receipt)")
         print()
-        print("Docs: QUICKSTART.md — https://github.com/SerenaSolutions/sephirum")
+        print("Docs: QUICKSTART.md — https://github.com/SerenaSolutions/zephirum")
         return 2
     try:
         with open(args.source, encoding="utf-8") as f:

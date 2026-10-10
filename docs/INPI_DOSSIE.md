@@ -67,11 +67,11 @@ antes do depósito.
 
 ## 5. ANTERIORIDADE PÚBLICA (provas, em ordem de força)
 
-1. Repositório público: https://github.com/SerenaSolutions/sephirum
+1. Repositório público: https://github.com/SerenaSolutions/zephirum
    criado em 2026-10-07; primeiro commit 2026-10-07
    ("ZERUM v0.1: compilador de necessidade certificado").
 2. 15 tags publicadas v0.1.0 → v0.9.0, com release notes datadas.
-3. Site público: https://serenasolutions.github.io/sephirum/
+3. Site público: https://serenasolutions.github.io/zephirum/
 4. Charter da fase Z-QEA público: docs/ZQEA_PHASE_CHARTER.md.
 5. Zenodo (DOI por versão, sem endosso — recomendado antes do arXiv).
 

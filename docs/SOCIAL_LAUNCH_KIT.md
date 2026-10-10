@@ -27,7 +27,7 @@ machine runs it.
 Trivalent verdicts 0/1/Z. Hardware receipts from real IBM QPUs.
 MIT. Zero dependencies.
 Try it in 30s: pip install zephirum-quantum-plugin
-https://github.com/SerenaSolutions/sephirum
+https://github.com/SerenaSolutions/zephirum
 #ZEPHIRUM #ZYQL #QuantumComputing
 
 ### X / Twitter (PT-BR)
@@ -35,7 +35,7 @@ Uma linguagem que prova que sua computação é *desnecessária* antes
 de executá-la — com certificado verificável, sem adivinhação.
 Veredito trivalente 0/1/Z. Recibos de hardware quântico real. MIT.
 pip install zephirum-quantum-plugin
-https://github.com/SerenaSolutions/sephirum
+https://github.com/SerenaSolutions/zephirum
 #ZEPHIRUM #ZYQL #ComputaçãoQuântica
 
 ### LinkedIn (EN)
@@ -45,7 +45,7 @@ execution-assurance core: it decides 0, 1 or UNKNOWN offline, emits
 an independently verifiable certificate, and only executes what
 survives. Validated on IBM Quantum hardware with published receipts.
 MIT licensed, pure Python, no QPU needed to try it.
-https://serenasolutions.github.io/sephirum/
+https://serenasolutions.github.io/zephirum/
 #ZEPHIRUM #QuantumComputing #SoftwareEngineering
 
 ### Hacker News (Show HN)
@@ -56,7 +56,7 @@ certificate the verifier re-derives independently; only the
 residual runs. Hardware receipts from ibm_fez/marrakesh included.
 MIT, pure Python, zero deps. Discussion is the point — answer
 every technical question in the thread.
-Link: https://github.com/SerenaSolutions/sephirum
+Link: https://github.com/SerenaSolutions/zephirum
 
 ### Reddit r/ProgrammingLanguages (no hashtags here)
 Title: Zephirum: proof-of-necessity language — decides 0/1/UNKNOWN

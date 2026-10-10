@@ -1,5 +1,5 @@
 <p align="center">
-  <a href="https://github.com/SerenaSolutions/sephirum/actions/workflows/ci.yml"><img src="https://github.com/SerenaSolutions/sephirum/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
+  <a href="https://github.com/SerenaSolutions/zephirum/actions/workflows/ci.yml"><img src="https://github.com/SerenaSolutions/zephirum/actions/workflows/ci.yml/badge.svg" alt="CI"></a>
   <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-blue.svg" alt="License: MIT"></a>
   <img src="https://img.shields.io/badge/version-v0.9.0-steelblue" alt="Version v0.8.2">
   <img src="https://img.shields.io/badge/IBM%20Quantum-validated-563D7C" alt="Validated on IBM Quantum hardware">
