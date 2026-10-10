@@ -1,6 +1,6 @@
 Metadata-Version: 2.4
 Name: zephirum-quantum-plugin
-Version: 0.5.1
+Version: 0.6.0
 Summary: Zephirum plugin for the quantum world — ZYQL (say Zykel: the Zephirum Query Language) decides entanglement exactly with a verifiable certificate, zero QPU units
 Author: Serena Solutions / QALQON
 License: Proprietary - Serena Solutions

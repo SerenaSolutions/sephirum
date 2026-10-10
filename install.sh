@@ -16,12 +16,19 @@ cat > "$DEST/bin/zephirum-decide" << LAUNCH2
 exec python3 "$DEST/prototype/zephirum_decide.py" "\$@"
 LAUNCH2
 chmod +x "$DEST/bin/zephirum-decide"
+cat > "$DEST/bin/zyqlsh" << LAUNCH3
+#!/bin/sh
+exec python3 "$DEST/prototype/zyqlsh.py" "$@"
+LAUNCH3
+chmod +x "$DEST/bin/zyqlsh"
 LBD="$HOME/.local/bin"
 if [ -d "$LBD" ] && echo ":$PATH:" | grep -q ":$LBD:"; then
     ln -sf "$DEST/bin/qsim-gateway" "$LBD/qsim-gateway"
     ln -sf "$DEST/bin/zephirum-decide" "$LBD/zephirum-decide"
-    echo "Installed. Commands on PATH: qsim-gateway, zephirum-decide"
+    ln -sf "$DEST/bin/zyqlsh" "$LBD/zyqlsh"
+    echo "Installed. Commands on PATH: qsim-gateway, zephirum-decide, zyqlsh"
 else
     echo "Installed in: $DEST"
-    echo "Add to PATH:  export PATH=\"$DEST/bin:\$PATH\""
+    echo "Add to PATH:  export PATH=\"$DEST/bin:\$PATH\"
+    echo "Interactive shell: zyqlsh""
 fi

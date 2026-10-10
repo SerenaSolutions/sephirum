@@ -365,8 +365,31 @@ explicitly; malformed and zero states are structural errors.
 python3 prototype/qsim_gateway.py prog.zeph [--sdk qiskit]
 ```
 
-Local install: `./install.sh` (see `INSTALL.md`) — `qsim-gateway` and
-`zephirum-decide` become shell commands.
+Local install: `./install.sh` (see `INSTALL.md`) — `qsim-gateway`,
+`zephirum-decide` and `zyqlsh` become shell commands.
+
+## Interactive shell — zyqlsh
+
+Paste a question, get a verdict. The shell is the conversational face of
+the kernel: paste a `.zeph` program (ASK/CONTRACT/MODEL), press enter on an
+empty line, and the kernel answers with the trivalent verdict, the
+elimination (naive units vs certified units) and a numbered receipt
+(SHA-256 content hash) saved under `$ZEPHIRUM_HOME/receipts/zyqlsh/`.
+
+```
+$ zyqlsh
+zyql> (paste your program, then an empty line)
+MODEL:   gauss
+ASK:     is the quantity > 1/2 ?
+NAIVE    : 1000000 units (NOT simulated — VM budget refusal, §12 honesty)
+ZEPHIRUM : 2 certified units (budget 2) — elimination 999998/1000000
+VERDICT  : TRUE
+```
+
+Commands: `:help`, `:families`, `:receipts`, `:verify <file>` (re-derives
+the receipt hash — a forged file fails), `:clear`, `:exit`. When the naive
+twin exceeds the VM budget, the shell reports the refusal explicitly
+instead of pretending to simulate — same honesty contract as the kernel.
 
 ## Process isolation (v0.6.3)
 
