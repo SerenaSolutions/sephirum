@@ -1,0 +1,80 @@
+{
+  "experiment": "hybrid boundary pattern on real hardware",
+  "date_utc": "2026-10-10T03:22:39Z",
+  "backend": "ibm_marrakesh",
+  "budget": {
+    "usage_before_s": 234,
+    "remaining_before_s": 366,
+    "lot_cap_s": 15,
+    "usage_after_s": 237,
+    "remaining_after_s": 363,
+    "lot_cost_s": 3
+  },
+  "stage_plan": {
+    "valid": true,
+    "stages": [
+      "CLASSICAL_PREP",
+      "EXACT_DECISION",
+      "QPU_WITNESS",
+      "RECEIPT"
+    ],
+    "over_cap_refused": true
+  },
+  "exact_gate": {
+    "bell_phi_plus_entangled": true,
+    "separable_entangled": false,
+    "ghz3_entangled": true
+  },
+  "job_id": "db4qv0imb58s7389iq60",
+  "status": "DONE",
+  "witness": {
+    "bell_ZZ": 0.9609,
+    "bell_XX": 0.9336,
+    "ghz3_ZZZ_parity": 0.0488,
+    "ghz3_XXX_parity": 0.916,
+    "raw": {
+      "bell_z": {
+        "00": 519,
+        "11": 485,
+        "10": 9,
+        "01": 11
+      },
+      "bell_x": {
+        "11": 469,
+        "10": 11,
+        "00": 521,
+        "01": 23
+      },
+      "ghz_z": {
+        "111": 482,
+        "000": 510,
+        "101": 5,
+        "011": 11,
+        "110": 11,
+        "001": 4,
+        "100": 1
+      },
+      "ghz_x": {
+        "011": 234,
+        "000": 248,
+        "110": 263,
+        "101": 236,
+        "111": 7,
+        "100": 9,
+        "001": 18,
+        "010": 9
+      }
+    }
+  },
+  "interpretation": "Hybrid boundary on ibm_marrakesh (job db4qv0imb58s7389iq60, 3 s lot): Bell <ZZ>=0.9609 <XX>=0.9336; GHZ-3 P(000)+P(111)=0.9688, <XXX>=0.916, fidelity lower bound F>=0.9424 (> 0.5: genuine tripartite entanglement witnessed). Exact verdicts decided offline BEFORE the crossing; the QPU is witness only; deviations reported as measured.",
+  "witness_corrected": {
+    "ghz3_pop_000_plus_111": 0.9688,
+    "ghz3_ZZ_01": 0.9609,
+    "ghz3_ZZ_12": 0.9668,
+    "ghz3_pair_mean": 0.9639,
+    "ghz3_XXX_parity": 0.916,
+    "ghz3_fidelity_lower_bound": 0.9424,
+    "genuine_entanglement_witness_F_gt_0.5": true
+  },
+  "audit_note": "Initial 'ideal +1' text for GHZ ZZZ parity was wrong: the GHZ state has <ZZZ>=0 in the ideal. Observable corrected to pair correlations ZZ(0,1), ZZ(1,2), population P(000)+P(111), and the standard fidelity lower bound F >= (P + <XXX>)/2 (Bourennane et al., PRL 92, 087902 (2004)); F > 1/2 witnesses genuine tripartite entanglement. Computed from the raw counts; no extra QPU used."
+}

@@ -1,0 +1,86 @@
+{
+ "receipt": {
+  "experiment": "hybrid boundary pattern on real hardware",
+  "date_utc": "2026-10-10T03:22:39Z",
+  "backend": "ibm_marrakesh",
+  "budget": {
+   "usage_before_s": 234,
+   "remaining_before_s": 366,
+   "lot_cap_s": 15,
+   "usage_after_s": 237,
+   "remaining_after_s": 363,
+   "lot_cost_s": 3
+  },
+  "stage_plan": {
+   "valid": true,
+   "stages": [
+    "CLASSICAL_PREP",
+    "EXACT_DECISION",
+    "QPU_WITNESS",
+    "RECEIPT"
+   ],
+   "over_cap_refused": true
+  },
+  "exact_gate": {
+   "bell_phi_plus_entangled": true,
+   "separable_entangled": false,
+   "ghz3_entangled": true
+  },
+  "job_id": "db4qv0imb58s7389iq60",
+  "status": "DONE",
+  "witness": {
+   "bell_ZZ": 0.9609,
+   "bell_XX": 0.9336,
+   "ghz3_ZZZ_parity": 0.0488,
+   "ghz3_XXX_parity": 0.916,
+   "raw": {
+    "bell_z": {
+     "00": 519,
+     "11": 485,
+     "10": 9,
+     "01": 11
+    },
+    "bell_x": {
+     "11": 469,
+     "10": 11,
+     "00": 521,
+     "01": 23
+    },
+    "ghz_z": {
+     "111": 482,
+     "000": 510,
+     "101": 5,
+     "011": 11,
+     "110": 11,
+     "001": 4,
+     "100": 1
+    },
+    "ghz_x": {
+     "011": 234,
+     "000": 248,
+     "110": 263,
+     "101": 236,
+     "111": 7,
+     "100": 9,
+     "001": 18,
+     "010": 9
+    }
+   }
+  },
+  "interpretation": "Hybrid boundary on ibm_marrakesh (job db4qv0imb58s7389iq60, 3 s lot): Bell <ZZ>=0.9609 <XX>=0.9336; GHZ-3 P(000)+P(111)=0.9688, <XXX>=0.916, fidelity lower bound F>=0.9424 (> 0.5: genuine tripartite entanglement witnessed). Exact verdicts decided offline BEFORE the crossing; the QPU is witness only; deviations reported as measured.",
+  "witness_corrected": {
+   "ghz3_pop_000_plus_111": 0.9688,
+   "ghz3_ZZ_01": 0.9609,
+   "ghz3_ZZ_12": 0.9668,
+   "ghz3_pair_mean": 0.9639,
+   "ghz3_XXX_parity": 0.916,
+   "ghz3_fidelity_lower_bound": 0.9424,
+   "genuine_entanglement_witness_F_gt_0.5": true
+  },
+  "audit_note": "Initial 'ideal +1' text for GHZ ZZZ parity was wrong: the GHZ state has <ZZZ>=0 in the ideal. Observable corrected to pair correlations ZZ(0,1), ZZ(1,2), population P(000)+P(111), and the standard fidelity lower bound F >= (P + <XXX>)/2 (Bourennane et al., PRL 92, 087902 (2004)); F > 1/2 witnesses genuine tripartite entanglement. Computed from the raw counts; no extra QPU used."
+ },
+ "algorithm": "ML-DSA-44",
+ "fips": "204",
+ "public_key": "8DWBZcij0D22uPbo7zIcHwQBZ+JYtFYtw4GH3PzAiGD/c/QDUqPQntkv2yrWSzOZ2iQeQw53tMlEZw0TQC+bzEWN71XXBGFPNiHtCe/sF+HbbtvthuHbFDHojFc+mpuhFSCUWp+n2wf+rvAvshibx5OV8Mfa0jHp6NlaZTb9/C16oJgW3YfGI0Ssyia+zDyl+/CxgVMxAwCUzjyxH/V4S7yiidVp6e1/gc1T0AB3CpmMW86nnKrTnZlzFbaVvzuI69Oc/FMoaubax/gmfrB4KrASqRrIppwOOmZg6rY8takuKXDXPOFG/OZVv9KAfYg9a6rScA865FPPhau2g43Tu8F1mxQh1SV5SAFKSW6L92X8IOtVnwXO4uEb7ElSSlO18vWan/X+2Ar2F5/IZ5DKNupOBQJkevDwlIsA3FDvE0dic48NhCc1dqkrkVngO+80Yz+5IynWw1Ugh1efVm14EBw+tdOppmKRCHD6Uq1RE2s6Gdm5fyGM4b+DY2A2xCHTnrQJp/9A8uYlOl0Qqs83cwLCCXZtxIqtvAQWR1YJywM3CtgA2WALe0d76yAi0jOj5O5y641uAWX0E+UKaZFyR7jHcw2U2zShj1OYXvlEYNzqrEROoMVljBxK57WgAYbHGMxqc3/4aatnxhd4L1E/QPnbuzr6IYI/UNaEhRaFVmBXMk1WfH1SdQnjDsX+iKyBxVe2oXIrqXtcZ9MwdJh2B75EDxSmXhEptiMbs8JIyvNHWVUpJgNMW6uYabbi0v6BbcbDCJdQNHPI11n8GOC+t0sNAFv0uulb/P4yHAnu80UP9jRlGD3Qvn5DPZY1vhjNa+IVGa6LOVS6f9WcFxJh/qwD8NsGBpTs2AFUm0FzypxAWnaYp4xnJj7q+2rofxOCBu+C4geP2ZlFbqRR0ncRpGbcU0PrfwT+VFm8JMDwwEfzqsGJwr+1zhDfEfEKPiXxsP8qsp9jNrN26MO0RjLv8JWo7lAOjAMFIJZugUe5XaAAcVilmPU+rgLWCpMMOEbS4cnakyT7RDrQjYE3Lk+iY07yeNhZJ5itIAo0qoqKHMlHmV6NBxGPEqx/4K4Lgf+JoXU0k6a3nUzoVSFGRcjVA0FrR2tyc0DpUSytHvv0/qQ8kiw4GLpddUHg0A+ar/2P52vmp4RkZyFMsFVsEsZxNbTNQ1/+hf6Cy8UH9dryNswKBZU0a8VBoz9KMyW/9yRAzyJIsuDfrinWwlXhDc8kD0J9mbG0rxqQL4QZYo1plHA3s97RJNisHOLHn1TI68ZoLCajgdf7DvzpNXiHXvUGo99RhMS1RKNxEXOfCaAYPF6qd4ox3kg6XHu3V8saK/H9B2NnDnTQ5Tad+oeNTmiO8QbgsdOUslOYpuH3v8nX3/quFaHUxhYM2L8ssyhPBgeb4J0VtJt3PDBYcsim4CABnW+xV/eBrUVs6d1v3PXtKw0fIVeoOtnUVPfoLCYq04u4QOerMgnuSLzpTTA7rQvaSgjHJO5TyqiiGxw/yvZYvcTQXIukiVN0XGc2WjrhrSUsW7eixFaGAbTfzrFo8Yn5N9zNTsEED9tBEADUbdvZs95VH8EPU795WPC9cuUah7QoVfv2158b7xuF3657Liry2B2h1sWkL3oS+taHHH6VQsw8ErAjjSNV0cF6tZV4vyXD5x/xLyA8g7hWYXZZlQTKjoq+MiRgbHqbPYGMJYSdRl0HG4ndsMhjXZwHeFL7UZEwv372MJNzp3D5sMmqkeH8sg==",
+ "signature": "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"
+}
