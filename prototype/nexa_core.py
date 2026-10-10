@@ -83,6 +83,39 @@ def cmp(value, op, thr):
     return _OPS[op](value, thr)
 
 
+# ------------------------------------------------------------------
+# PORTGATE — signed lexical gate (owner directive 2026-10-10; rebuilt
+# from the paused agent's local work and published for reproducibility).
+# Every use may DECLARE A PURPOSE in the ASK block. Prohibited classes
+# are REFUSED BEFORE ANY COMPUTATION, and the refusal is a certificate
+# carrying the purpose VERBATIM plus a SHA-256 digest of the canonical
+# refusal JSON. ML-DSA-44 signing happens in the pq_receipt protocol.
+# Honest scope: the lexical wall is the weakest (synonyms bypass it);
+# the real wall is structural purity - the language has no execution
+# primitive at all. Versioned list: changes require a changelog.
+PORTGATE_VERSION = "1"
+PROHIBITED_PURPOSES = {
+    "weapons": ("weapon", "gun", "explosive", "ammunition"),
+    "lethality": ("lethal", "kill", "assassination"),
+    "surveillance": ("surveillance", "spy", "tracking"),
+    "persecution": ("persecution", "harassment", "stalking"),
+    "fraud": ("fraud", "scam", "phishing"),
+    "forgery": ("forgery", "counterfeit"),
+    "sabotage": ("sabotage", "disrupt"),
+}
+
+
+def purpose_refusal_class(purpose):
+    """Return the prohibited class for a declared purpose, or None."""
+    import re
+    p = purpose.lower()
+    for cls, words in PROHIBITED_PURPOSES.items():
+        for w in words:
+            if re.search(r"\b%s\b" % w, p):
+                return cls
+    return None
+
+
 def parse_question(q):
     for op in (">=", "<=", "==", ">", "<"):
         if op in q:
@@ -212,7 +245,42 @@ class NCA:
                             analysis_cost=analysis_cost)
 
     # ------------------------------------------------------------- compile
+    def _portgate(self):
+        """Signed lexical gate: refuse BEFORE compute, refuse as a
+        certificate. Returns None when the purpose is declared and
+        benign, or when no purpose is declared (retrocompatible)."""
+        import hashlib, json
+        purpose = self.b.get("ASK", {}).get("purpose", "")
+        if not purpose:
+            return None
+        cls = purpose_refusal_class(purpose)
+        if cls is None:
+            return None
+        canonical = json.dumps(
+            {"list_version": PORTGATE_VERSION, "class": cls,
+             "purpose_verbatim": purpose},
+            sort_keys=True, separators=(",", ":"))
+        digest = hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+        ev = {"gate": "PORTGATE", "list_version": PORTGATE_VERSION,
+              "class": cls, "purpose_verbatim": purpose,
+              "refused_before_compute": True,
+              "sha256_refusal_digest": digest,
+              "canonical_refusal": canonical,
+              "note": "refusal is a certificate; the canonical JSON "
+                      "above is signed ML-DSA-44 via pq_receipt; the "
+                      "purpose string is DATA, never executed"}
+        self.log("PORTGATE", "REFUSED",
+                 "prohibited purpose class %r; refused before compute" % cls)
+        return self._finish("REFUSED_BEFORE_COMPUTE", None, "PORTGATE",
+                            "ANALYSIS", ev, original=1, required=0,
+                            analysis_cost=0.0)
+
     def compile(self):
+        # PORTGATE comes first: the gate judges the declared intent
+        # BEFORE any contract or model is even parsed for computation.
+        refused = self._portgate()
+        if refused is not None:
+            return refused
         # §12 — contrato: o motor implementa SOMENTE o contrato exato.
         # Declarar orçamento de erro diferente, ou chave de contrato
         # desconhecida, é ERRO ESTRUTURAL — nunca aceito em silêncio.

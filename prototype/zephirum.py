@@ -26,6 +26,9 @@ STATUS_TO_TRIT = {
         (TRUE, "nenhum kernel encontrado: execucao completa justificada"),
     "UNKNOWN":
         (ZEPHIRUM, "permanece ZEPHIRUM: nem necessidade nem desnecessidade provadas"),
+    "REFUSED_BEFORE_COMPUTE":
+        (ZEPHIRUM, "PORTGATE: proposito declarado em classe proibida; "
+                   "recusa assinada antes de qualquer computo"),
 }
 
 
