@@ -1,6 +1,8 @@
 # ZYQL Brand
 
-Official identity (CEO decision, 2026-10-10): **Lichia Zyko**.
+The LANGUAGE is **ZYQL** (official spelling, always in technical and
+documentation use). **Lichia Zyko** is the name of the EMBLEM/AVATAR
+(the opened lychee with the gold ⟨Z⟩), not of the language (CEO, 2026-10-10).
 
 - Symbol: the lychee (red bumpy shell, translucent white interior) opened
   to reveal the gold ⟨Z⟩ inside — the "seed" of the house emblem.
