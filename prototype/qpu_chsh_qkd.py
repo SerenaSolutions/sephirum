@@ -59,8 +59,10 @@ def counts_to_pair(counts):
 
 
 def main():
-    if "IDB_API_KEY" not in os.environ:
-        raise SystemExit("IDB_API_KEY not set: hardware leg blocked "
+    token = (os.environ.get("IBM_API_KEY")
+             or os.environ.get("IDB_API_KEY"))
+    if not token:
+        raise SystemExit("IBM/IDB API key not set: hardware leg blocked "
                          "(owner must restore the token; offline battery "
                          "test_chsh_qkd.py remains fully certified).")
 
@@ -76,7 +78,7 @@ def main():
           "offline — QPU authorized as WITNESS only")
 
     svc = QiskitRuntimeService(channel="ibm_quantum_platform",
-                                token=os.environ["IDB_API_KEY"])
+                                token=token)
     usage_before = svc.usage()
     remaining = usage_before.get("usage_remaining_seconds", 0)
     if remaining < FLOOR_S:
@@ -105,7 +107,7 @@ def main():
                  (math.pi / 2, math.pi / 4), (math.pi / 2, -math.pi / 4))]
     tqc = transpile(circuits, backend=backend,
                     optimization_level=1)
-    sampler = SamplerV2(mode="ibm_cloud")
+    sampler = SamplerV2(mode=backend)
     job = sampler.run(tqc, shots=SHOTS)
     print("submitted:", job.job_id())
     res = job.result()
