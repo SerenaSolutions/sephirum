@@ -1,0 +1,49 @@
+{
+ "experiment": "GHZ ladder rungs 8 and 12 \u2014 fusion chain .zeph -> exact verdict -> OpenQASM 3 -> qasm3.loads -> QPU; closes the scaling curve (2,3,4,6,8,12,20)",
+ "date_utc_start": "2026-10-10T05:02:13.776151+00:00",
+ "backend": "ibm_marrakesh",
+ "job_id": "db4sdhclf4us73c36d10",
+ "shots": 512,
+ "pre_flight_gate": {
+  "policy": "no QPU job without a prior exact ZEPHIRUM verdict",
+  "ghz8": {
+   "program": "ghz8_entangled.zeph",
+   "verdict": 1,
+   "units_billed": 0,
+   "hash": "0c4173ae96c09d5122aac825043a8bb9a7a5681a80f1a4c8961a246b72f33e2e"
+  },
+  "ghz12": {
+   "program": "ghz12_entangled.zeph",
+   "verdict": 1,
+   "units_billed": 0,
+   "hash": "5c178775522ad94a02926f8ff4f58592427bc9bc7974bf9923fc450e5196db5f"
+  }
+ },
+ "ghz8_entangled": {
+  "pop_0N_1N": 0.7246,
+  "z_endpair": 0.9062,
+  "counts_top": {
+   "00000000": 193,
+   "11111111": 178,
+   "00000100": 16,
+   "11111011": 15
+  }
+ },
+ "ghz12_entangled": {
+  "pop_0N_1N": 0.5352,
+  "z_endpair": 0.7539,
+  "counts_top": {
+   "000000000000": 153,
+   "111111111111": 121,
+   "100000000000": 31,
+   "111111111011": 12
+  }
+ },
+ "budget": {
+  "usage_before_s": 237,
+  "usage_after_s": 239,
+  "lot_cost_s": 2,
+  "lot_cap_s": 15
+ },
+ "honesty": "Exact verdicts decided OFFLINE with integer arithmetic; QPU counts are empirical evidence of physical plausibility, never the certificate (\u00a712)."
+}

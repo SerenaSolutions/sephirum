@@ -1,0 +1,29 @@
+#!/usr/bin/env python3
+# Gerado pelo TRANSPILER MULTI-ALVO ZEPHIRUM — ALVO qiskit.
+# Familia: entanglement · 256 amplitudes · separabilidade plena.
+# O veredito EXATO e do ZEPHIRUM (Fraction, ZERO execucao).
+import hashlib
+from fractions import Fraction
+
+AMPS = [Fraction('7071/10000'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('0'), Fraction('7071/10000')]
+DATA = '7071/10000|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|0|7071/10000'
+OP = '=='
+
+def _sep(v):
+    L = len(v)
+    if L == 2: return True
+    h = L // 2
+    R0, R1 = v[:h], v[h:]
+    if any(R0[j]*R1[k] != R0[k]*R1[j]
+           for j in range(h) for k in range(j+1, h)):
+        return False
+    return _sep(R0 if any(R0) else R1)
+ent = not _sep(AMPS)
+THR = Fraction('1')
+v = Fraction(1 if ent else 0)
+verdict = {">": v > THR, "<": v < THR, ">=": v >= THR,
+           "<=": v <= THR, "==": v == THR}[OP]
+print("VERDICT", 1 if verdict else 0)
+print("HASH", hashlib.sha256(DATA.encode()).hexdigest())
+print("UNITS", 0)
+print("QPU_UNITS_BILLED", 0)

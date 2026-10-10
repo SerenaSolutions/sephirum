@@ -16,6 +16,7 @@ filtering.
 | 2026-10-09 00:38 | db43f2kvf2bc73cu0ts0 | ibm_fez | FUSION run: Zephirum-emitted OpenQASM 3 (GHZ prep) absorbed by Qiskit, + separable 3q control | 2×512 | GHZ exact verdict 1: pair stabilizers ⟨ZZI⟩=⟨IZZ⟩=0.965, population 000/111 = 97.9% (⟨ZZZ⟩=0 is correct GHZ+ physics, label fixed in receipt); separable control ⟨ZZZ⟩=-0.09 ≈ 0, verdict 0 | < 1 s (est.) |
 | 2026-10-09 00:45 | db43i4qmb58s7388k3mg | ibm_fez | GHZ ladder rungs 4 and 6 via the fusion chain (.zeph → exact verdict → OpenQASM 3 → qasm3.loads → QPU) | 2×512 | GHZ4 exact verdict 1: 95.1% population {0000,1111}; GHZ6 verdict 1: 91.8% {000000,111111} — ladder scaling confirmed | < 2 s (est.) |
 | 2026-10-09 00:45 | (see receipt) | ibm_fez | Separable 4q control (exact-vector prepare_state) after emitter fix (qubit[log2(n)] bug, declared and corrected) | 512 | 16 distinct uniform outcomes, parity correlator −0.008 ≈ 0 — verdict 0 confirmed; first run invalid (empty register), replaced honestly | < 1 s (est.) |
+| 2026-10-10 05:01 | db4sdhclf4us73c36d10 | ibm_marrakesh | GHZ ladder rungs 8 and 12 via fusion chain (.zeph → exact verdict → OpenQASM 3 → qasm3.loads → QPU) | 2×512 | Closes the scaling curve: exact verdicts 1/1 decided offline (hashes in receipt); GHZ-8 poles 72.5% ⟨Z₀Z₇⟩=0.906; GHZ-12 poles 53.5% ⟨Z₀Z₁₁⟩=0.754 — long-range order through decoherence, consistent with the 95→92→73→54→40% (rungs 4-6-8-12-20) dilution |
 
 ## Interpretation (§12 honesty)
 
