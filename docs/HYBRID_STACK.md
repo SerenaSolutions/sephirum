@@ -12,7 +12,21 @@ diferencial.
 ## O que o ZEPHIRUM acrescenta: a caixa 3.5
 Entre a camada de IA e o QPU mora um PORTÃO DE ADMISSIBILIDADE com
 certificado: antes de qualquer shot, o motor decide exatamente o que
-precisa de QPU. Padrão QCNN como caso-livro (Cong 2019; McClean
+precisa de QPU.
+
+ADVERTÊNCIA DE ANTERIORIDADE (nível C, honesto): a frase "ninguém
+tem" está PROIBIDA neste projeto. Ausência de evidência não é
+evidência de ausência. O que podemos afirmar hoje: (a) os fluxos
+documentados dos SDKs principais (Qiskit, Cirq, tket) não incluem
+uma camada de admissibilidade certificada (nível C — leitura das
+documentações, não varredura exaustiva); (b) existem PRECEDENTES
+PARCIAIS de eliminação clássica na literatura: Gottesman-Knill
+(circuitos Clifford decididos clássicos), sombras clássicas
+(Huang-Kueng-Preskill 2022), redes de tensores e estimadores
+adaptativos; (c) a varredura completa de exclusividade desta
+camada está PENDENTE — a auditoria de anterioridade do projeto foi
+pausada por decisão do autor. A alegação defensável só será
+promovida a fato quando essa varredura terminar. Padrão QCNN como caso-livro (Cong 2019; McClean
 2018; Huang-Kueng-Preskill 2022, nível B): entrada separável é
 classicamente simulável POR CONSTRUÇÃO — desviada para a rota
 clássica; entrada emaranhada é admitida; o indecidível é UNKNOWN,
